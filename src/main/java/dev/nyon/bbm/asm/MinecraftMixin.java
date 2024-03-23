@@ -10,7 +10,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(Minecraft.class)
 public class MinecraftMixin {
 
-    @Inject(method = "stop", at = @At("TAIL"))
+    @Inject(
+        method = "stop",
+        at = @At("TAIL")
+    )
     private void saveConfig(CallbackInfo ci) {
         BetterBoatMovement.INSTANCE.saveConfig();
     }

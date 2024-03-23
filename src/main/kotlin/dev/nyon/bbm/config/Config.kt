@@ -7,8 +7,15 @@ import net.fabricmc.fabric.api.networking.v1.PacketType
 import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.resources.ResourceLocation
 
+lateinit var config: Config
+
 @Serializable
-data class Config(var groundStepHeight: Float = 0.25f, var waterStepHeight: Float = 3f, var playerEjectTicks: Float = 20f * 10f) :
+data class Config(
+    var stepHeight: Float = 0.3f,
+    var playerEjectTicks: Float = 20f * 10f,
+    var boostUnderwater: Boolean = true,
+    var wallHitCooldownTicks: Int = 5
+) :
     FabricPacket {
     companion object {
         @Transient
@@ -16,14 +23,15 @@ data class Config(var groundStepHeight: Float = 0.25f, var waterStepHeight: Floa
             PacketType.create(
                 ResourceLocation("better-boat-movement", "sync")
             ) { buffer ->
-                Config(buffer.readFloat(), buffer.readFloat(), buffer.readFloat())
+                Config(buffer.readFloat(), buffer.readFloat(), buffer.readBoolean(), buffer.readInt())
             }
     }
 
     override fun write(buffer: FriendlyByteBuf) {
-        buffer.writeFloat(groundStepHeight)
-        buffer.writeFloat(waterStepHeight)
+        buffer.writeFloat(stepHeight)
         buffer.writeFloat(playerEjectTicks)
+        buffer.writeBoolean(boostUnderwater)
+        buffer.writeInt(wallHitCooldownTicks)
     }
 
     override fun getType(): PacketType<*> {

@@ -5,7 +5,8 @@ import dev.isxander.yacl3.api.Option
 import dev.isxander.yacl3.api.OptionDescription
 import dev.isxander.yacl3.api.YetAnotherConfigLib
 import dev.isxander.yacl3.api.controller.FloatFieldControllerBuilder
-import dev.nyon.bbm.config
+import dev.isxander.yacl3.api.controller.IntegerFieldControllerBuilder
+import dev.isxander.yacl3.api.controller.TickBoxControllerBuilder
 import dev.nyon.konfig.config.saveConfig
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component
@@ -29,15 +30,7 @@ private fun YetAnotherConfigLib.Builder.appendCategory() =
                 Option.createBuilder<Float>()
                     .name(Component.translatable("menu.bbm.config.category.ground_step_height.title"))
                     .description(OptionDescription.of(Component.translatable("menu.bbm.config.category.ground_step_height.description")))
-                    .binding(config.groundStepHeight, { config.groundStepHeight }, { config.groundStepHeight = it })
-                    .controller(FloatFieldControllerBuilder::create)
-                    .build()
-            )
-            .option(
-                Option.createBuilder<Float>()
-                    .name(Component.translatable("menu.bbm.config.category.water_step_height.title"))
-                    .description(OptionDescription.of(Component.translatable("menu.bbm.config.category.water_step_height.description")))
-                    .binding(config.waterStepHeight, { config.waterStepHeight }, { config.waterStepHeight = it })
+                    .binding(config.stepHeight, { config.stepHeight }, { config.stepHeight = it })
                     .controller(FloatFieldControllerBuilder::create)
                     .build()
             )
@@ -47,6 +40,24 @@ private fun YetAnotherConfigLib.Builder.appendCategory() =
                     .description(OptionDescription.of(Component.translatable("menu.bbm.config.category.player_eject_ticks.description")))
                     .binding(config.playerEjectTicks, { config.playerEjectTicks }, { config.playerEjectTicks = it })
                     .controller(FloatFieldControllerBuilder::create)
+                    .build()
+            )
+            .option(
+                Option.createBuilder<Boolean>()
+                    .name(Component.translatable("menu.bbm.config.category.boost_underwater.title"))
+                    .description(OptionDescription.of(Component.translatable("menu.bbm.config.category.boost_underwater.description")))
+                    .binding(config.boostUnderwater, { config.boostUnderwater }, { config.boostUnderwater = it })
+                    .controller(TickBoxControllerBuilder::create)
+                    .build()
+            )
+            .option(
+                Option.createBuilder<Int>()
+                    .name(Component.translatable("menu.bbm.config.category.wall_hit_cooldown_ticks.title"))
+                    .description(
+                        OptionDescription.of(Component.translatable("menu.bbm.config.category.wall_hit_cooldown_ticks.description"))
+                    )
+                    .binding(config.wallHitCooldownTicks, { config.wallHitCooldownTicks }, { config.wallHitCooldownTicks = it })
+                    .controller(IntegerFieldControllerBuilder::create)
                     .build()
             )
             .build()
