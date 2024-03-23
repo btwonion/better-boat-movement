@@ -125,7 +125,7 @@ githubRelease {
     body = changelogText
     overwrite = true
     releaseAssets(tasks["remapJar"].outputs.files)
-    targetCommitish = "main"
+    targetCommitish = "master"
 }
 
 publishing {
