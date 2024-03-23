@@ -32,10 +32,12 @@ repositories {
 
 dependencies {
     minecraft("com.mojang:minecraft:$mcVersion")
-    mappings(loom.layered {
-        parchment("org.parchmentmc.data:parchment-1.20.1:2023.09.03@zip")
-        officialMojangMappings()
-    })
+    mappings(
+        loom.layered {
+            parchment("org.parchmentmc.data:parchment-1.20.1:2023.09.03@zip")
+            officialMojangMappings()
+        }
+    )
 
     implementation("org.vineflower:vineflower:1.9.3")
     modImplementation("net.fabricmc:fabric-loader:0.15.7")
@@ -97,7 +99,7 @@ val changelogText =
 
 modrinth {
     token.set(findProperty("modrinth.token")?.toString())
-    projectId.set("")
+    projectId.set("wTfH1dkt")
     versionNumber.set("${project.version}")
     versionType.set("release")
     uploadFile.set(tasks["remapJar"])
