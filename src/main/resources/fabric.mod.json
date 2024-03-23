@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "id": "${id}",
+  "name": "${name}",
+  "description": "${description}",
+  "icon": "assets/bbm/icon/icon.png",
+  "contact": {
+    "issues": "https://github.com/btwonion/better-boat-movement/issues",
+    "sources": "https://github.com/btwonion/better-boat-movement"
+  },
+  "authors": [
+    {
+      "name": "btwonion"
+    }
+  ],
+  "contributors": [],
+  "license": [
+    "GNU General Public License v3.0"
+  ],
+  "version": "${version}",
+  "environment": "client",
+  "depends": {
+    "fabric-language-kotlin": ">=1.10.19+kotlin.1.9.23",
+    "fabric-api": ">=0.92.0+1.20.1",
+    "yet_another_config_lib_v3": ">=3.2.2+1.20",
+    "minecraft": ">=1.20.1"
+  },
+  "suggests": {
+    "modmenu": "7.2.2"
+  },
+  "entrypoints": {
+    "client": [
+      {
+        "adapter": "kotlin",
+        "value": "dev.nyon.bbm.BetterBoatMovement"
+      }
+    ],
+    "main": [
+      {
+        "adapter": "kotlin",
+        "value": "dev.nyon.bbm.BetterBoatMovement"
+      }
+    ],
+    "modmenu": [
+      {
+        "adapter": "kotlin",
+        "value": "dev.nyon.bbm.config.ModMenuImpl"
+      }
+    ]
+  },
+  "mixins": [
+    "bbm.mixins.json"
+  ],
+  "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.discord": "https://discord.gg/pmHTtZnMd3"
+      }
+    }
+  }
+}

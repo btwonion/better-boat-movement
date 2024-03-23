@@ -1,0 +1,10 @@
+{
+  "menu.bbm.config.title": "Better Boat Movement",
+  "menu.bbm.config.category.title": "General",
+  "menu.bbm.config.category.ground_step_height.title": "Ground step height",
+  "menu.bbm.config.category.ground_step_height.description": "Defines the height on which the boat starts moving the block up.",
+  "menu.bbm.config.category.water_step_height.title": "Water step height",
+  "menu.bbm.config.category.water_step_height.description": "Defines the height on which the boat starts moving the above the water block up.",
+  "menu.bbm.config.category.player_eject_ticks.title": "Player eject ticks",
+  "menu.bbm.config.category.player_eject_ticks.description": "Defines the ticks that should pass before ejecting a player, when the player lost control over the boat."
+}
