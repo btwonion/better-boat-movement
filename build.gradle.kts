@@ -16,7 +16,7 @@ plugins {
 
 group = "dev.nyon"
 val majorVersion = "1.0.0"
-val mcVersion = "1.20.1"
+val mcVersion = "1.20.4"
 version = "$majorVersion-$mcVersion"
 val authors = listOf("btwonion")
 val githubRepo = "btwonion/better-boat-movement"
@@ -34,18 +34,18 @@ dependencies {
     minecraft("com.mojang:minecraft:$mcVersion")
     mappings(
         loom.layered {
-            parchment("org.parchmentmc.data:parchment-1.20.1:2023.09.03@zip")
+            parchment("org.parchmentmc.data:parchment-1.20.4:2024.02.25@zip")
             officialMojangMappings()
         }
     )
 
     implementation("org.vineflower:vineflower:1.9.3")
     modImplementation("net.fabricmc:fabric-loader:0.15.7")
-    modImplementation("net.fabricmc.fabric-api:fabric-api:0.92.0+$mcVersion")
+    modImplementation("net.fabricmc.fabric-api:fabric-api:0.96.11+$mcVersion")
     modImplementation("net.fabricmc:fabric-language-kotlin:1.10.19+kotlin.1.9.23")
 
-    modImplementation("dev.isxander.yacl:yet-another-config-lib-fabric:3.2.2+1.20")
-    modImplementation("com.terraformersmc:modmenu:7.2.2")
+    modImplementation("dev.isxander.yacl:yet-another-config-lib-fabric:3.3.2+1.20.4")
+    modImplementation("com.terraformersmc:modmenu:9.0.0")
 
     include(modImplementation("dev.nyon:konfig:1.1.0-1.20.4")!!)
 }
