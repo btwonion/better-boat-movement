@@ -15,7 +15,7 @@
   ],
   "contributors": [],
   "license": [
-    "GNU General Public License v3.0"
+    "Mozilla Public License Version 2.0"
   ],
   "version": "${version}",
   "environment": "client",
