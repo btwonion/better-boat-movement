@@ -1,10 +1,10 @@
 # Better Boat Movement
-> Adds quality of live improvements to boats
+> Adds quality of life improvements to boats
 
 ## Features
-- configure step height to not be stuck in front of blocks, that are slightly higher
-- configure player eject time, when player is out of control of the boat
-- boost boat upwards, if underwater
+- configure step height avoid getting stuck in front of blocks, that are slightly higher
+- configure player ejection time when player loses control of the boat
+- boost boat upwards when underwater
 
 ## Configuration
 
