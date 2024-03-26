@@ -14,7 +14,8 @@ data class Config(
     var stepHeight: Float = 0.3f,
     var playerEjectTicks: Float = 20f * 10f,
     var boostUnderwater: Boolean = true,
-    var wallHitCooldownTicks: Int = 5
+    var wallHitCooldownTicks: Int = 5,
+    var onlyForPlayers: Boolean = true
 ) :
     FabricPacket {
     companion object {

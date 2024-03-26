@@ -13,13 +13,14 @@
 
 ```json5
 {
-    "version": 1, // just ignore that, only for migrations
-    "config": {
-      "stepHeight": 0.3, // the height the boat should travel upwards
-      "playerEjectTicks": 200.0, // defines the ticks that should pass before ejecting a player, when the player lost control over the boat
-      "boostUnderwater": true, // toggles, whether a boat, which is underwater should be boosted upwards with half of the step height
-      "wallHitCooldownTicks": 5 // defines the ticks that should pass before moving the boat up a block
-    }
+  "version": 1, // just ignore that, only for migrations
+  "config": {
+    "stepHeight": 0.3, // the height the boat should travel upwards
+    "playerEjectTicks": 200.0, // defines the ticks that should pass before ejecting a player, when the player lost control over the boat
+    "boostUnderwater": true, // toggles, whether a boat, which is underwater should be boosted upwards with half of the step height
+    "wallHitCooldownTicks": 5, // defines the ticks that should pass before moving the boat up a block
+    "onlyForPlayers": true // toggles, whether the boosts configured below should only work if the boat carries a player.
+  }
 }
 ```
 </details>

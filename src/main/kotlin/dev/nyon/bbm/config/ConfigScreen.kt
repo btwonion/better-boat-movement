@@ -60,5 +60,13 @@ private fun YetAnotherConfigLib.Builder.appendCategory() =
                     .controller(IntegerFieldControllerBuilder::create)
                     .build()
             )
+            .option(
+                Option.createBuilder<Boolean>()
+                    .name(Component.translatable("menu.bbm.config.category.only_for_players.title"))
+                    .description(OptionDescription.of(Component.translatable("menu.bbm.config.category.only_for_players.description")))
+                    .binding(config.onlyForPlayers, { config.onlyForPlayers }, { config.onlyForPlayers = it })
+                    .controller(TickBoxControllerBuilder::create)
+                    .build()
+            )
             .build()
     )

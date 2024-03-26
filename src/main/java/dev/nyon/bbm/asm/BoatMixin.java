@@ -37,6 +37,7 @@ class BoatMixin {
         at = @At("HEAD")
     )
     private void checkWall(CallbackInfo ci) {
+        if (failsPlayerCondition()) return;
         if (wallHitCooldown > 0) wallHitCooldown--;
         else if (instance.horizontalCollision) {
             wallHitCooldown = ConfigKt.config.getWallHitCooldownTicks();
@@ -51,6 +52,7 @@ class BoatMixin {
     )
     private void boostUnderwater(CallbackInfo ci) {
         if (!instance.isUnderWater()) return;
+        if (failsPlayerCondition()) return;
         if (!ConfigKt.config.getBoostUnderwater()) return;
         instance.setDeltaMovement(instance.getDeltaMovement()
             .add(0, ConfigKt.config.getStepHeight() / 2, 0));
@@ -65,5 +67,13 @@ class BoatMixin {
     )
     private float changeEjectTime(float constant) {
         return ConfigKt.config.getPlayerEjectTicks();
+    }
+
+    @Unique
+    private boolean failsPlayerCondition() {
+        if (!ConfigKt.config.getOnlyForPlayers()) return false;
+        return instance.getPassengers()
+            .stream()
+            .noneMatch(entity -> entity.getType() == EntityType.PLAYER);
     }
 }

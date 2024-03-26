@@ -1,0 +1,1 @@
+- add option to enable function only to players
