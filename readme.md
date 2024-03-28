@@ -25,6 +25,10 @@
 ```
 </details>
 
+## Note
+Before v1.1.1 it is possible, that you can get flagged on multiplayer servers with anti-cheat. 
+Please use v1.1.1 or higher to stay on the safe side.
+
 ### Other
 ⚠️ The development version is always the latest stable release of Minecraft.
 Therefore, new features will only be available for the current and following Minecraft versions.

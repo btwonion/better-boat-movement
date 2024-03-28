@@ -1,1 +1,2 @@
-- add option to enable function only to players
+- cleanup code
+- make mod only usable on multiplayer servers, that also have this mod
