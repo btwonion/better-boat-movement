@@ -1,10 +1,12 @@
 package dev.nyon.bbm
 
 import dev.nyon.bbm.config.Config
+import dev.nyon.bbm.config.serverConfig
 import dev.nyon.konfig.config.config
 import dev.nyon.konfig.config.loadConfig
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.ModInitializer
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
@@ -18,10 +20,15 @@ object BetterBoatMovement : ModInitializer {
         when (FabricLoader.getInstance().environmentType) {
             EnvType.CLIENT -> {
                 ClientPlayNetworking.registerGlobalReceiver(Config.packetType.id) { _, _, buf, _ ->
-                    internalConfig = Config.packetType.read(buf)
+                    serverConfig = Config.packetType.read(buf)
+                }
+
+                ClientPlayConnectionEvents.DISCONNECT.register { _, _ ->
+                    serverConfig = null
                 }
             }
             EnvType.SERVER -> {
+                serverConfig = internalConfig
                 ServerPlayConnectionEvents.INIT.register { handler, _ ->
                     ServerPlayNetworking.send(handler.player, internalConfig)
                 }

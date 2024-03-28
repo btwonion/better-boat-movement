@@ -4,10 +4,12 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import net.fabricmc.fabric.api.networking.v1.FabricPacket
 import net.fabricmc.fabric.api.networking.v1.PacketType
+import net.minecraft.client.Minecraft
 import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.resources.ResourceLocation
 
 lateinit var config: Config
+var serverConfig: Config? = null
 
 @Serializable
 data class Config(
@@ -38,4 +40,9 @@ data class Config(
     override fun getType(): PacketType<*> {
         return packetType
     }
+}
+
+fun getActiveConfig(): Config? {
+    if (Minecraft.getInstance().isSingleplayer) return config
+    return serverConfig
 }
