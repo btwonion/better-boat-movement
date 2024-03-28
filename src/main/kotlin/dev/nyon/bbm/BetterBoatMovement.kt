@@ -1,7 +1,6 @@
 package dev.nyon.bbm
 
 import dev.nyon.bbm.config.Config
-import dev.nyon.bbm.config.serverConfig
 import dev.nyon.konfig.config.config
 import dev.nyon.konfig.config.loadConfig
 import net.fabricmc.api.EnvType
@@ -12,6 +11,8 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.fabricmc.loader.api.FabricLoader
 import dev.nyon.bbm.config.config as internalConfig
+
+var serverConfig: Config? = null
 
 @Suppress("unused")
 object BetterBoatMovement : ModInitializer {

@@ -1,5 +1,6 @@
 package dev.nyon.bbm.config
 
+import dev.nyon.bbm.serverConfig
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import net.fabricmc.fabric.api.networking.v1.FabricPacket
@@ -9,7 +10,6 @@ import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.resources.ResourceLocation
 
 lateinit var config: Config
-var serverConfig: Config? = null
 
 @Serializable
 data class Config(
