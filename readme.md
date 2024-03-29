@@ -33,4 +33,4 @@ Please use v1.1.1 or higher to be on the safe side.
 ⚠️ The development version is always the latest stable release of Minecraft.
 Therefore, new features will only be available for the current and following Minecraft versions.
 
-If you need help with any of my mods just join my [discord server](https://nyon.dev/discord)
+If you need help with any of my mods just join my [discord server](https://nyon.dev/discord).
