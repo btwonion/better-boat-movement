@@ -26,8 +26,8 @@
 </details>
 
 ## Note
-Before v1.1.1 it is possible, that you can get flagged on multiplayer servers with anti-cheat. 
-Please use v1.1.1 or higher to stay on the safe side.
+Prior to v1.1.1 it is possible to get flagged by anti-cheat on multiplayer servers. 
+Please use v1.1.1 or higher to be on the safe side.
 
 ### Other
 ⚠️ The development version is always the latest stable release of Minecraft.
