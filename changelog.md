@@ -1,2 +1,1 @@
-- cleanup code
-- make mod only usable on multiplayer servers, that also have this mod
+- fix bug causing crash on server

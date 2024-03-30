@@ -3,8 +3,10 @@ package dev.nyon.bbm.config
 import dev.nyon.bbm.serverConfig
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
+import net.fabricmc.api.EnvType
 import net.fabricmc.fabric.api.networking.v1.FabricPacket
 import net.fabricmc.fabric.api.networking.v1.PacketType
+import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.Minecraft
 import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.resources.ResourceLocation
@@ -43,6 +45,7 @@ data class Config(
 }
 
 fun getActiveConfig(): Config? {
+    if (FabricLoader.getInstance().environmentType == EnvType.SERVER) return config
     if (Minecraft.getInstance().isSingleplayer) return config
     return serverConfig
 }
