@@ -20,8 +20,8 @@ object BetterBoatMovement : ModInitializer {
         instantiateConfig()
         when (FabricLoader.getInstance().environmentType) {
             EnvType.CLIENT -> {
-                ClientPlayNetworking.registerGlobalReceiver(Config.packetType.id) { _, _, buf, _ ->
-                    serverConfig = Config.packetType.read(buf)
+                ClientPlayNetworking.registerGlobalReceiver(Config.packetType) { packet, _ ->
+                    serverConfig = packet
                 }
 
                 ClientPlayConnectionEvents.DISCONNECT.register { _, _ ->
@@ -40,7 +40,7 @@ object BetterBoatMovement : ModInitializer {
 
     private fun instantiateConfig() {
         config(FabricLoader.getInstance().configDir.resolve("better-boat-movement.json"), 1, Config()) { _, _ -> null }
-        internalConfig = loadConfig() ?: error("No config settings set!")
+        internalConfig = loadConfig()
     }
 
     fun saveConfig() {

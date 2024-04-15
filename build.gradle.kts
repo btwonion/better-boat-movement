@@ -16,7 +16,7 @@ plugins {
 
 group = "dev.nyon"
 val majorVersion = "1.1.2"
-val mcVersion = "1.20.4"
+val mcVersion = "1.20.5-pre2"
 version = "$majorVersion-$mcVersion"
 val authors = listOf("btwonion")
 val githubRepo = "btwonion/better-boat-movement"
@@ -28,26 +28,27 @@ repositories {
     maven("https://repo.nyon.dev/releases")
     maven("https://maven.isxander.dev/releases")
     maven("https://oss.sonatype.org/content/repositories/snapshots/")
+    maven("https://maven.isxander.dev/snapshots") // remove in stable release
 }
 
 dependencies {
     minecraft("com.mojang:minecraft:$mcVersion")
     mappings(
         loom.layered {
-            parchment("org.parchmentmc.data:parchment-1.20.4:2024.02.25@zip")
+            parchment("org.parchmentmc.data:parchment-1.20.4:2024.04.14@zip")
             officialMojangMappings()
         }
     )
 
     implementation("org.vineflower:vineflower:1.9.3")
-    modImplementation("net.fabricmc:fabric-loader:0.15.7")
-    modImplementation("net.fabricmc.fabric-api:fabric-api:0.96.11+$mcVersion")
+    modImplementation("net.fabricmc:fabric-loader:0.15.10")
+    modImplementation("net.fabricmc.fabric-api:fabric-api:0.97.1+1.20.5")
     modImplementation("net.fabricmc:fabric-language-kotlin:1.10.19+kotlin.1.9.23")
 
-    modImplementation("dev.isxander.yacl:yet-another-config-lib-fabric:3.3.2+1.20.4")
-    modImplementation("com.terraformersmc:modmenu:9.0.0")
+    modImplementation("dev.isxander.yacl:yet-another-config-lib-fabric:3.3.2+1.20.4+update.1.20.5-SNAPSHOT+update.1.20.5-SNAPSHOT")
+    modImplementation("com.terraformersmc:modmenu:10.0.0-alpha.3")
 
-    include(modImplementation("dev.nyon:konfig:1.1.0-1.20.4")!!)
+    include(modImplementation("dev.nyon:konfig:2.0.1-1.20.4")!!)
 }
 
 tasks {
@@ -83,11 +84,11 @@ tasks {
     }
 
     withType<JavaCompile> {
-        options.release.set(17)
+        options.release.set(21)
     }
 
     withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = "17"
+        kotlinOptions.jvmTarget = "21"
     }
 }
 

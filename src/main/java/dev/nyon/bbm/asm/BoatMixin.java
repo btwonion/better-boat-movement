@@ -2,8 +2,10 @@ package dev.nyon.bbm.asm;
 
 import dev.nyon.bbm.config.Config;
 import dev.nyon.bbm.config.ConfigKt;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.vehicle.Boat;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -14,12 +16,26 @@ import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Boat.class)
-class BoatMixin {
+abstract class BoatMixin extends Entity {
     @Unique
-    private Boat instance = (Boat) (Object) this;
+    private final Boat instance = (Boat) (Object) this;
 
     @Unique
     private int wallHitCooldown;
+
+    public BoatMixin(
+        EntityType<?> entityType,
+        Level level
+    ) {
+        super(entityType, level);
+    }
+
+    @Override
+    public float maxUpStep() {
+        Config config = ConfigKt.getActiveConfig();
+        if (config == null) return 0f;
+        return config.getStepHeight();
+    }
 
     @Inject(
         method = "tick",
@@ -27,10 +43,7 @@ class BoatMixin {
     )
     private void checkWall(CallbackInfo ci) {
         Config config = ConfigKt.getActiveConfig();
-        if (config == null) {
-            instance.setMaxUpStep(0);
-            return;
-        }
+        if (config == null) return;
 
         if (failsPlayerCondition()) return;
         if (wallHitCooldown > 0) wallHitCooldown--;
