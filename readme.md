@@ -2,7 +2,7 @@
 > Adds quality of life improvements to boats
 
 ## Features
-- configure step height avoid getting stuck in front of blocks, that are slightly higher
+- configure step height to avoid getting stuck in front of blocks, that are slightly higher
 - configure player ejection time when player loses control of the boat
 - boost boat upwards when underwater
 
