@@ -16,7 +16,7 @@ plugins {
 
 group = "dev.nyon"
 val majorVersion = "1.1.2"
-val mcVersion = "1.20.5-pre2"
+val mcVersion = "1.20.5-pre4"
 version = "$majorVersion-$mcVersion"
 val authors = listOf("btwonion")
 val githubRepo = "btwonion/better-boat-movement"
@@ -42,10 +42,10 @@ dependencies {
 
     implementation("org.vineflower:vineflower:1.9.3")
     modImplementation("net.fabricmc:fabric-loader:0.15.10")
-    modImplementation("net.fabricmc.fabric-api:fabric-api:0.97.1+1.20.5")
+    modImplementation("net.fabricmc.fabric-api:fabric-api:0.97.3+1.20.5")
     modImplementation("net.fabricmc:fabric-language-kotlin:1.10.19+kotlin.1.9.23")
 
-    modImplementation("dev.isxander.yacl:yet-another-config-lib-fabric:3.3.2+1.20.4+update.1.20.5-SNAPSHOT+update.1.20.5-SNAPSHOT")
+    modImplementation("dev.isxander.yacl:yet-another-config-lib-fabric:3.3.3+1.20.4+update.1.20.5-SNAPSHOT+update.1.20.5-SNAPSHOT")
     modImplementation("com.terraformersmc:modmenu:10.0.0-alpha.3")
 
     include(modImplementation("dev.nyon:konfig:2.0.1-1.20.4")!!)
