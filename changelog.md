@@ -1,1 +1,2 @@
-- fix bug causing crash on server
+- update to 1.20.5
+- fix bug where `onlyForPlayers` config option did not sync with the client

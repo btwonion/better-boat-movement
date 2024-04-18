@@ -7,6 +7,7 @@ import net.fabricmc.api.EnvType
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.fabricmc.loader.api.FabricLoader
@@ -20,8 +21,11 @@ object BetterBoatMovement : ModInitializer {
         instantiateConfig()
         when (FabricLoader.getInstance().environmentType) {
             EnvType.CLIENT -> {
-                ClientPlayNetworking.registerGlobalReceiver(Config.packetType.id) { _, _, buf, _ ->
-                    serverConfig = Config.packetType.read(buf)
+                ClientPlayConnectionEvents.INIT.register { _, _ ->
+                    PayloadTypeRegistry.playS2C().register(Config.packetType, Config.codec)
+                    ClientPlayNetworking.registerGlobalReceiver(Config.packetType) { packet, _ ->
+                        serverConfig = packet
+                    }
                 }
 
                 ClientPlayConnectionEvents.DISCONNECT.register { _, _ ->
@@ -40,7 +44,7 @@ object BetterBoatMovement : ModInitializer {
 
     private fun instantiateConfig() {
         config(FabricLoader.getInstance().configDir.resolve("better-boat-movement.json"), 1, Config()) { _, _ -> null }
-        internalConfig = loadConfig() ?: error("No config settings set!")
+        internalConfig = loadConfig()
     }
 
     fun saveConfig() {
