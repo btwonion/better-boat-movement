@@ -179,6 +179,7 @@ kotlin {
     jvmToolchain(javaVersion.toInt())
 }
 
+/*
 signing {
     val signingKey: String? by project
     val signingPassword: String? by project
@@ -188,3 +189,4 @@ signing {
     }
     sign(publishing.publications)
 }
+ */
