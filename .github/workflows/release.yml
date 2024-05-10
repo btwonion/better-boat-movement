@@ -15,12 +15,18 @@ jobs:
         with:
           java-version: 21
           distribution: temurin
+          cache: "gradle"
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
+      - name: Decode GPG Key
+        run: |
+          mkdir -p ~/.gradle/
+          echo "${{ secrets.GPG_SECRET_KEY }}" > ~/.gradle/secring.gpg.b64
+          base64 -d ~/.gradle/secring.gpg.b64 > ~/.gradle/secring.gpg
       - name: Release with Gradle
         uses: Wandalen/wretry.action@master
         with:
-          command: ./gradlew releaseAllVersions --stacktrace
+          command: ./gradlew releaseAllVersions --stacktrace -Psigning.keyId=${{ secrets.GPG_SECRET_KEY_ID }} -Psigning.password='${{ secrets.GPG_SECRET_KEY_PASSWORD }}' -Psigning.secretKeyRingFile=$(echo ~/.gradle/secring.gpg)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MODRINTH_API_KEY: ${{ secrets.MODRINTH_API_KEY }}
