@@ -149,8 +149,8 @@ publishing {
             name = "nyon"
             url = uri("https://repo.nyon.dev/releases")
             credentials {
-                username = providers.environmentVariable("NYON_USERNAME").toString()
-                password = providers.environmentVariable("NYON_PASSWORD").toString()
+                username = providers.environmentVariable("NYON_USERNAME").get()
+                password = providers.environmentVariable("NYON_PASSWORD").get()
             }
         }
     }
