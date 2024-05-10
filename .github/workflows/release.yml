@@ -19,3 +19,7 @@ jobs:
         run: chmod +x gradlew
       - name: Release with Gradle
         run: ./gradlew releaseAllVersions
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MODRINTH_API_KEY: ${{ secrets.MODRINTH_API_KEY }}
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}

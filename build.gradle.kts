@@ -120,27 +120,23 @@ publishMods {
 
     modrinth {
         projectId = "wTfH1dkt"
-        accessToken = findProperty("modrinth.token")!!.toString()
+        accessToken = providers.environmentVariable("MODRINTH_API_KEY")
         minecraftVersions.addAll(supportedMcVersions)
-
-        println(0)
 
         requires { slug = "fabric-api" }
         requires { slug = "yacl" }
         requires { slug  = "fabric-language-kotlin" }
         optional { slug = "modmenu" }
-
-        println(1)
     }
 
     github {
         repository = githubRepo
-        accessToken = findProperty("github.token")!!.toString()
+        accessToken = providers.environmentVariable("GITHUB_TOKEN")
         commitish = "multiversion/dev"
     }
 
     discord {
-        webhookUrl = findProperty("discord.publishwebhook")!!.toString()
+        webhookUrl = providers.environmentVariable("DISCORD_WEBHOOK")
         username = "Release Notifier"
         avatarUrl = "https://www.svgrepo.com/show/521999/bell.svg"
     }
@@ -151,9 +147,9 @@ publishing {
         maven {
             name = "nyon"
             url = uri("https://repo.nyon.dev/releases")
-            credentials(PasswordCredentials::class)
-            authentication {
-                create<BasicAuthentication>("basic")
+            credentials {
+                username = providers.environmentVariable("NYON_USERNAME").toString()
+                password = providers.environmentVariable("NYON_PASSWORD").toString()
             }
         }
     }
