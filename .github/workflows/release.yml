@@ -23,3 +23,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MODRINTH_API_KEY: ${{ secrets.MODRINTH_API_KEY }}
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          NYON_USERNAME: ${{ secrets.NYON_USERNAME }}
+          NYON_PASSWORD: ${{ secrets.NYON_PASSWORD }}
