@@ -31,7 +31,7 @@ loom {
         }
     }
 
-    mixin { useLegacyMixinAp.set(false) }
+    mixin { useLegacyMixinAp = false }
 }
 
 repositories {
@@ -95,7 +95,7 @@ tasks {
     }
 
     withType<JavaCompile> {
-        options.release.set(javaVersion.toInt())
+        options.release = javaVersion.toInt()
     }
 
     withType<KotlinCompile> {
@@ -109,30 +109,34 @@ val changelogText =
         file("../../changelog.md").readText().also { append(it) }
     }
 
-val supportedMcVersions = property("supportedMcVersions")!!.toString().split(',').map(String::trim).filter(String::isNotEmpty)
+val supportedMcVersions: List<String> = property("supportedMcVersions")!!.toString().split(',').map(String::trim).filter(String::isNotEmpty)
 
 publishMods {
-    displayName.set("v$version")
-    file.set(tasks.remapJar.get().archiveFile)
-    changelog.set(changelogText)
-    type.set(STABLE)
-    modLoaders.add("fabric")
+    displayName = "v$version"
+    file = tasks.remapJar.get().archiveFile
+    changelog = changelogText
+    type = STABLE
+    modLoaders.addAll("fabric", "quilt")
 
     modrinth {
-        projectId.set("wTfH1dkt")
-        accessToken.set(findProperty("modrinth.token")!!.toString())
+        projectId = "wTfH1dkt"
+        accessToken = findProperty("modrinth.token")!!.toString()
         minecraftVersions.addAll(supportedMcVersions)
 
-        requires { slug.set("fabric-api") }
-        requires { slug.set("yacl") }
-        requires { slug.set("fabric-language-kotlin") }
-        optional { slug.set("modmenu") }
+        println(0)
+
+        requires { slug = "fabric-api" }
+        requires { slug = "yacl" }
+        requires { slug  = "fabric-language-kotlin" }
+        optional { slug = "modmenu" }
+
+        println(1)
     }
 
     github {
-        repository.set(githubRepo)
-        accessToken.set(findProperty("github.token")!!.toString())
-        commitish.set("multiversion/dev")
+        repository = githubRepo
+        accessToken = findProperty("github.token")!!.toString()
+        commitish = "multiversion/dev"
     }
 
     discord {
