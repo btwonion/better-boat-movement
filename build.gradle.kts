@@ -180,10 +180,9 @@ kotlin {
 }
 
 signing {
-    val signingId = providers.environmentVariable("GPG_SECRET_KEY_ID").orNull
-    val signingKey = providers.environmentVariable("GPG_SECRET_KEY").orNull
-    val signingPassword = providers.environmentVariable("GPG_SECRET_KEY_PASSWORD").orNull
-    useInMemoryPgpKeys(signingId, signingKey, signingPassword)
+    val signingKey: String? by project
+    val signingPassword: String? by project
+    useInMemoryPgpKeys(signingKey, signingPassword)
 
     sign(publishing.publications)
 }
