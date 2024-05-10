@@ -31,5 +31,5 @@ jobs:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
           NYON_USERNAME: ${{ secrets.NYON_USERNAME }}
           NYON_PASSWORD: ${{ secrets.NYON_PASSWORD }}
-          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
-          GPG_PRIVATE_KEY_PASSWORD: ${{ secrets.GPG_PRIVATE_KEY_PASSWORD }}
+          GPG_SECRET_KEY: ${{ secrets.GPG_SECRET_KEY }}
+          GPG_SECRET_KEY_PASSWORD: ${{ secrets.GPG_SECRET_KEY_PASSWORD }}
