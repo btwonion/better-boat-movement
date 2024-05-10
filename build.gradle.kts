@@ -149,8 +149,8 @@ publishing {
             name = "nyon"
             url = uri("https://repo.nyon.dev/releases")
             credentials {
-                username = providers.environmentVariable("NYON_USERNAME").get()
-                password = providers.environmentVariable("NYON_PASSWORD").get()
+                username = providers.environmentVariable("NYON_USERNAME").orNull
+                password = providers.environmentVariable("NYON_PASSWORD").orNull
             }
         }
     }
@@ -180,9 +180,9 @@ kotlin {
 }
 
 signing {
-    val signingKeyId = providers.environmentVariable("GPG_SECRET_KEY_ID").get()
-    val signingKey = providers.environmentVariable("GPG_PRIVATE_KEY").get()
-    val signingPassword = providers.environmentVariable("GPG_PRIVATE_KEY_PASSWORD").get()
+    val signingKeyId = providers.environmentVariable("GPG_SECRET_KEY_ID").orNull
+    val signingKey = providers.environmentVariable("GPG_PRIVATE_KEY").orNull
+    val signingPassword = providers.environmentVariable("GPG_PRIVATE_KEY_PASSWORD").orNull
     useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
 
     sign(publishing.publications)
