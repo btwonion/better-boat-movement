@@ -1,2 +1,2 @@
-- update to 1.20.5
-- fix bug where `onlyForPlayers` config option did not sync with the client
+- support 1.20.1, 1.20.3, 1.20.4, 1.20.5 and 1.20.6
+- also serialize packets correctly on <1.20.5
