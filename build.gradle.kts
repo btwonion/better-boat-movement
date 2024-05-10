@@ -112,7 +112,7 @@ val changelogText =
 val supportedMcVersions: List<String> = property("supportedMcVersions")!!.toString().split(',').map(String::trim).filter(String::isNotEmpty)
 
 publishMods {
-    displayName = "v$version"
+    displayName = "v${project.version}"
     file = tasks.remapJar.get().archiveFile
     changelog = changelogText
     type = STABLE
