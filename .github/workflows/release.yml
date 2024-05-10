@@ -7,6 +7,7 @@ jobs:
   release:
     runs-on: ubuntu-latest
     name: Release
+    permissions: write-all
 
     steps:
       - uses: actions/checkout@v4
