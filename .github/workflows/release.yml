@@ -18,7 +18,9 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Release with Gradle
-        run: ./gradlew releaseAllVersions
+        uses: Wandalen/wretry.action@master
+        with:
+          command: ./gradlew releaseAllVersions --stacktrace
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MODRINTH_API_KEY: ${{ secrets.MODRINTH_API_KEY }}
