@@ -31,4 +31,3 @@ jobs:
           NYON_PASSWORD: ${{ secrets.NYON_PASSWORD }}
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
           GPG_PRIVATE_KEY_PASSWORD: ${{ secrets.GPG_PRIVATE_KEY_PASSWORD }}
-          GPG_SECRET_KEY_ID: ${{ secrets.GPG_SECRET_KEY_ID }}

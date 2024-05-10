@@ -139,6 +139,7 @@ publishMods {
         webhookUrl = providers.environmentVariable("DISCORD_WEBHOOK")
         username = "Release Notifier"
         avatarUrl = "https://www.svgrepo.com/show/521999/bell.svg"
+        content = "# A new version of Better Boat Movement released!\n$changelogText"
     }
 }
 
@@ -179,10 +180,9 @@ kotlin {
 }
 
 signing {
-    val signingId = providers.environmentVariable("GPG_SECRET_KEY_ID").toString()
     val signingKey = providers.environmentVariable("GPG_PRIVATE_KEY").toString()
     val signingPassword = providers.environmentVariable("GPG_PRIVATE_KEY_PASSWORD").toString()
-    useInMemoryPgpKeys(signingId, signingKey, signingPassword)
+    useInMemoryPgpKeys(signingKey, signingPassword)
 
     sign(publishing.publications)
 }
