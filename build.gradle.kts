@@ -13,9 +13,8 @@ plugins {
     signing
 }
 
-val featureVersion = "1.1.3"
+val featureVersion = "1.1.4"
 val mcVersion = property("mcVersion")!!.toString()
-val currentVersion = stonecutter.current.version
 val mcVersionRange = property("mcVersionRange")!!.toString()
 version = "$featureVersion-$mcVersion"
 
@@ -75,7 +74,7 @@ tasks {
                 "id" to modId,
                 "name" to modName,
                 "description" to modDescription,
-                "version" to currentVersion,
+                "version" to project.version,
                 "github" to githubRepo,
                 "mc" to mcVersionRange
             )
