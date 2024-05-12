@@ -1,53 +1,53 @@
 {
-  "schemaVersion": 1,
-  "id": "${id}",
-  "name": "${name}",
-  "description": "${description}",
-  "icon": "assets/bbm/icon/icon.png",
-  "contact": {
-    "issues": "https://github.com/btwonion/better-boat-movement/issues",
-    "sources": "https://github.com/btwonion/better-boat-movement"
-  },
-  "authors": [
-    "btwonion"
-  ],
-  "contributors": [],
-  "license": [
-    "GNU General Public License v3.0"
-  ],
-  "version": "${version}",
-  "environment": "*",
-  "depends": {
-    "fabric-language-kotlin": ">=1.10.20+kotlin.1.9.24",
-    "fabric-api": "*",
-    "yet_another_config_lib_v3": "*",
-    "minecraft": "${mc}"
-  },
-  "suggests": {
-    "modmenu": "*"
-  },
-  "entrypoints": {
-    "main": [
-      {
-        "adapter": "kotlin",
-        "value": "dev.nyon.bbm.BetterBoatMovement"
-      }
+    "schemaVersion": 1,
+    "id": "${id}",
+    "name": "${name}",
+    "description": "${description}",
+    "icon": "assets/bbm/icon/icon.png",
+    "contact": {
+        "issues": "https://github.com/btwonion/better-boat-movement/issues",
+        "sources": "https://github.com/btwonion/better-boat-movement"
+    },
+    "authors": [
+        "btwonion"
     ],
-    "modmenu": [
-      {
-        "adapter": "kotlin",
-        "value": "dev.nyon.bbm.config.ModMenuImpl"
-      }
-    ]
-  },
-  "mixins": [
-    "bbm.mixins.json"
-  ],
-  "custom": {
-    "modmenu": {
-      "links": {
-        "modmenu.discord": "https://discord.gg/pmHTtZnMd3"
-      }
+    "contributors": [],
+    "license": [
+        "GNU General Public License v3.0"
+    ],
+    "version": "${version}",
+    "environment": "*",
+    "depends": {
+        "fabric-language-kotlin": ">=1.10.20+kotlin.1.9.24",
+        "fabric-api": "*",
+        "yet_another_config_lib_v3": "*",
+        "minecraft": "${mc}"
+    },
+    "suggests": {
+        "modmenu": "*"
+    },
+    "entrypoints": {
+        "main": [
+            {
+                "adapter": "kotlin",
+                "value": "dev.nyon.bbm.BetterBoatMovement"
+            }
+        ],
+        "modmenu": [
+            {
+                "adapter": "kotlin",
+                "value": "dev.nyon.bbm.config.ModMenuImpl"
+            }
+        ]
+    },
+    "mixins": [
+        "bbm.mixins.json"
+    ],
+    "custom": {
+        "modmenu": {
+            "links": {
+                "modmenu.discord": "https://discord.gg/pmHTtZnMd3"
+            }
+        }
     }
-  }
 }
