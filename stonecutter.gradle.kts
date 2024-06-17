@@ -64,7 +64,7 @@ tasks.register("postUpdate") {
                 title = "v$featureVersion of ${rootProject.name} released!",
                 description = "# Changelog\n$changelogText",
                 timestamp = Instant.now().toString(),
-                color = 0xff0080,
+                color = 0x683912,
                 fields = listOf(
                     Field(
                         "Supported versions", stonecutter.versions.joinToString { it.version }, false
