@@ -1,1 +1,3 @@
-- fix conflicting with every minecraft version
+- cleanup internal code
+- fix wrongly assigning config on clients
+- reduce default step height to 20

@@ -1,16 +1,16 @@
 package dev.nyon.bbm.config
 
-/*? if <1.20.5 {*/
 import dev.nyon.bbm.serverConfig
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
-import net.fabricmc.fabric.api.networking.v1.FabricPacket
-import net.fabricmc.fabric.api.networking.v1.PacketType
+import net.fabricmc.api.EnvType
+import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.Minecraft
 import net.minecraft.network.FriendlyByteBuf
+/*? if <1.20.5 {*/
+import net.fabricmc.fabric.api.networking.v1.FabricPacket
+import net.fabricmc.fabric.api.networking.v1.PacketType
 import net.minecraft.resources.ResourceLocation
-
-lateinit var config: Config
 
 @Serializable
 data class Config(
@@ -41,29 +41,14 @@ data class Config(
         return packetType
     }
 }
-
-fun getActiveConfig(): Config? {
-    if (Minecraft.getInstance().isSingleplayer) return config
-    return serverConfig
-}
-
-/*?} else {*//*
-
-import dev.nyon.bbm.serverConfig
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
-import net.fabricmc.api.EnvType
-import net.fabricmc.loader.api.FabricLoader
-import net.minecraft.client.Minecraft
-import net.minecraft.network.FriendlyByteBuf
-import net.minecraft.network.codec.StreamCodec
+/*?} else {*/
+/*import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
-
-lateinit var config: Config
+import net.minecraft.resources.ResourceLocation
 
 @Serializable
 data class Config(
-    var stepHeight: Float = 0.3f,
+    var stepHeight: Float = 0.2f,
     var playerEjectTicks: Float = 20f * 10f,
     var boostUnderwater: Boolean = true,
     var wallHitCooldownTicks: Int = 5,
@@ -71,8 +56,10 @@ data class Config(
 ) : CustomPacketPayload {
     companion object {
         @Transient
+        private val packetId = "better-boat-movement:sync"
+        @Transient
         val packetType: CustomPacketPayload.Type<Config> =
-            CustomPacketPayload.createType("better-boat-movement:sync")
+            CustomPacketPayload.Type(/^? if >=1.21 {^/ /^ResourceLocation.parse(packetId)^//^?} else {^/ResourceLocation(packetId)/^?}^/)
 
         @Transient
         @Suppress("unused")
@@ -105,11 +92,12 @@ data class Config(
         return packetType
     }
 }
+*//*?}*/
+
+lateinit var config: Config
 
 fun getActiveConfig(): Config? {
     if (FabricLoader.getInstance().environmentType == EnvType.SERVER) return config
     if (Minecraft.getInstance().isSingleplayer) return config
     return serverConfig
 }
-
-*//*?} */

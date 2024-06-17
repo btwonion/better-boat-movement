@@ -13,15 +13,22 @@ pluginManagement {
 }
 
 plugins {
-    id("dev.kikugie.stonecutter") version "0.3.5"
+    id("dev.kikugie.stonecutter") version "0.4"
+}
+
+buildscript {
+    repositories { mavenCentral() }
+    dependencies {
+        classpath("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.0-RC")
+    }
 }
 
 extensions.configure<StonecutterSettings> {
     kotlinController = true
     centralScript = "build.gradle.kts"
     shared {
-        versions("1.20.1", "1.20.4", "1.20.6")
-        vcsVersion = "1.20.6"
+        versions("1.20.1", "1.20.4", "1.20.6", "1.21")
+        vcsVersion = "1.21"
     }
     create(rootProject)
 }

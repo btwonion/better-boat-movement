@@ -30,4 +30,6 @@ Prior to v1.1.1 it is possible to get flagged by anti-cheat on multiplayer serve
 Please use v1.1.1 or higher to be on the safe side.
 
 ### Other
+Currently supported versions are: 1.20.1, 1.20.4, 1.20.6 and 1.21. This can change in the future!
+
 If you need help with any of my mods just join my [discord server](https://nyon.dev/discord).
