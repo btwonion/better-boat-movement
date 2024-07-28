@@ -5,6 +5,7 @@ import dev.nyon.bbm.config.Config;
 import dev.nyon.bbm.config.ConfigKt;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -69,6 +70,7 @@ abstract class BoatMixin extends Entity {
         if (config == null) return true;
 
         if (!config.getOnlyForPlayers()) return false;
-        return countPlayerPassengers() > 0;
+        return getPassengers().stream()
+            .anyMatch(entity -> entity instanceof Player);
     }
 }

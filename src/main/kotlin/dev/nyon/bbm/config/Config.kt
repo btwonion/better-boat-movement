@@ -1,5 +1,6 @@
 package dev.nyon.bbm.config
 
+import dev.nyon.bbm.extensions.resourceLocation
 import dev.nyon.bbm.serverConfig
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
@@ -11,7 +12,6 @@ import net.minecraft.network.FriendlyByteBuf
 /*? if <1.20.5 {*/
 /*import net.fabricmc.fabric.api.networking.v1.FabricPacket
 import net.fabricmc.fabric.api.networking.v1.PacketType
-import net.minecraft.resources.ResourceLocation
 
 @Serializable
 data class Config(
@@ -23,7 +23,7 @@ data class Config(
     companion object {
         @Transient
         val packetType: PacketType<Config> = PacketType.create(
-            ResourceLocation("better-boat-movement", "sync")
+            resourceLocation("better-boat-movement:sync")!!
         ) { buffer ->
             Config(buffer.readFloat(), buffer.readFloat(), buffer.readBoolean(), buffer.readBoolean())
         }
@@ -43,7 +43,6 @@ data class Config(
 *//*?} else {*/
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
-import net.minecraft.resources.ResourceLocation
 
 @Serializable
 data class Config(
@@ -54,10 +53,7 @@ data class Config(
 ) : CustomPacketPayload {
     companion object {
         @Transient
-        private val packetId = "better-boat-movement:sync"
-        @Transient
-        val packetType: CustomPacketPayload.Type<Config> =
-            CustomPacketPayload.Type(/*? if >=1.21 {*/ ResourceLocation.parse(packetId)/*?} else {*//*ResourceLocation(packetId)*//*?}*/)
+        val packetType: CustomPacketPayload.Type<Config> = CustomPacketPayload.Type(resourceLocation("better-boat-movement:sync")!!)
 
         @Transient
         @Suppress("unused")
