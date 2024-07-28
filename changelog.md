@@ -1,3 +1,1 @@
-- cleanup internal code
-- fix wrongly assigning config on clients
-- reduce default step height to 20
+- simplify movement logic

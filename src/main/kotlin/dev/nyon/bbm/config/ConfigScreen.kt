@@ -5,7 +5,6 @@ import dev.isxander.yacl3.api.Option
 import dev.isxander.yacl3.api.OptionDescription
 import dev.isxander.yacl3.api.YetAnotherConfigLib
 import dev.isxander.yacl3.api.controller.FloatFieldControllerBuilder
-import dev.isxander.yacl3.api.controller.IntegerFieldControllerBuilder
 import dev.isxander.yacl3.api.controller.TickBoxControllerBuilder
 import dev.nyon.konfig.config.saveConfig
 import net.minecraft.client.gui.screens.Screen
@@ -38,13 +37,6 @@ private fun YetAnotherConfigLib.Builder.appendCategory() = category(
             .description(OptionDescription.of(Component.translatable("menu.bbm.config.category.boost_underwater.description")))
             .binding(config.boostUnderwater, { config.boostUnderwater }, { config.boostUnderwater = it })
             .controller(TickBoxControllerBuilder::create).build()
-    ).option(
-        Option.createBuilder<Int>()
-            .name(Component.translatable("menu.bbm.config.category.wall_hit_cooldown_ticks.title")).description(
-                OptionDescription.of(Component.translatable("menu.bbm.config.category.wall_hit_cooldown_ticks.description"))
-            )
-            .binding(config.wallHitCooldownTicks, { config.wallHitCooldownTicks }, { config.wallHitCooldownTicks = it })
-            .controller(IntegerFieldControllerBuilder::create).build()
     ).option(
         Option.createBuilder<Boolean>().name(Component.translatable("menu.bbm.config.category.only_for_players.title"))
             .description(OptionDescription.of(Component.translatable("menu.bbm.config.category.only_for_players.description")))

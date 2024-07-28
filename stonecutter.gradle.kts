@@ -10,20 +10,17 @@ import java.time.Instant
 plugins {
     id("dev.kikugie.stonecutter")
 }
+stonecutter active "1.21" /* [SC] DO NOT EDIT */
 
-stonecutter active "1.20.1" /* [SC] DO NOT EDIT */
+stonecutter registerChiseled tasks.register("buildAllVersions", stonecutter.chiseled) {
+    group = "mod"
+    ofTask("build")
+}
 
-stonecutter registerChiseled
-    tasks.register("buildAllVersions", stonecutter.chiseled) {
-        group = "mod"
-        ofTask("build")
-    }
-
-stonecutter registerChiseled
-    tasks.register("releaseAllVersions", stonecutter.chiseled) {
-        group = "mod"
-        ofTask("releaseMod")
-    }
+stonecutter registerChiseled tasks.register("releaseAllVersions", stonecutter.chiseled) {
+    group = "mod"
+    ofTask("releaseMod")
+}
 
 private data class Field(val name: String, val value: String, val inline: Boolean)
 
@@ -55,6 +52,7 @@ tasks.register("postUpdate") {
     }
 
     val url = providers.environmentVariable("DISCORD_WEBHOOK").orNull ?: return@register
+    val roleId = providers.environmentVariable("DISCORD_ROLE_ID").orNull ?: return@register
     val changelogText = rootProject.file("changelog.md").readText()
     val webhook = DiscordWebhook(
         username = "${rootProject.name} Release Notifier",
@@ -64,14 +62,14 @@ tasks.register("postUpdate") {
                 title = "v$featureVersion of ${rootProject.name} released!",
                 description = "# Changelog\n$changelogText",
                 timestamp = Instant.now().toString(),
-                color = 0x683912,
+                color = 0x4ab616,
                 fields = listOf(
                     Field(
                         "Supported versions", stonecutter.versions.joinToString { it.version }, false
                     ),
                     Field("Modrinth", "https://modrinth.com/mod/better-boat-movement", true),
                     Field("GitHub", "https://github.com/btwonion/better-boat-movement", true)
-                ),
+                )
             )
         )
     )
@@ -100,6 +98,7 @@ tasks.register("postUpdate") {
     val json = buildJsonObject {
         put("username", webhook.username)
         put("avatar_url", webhook.avatarUrl)
+        put("content", "<@&$roleId>")
         put("embeds", embedsJson)
     }
 

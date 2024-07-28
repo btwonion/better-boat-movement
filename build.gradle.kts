@@ -15,7 +15,7 @@ plugins {
 }
 
 val beta: Int? = null // Pattern is '1.0.0-beta1-1.20.6-pre.2'
-val featureVersion = "1.2.0${if (beta != null) "-beta$beta" else ""}"
+val featureVersion = "2.0.0${if (beta != null) "-beta$beta" else ""}"
 val mcVersion = property("mcVersion")!!.toString()
 val mcVersionRange = property("mcVersionRange")!!.toString()
 version = "$featureVersion-$mcVersion"
@@ -50,7 +50,6 @@ repositories {
 
 dependencies {
     minecraft("com.mojang:minecraft:$mcVersion")
-    minecraft("com.mojang:minecraft:$mcVersion")
     mappings(loom.layered {
         val parchment: String = property("deps.parchment").toString()
         if (parchment.isNotEmpty()) parchment("org.parchmentmc.data:parchment-$parchment@zip")
@@ -58,7 +57,7 @@ dependencies {
     })
 
     implementation("org.vineflower:vineflower:1.10.1")
-    modImplementation("net.fabricmc:fabric-loader:0.15.11")
+    modImplementation("net.fabricmc:fabric-loader:0.16.0")
     modImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fapi")!!}")
     modImplementation("net.fabricmc:fabric-language-kotlin:1.11.0+kotlin.2.0.0")
 
