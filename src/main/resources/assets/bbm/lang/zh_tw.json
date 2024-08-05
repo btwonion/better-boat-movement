@@ -1,0 +1,18 @@
+{
+    "yacl3.config.bbm.title": "Better Boat Movement 更佳船隻移動",
+    "yacl3.config.bbm.category.general": "一般",
+    "yacl3.config.bbm.category.general.root.option.stepHeight": "上升高度",
+    "yacl3.config.bbm.category.general.root.option.stepHeight.description": "觸發加速時您將被提升的方塊數量。",
+    "yacl3.config.bbm.category.general.root.option.playerEjectTicks": "玩家彈射刻",
+    "yacl3.config.bbm.category.general.root.option.playerEjectTicks.description": "玩家失去控制後，遊戲在將您踢出船隻前等待的刻數。",
+    "yacl3.config.bbm.category.general.root.option.boostUnderwater": "在水下加速",
+    "yacl3.config.bbm.category.general.root.option.boostUnderwater.description": "切換在水下的船隻是否應該被向上加速。",
+    "yacl3.config.bbm.category.general.root.option.boostOnBlocks": "在方塊上加速",
+    "yacl3.config.bbm.category.general.root.option.boostOnBlocks.description": "切換在方塊上的船隻在撞到高處時是否應該被向上加速。",
+    "yacl3.config.bbm.category.general.root.option.boostOnIce": "在冰上加速",
+    "yacl3.config.bbm.category.general.root.option.boostOnIce.description": "切換在冰塊上的船隻在撞到高處時是否應該被向上加速。",
+    "yacl3.config.bbm.category.general.root.option.boostOnWater": "在水上加速",
+    "yacl3.config.bbm.category.general.root.option.boostOnWater.description": "切換在水上的船隻在漂浮撞到高處時是否應該被向上加速。",
+    "yacl3.config.bbm.category.general.root.option.onlyForPlayers": "僅限玩家",
+    "yacl3.config.bbm.category.general.root.option.onlyForPlayers.description": "切換船隻是否僅在載有玩家時才加速。"
+}
