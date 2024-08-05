@@ -53,7 +53,7 @@ object BetterBoatMovement : ModInitializer {
     private fun instantiateConfig() {
         config(
             FabricLoader.getInstance().configDir.resolve("better-boat-movement.json"),
-            2,
+            3,
             Config()
         ) { element, version -> migrate(element, version) }
         internalConfig = loadConfig()

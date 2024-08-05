@@ -1,1 +1,2 @@
-- simplify movement logic
+- add options to specify where the player wants to get boosted
+- use yacl 3.5 for config screen creation

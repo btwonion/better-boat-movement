@@ -1,46 +1,67 @@
 package dev.nyon.bbm.config
 
-import dev.isxander.yacl3.api.ConfigCategory
-import dev.isxander.yacl3.api.Option
-import dev.isxander.yacl3.api.OptionDescription
-import dev.isxander.yacl3.api.YetAnotherConfigLib
-import dev.isxander.yacl3.api.controller.FloatFieldControllerBuilder
-import dev.isxander.yacl3.api.controller.TickBoxControllerBuilder
+import dev.isxander.yacl3.dsl.*
 import dev.nyon.konfig.config.saveConfig
 import net.minecraft.client.gui.screens.Screen
-import net.minecraft.network.chat.Component
 
-fun generateYaclScreen(parent: Screen?): Screen {
-    val builder = YetAnotherConfigLib.createBuilder()
+fun generateYaclScreen(parent: Screen?): Screen = YetAnotherConfigLib("bbm") {
+    val general by categories.registering {
+        val stepHeight by rootOptions.registering {
+            binding(1f, { config.stepHeight }, { config.stepHeight = it})
+            controller = numberField(0f)
+            descriptionBuilder {
+                addDefaultText(1)
+            }
+        }
 
-    builder.title(Component.translatable("menu.bbm.config.title"))
-    builder.appendCategory()
+        val playerEjectTicks by rootOptions.registering {
+            binding(0.2f, { config.playerEjectTicks }, { config.playerEjectTicks = it})
+            controller = numberField(0f, 10000f)
+            descriptionBuilder {
+                addDefaultText(1)
+            }
+        }
 
-    builder.save { saveConfig(config) }
-    val yacl = builder.build()
-    return yacl.generateScreen(parent)
-}
+        val boostUnderwater by rootOptions.registering {
+            binding(true, { config.boostUnderwater }, { config.boostUnderwater = it })
+            controller = tickBox()
+            descriptionBuilder {
+                addDefaultText(1)
+            }
+        }
 
-private fun YetAnotherConfigLib.Builder.appendCategory() = category(
-    ConfigCategory.createBuilder().name(Component.translatable("menu.bbm.config.category.title")).option(
-        Option.createBuilder<Float>().name(Component.translatable("menu.bbm.config.category.ground_step_height.title"))
-            .description(OptionDescription.of(Component.translatable("menu.bbm.config.category.ground_step_height.description")))
-            .binding(config.stepHeight, { config.stepHeight }, { config.stepHeight = it })
-            .controller(FloatFieldControllerBuilder::create).build()
-    ).option(
-        Option.createBuilder<Float>().name(Component.translatable("menu.bbm.config.category.player_eject_ticks.title"))
-            .description(OptionDescription.of(Component.translatable("menu.bbm.config.category.player_eject_ticks.description")))
-            .binding(config.playerEjectTicks, { config.playerEjectTicks }, { config.playerEjectTicks = it })
-            .controller(FloatFieldControllerBuilder::create).build()
-    ).option(
-        Option.createBuilder<Boolean>().name(Component.translatable("menu.bbm.config.category.boost_underwater.title"))
-            .description(OptionDescription.of(Component.translatable("menu.bbm.config.category.boost_underwater.description")))
-            .binding(config.boostUnderwater, { config.boostUnderwater }, { config.boostUnderwater = it })
-            .controller(TickBoxControllerBuilder::create).build()
-    ).option(
-        Option.createBuilder<Boolean>().name(Component.translatable("menu.bbm.config.category.only_for_players.title"))
-            .description(OptionDescription.of(Component.translatable("menu.bbm.config.category.only_for_players.description")))
-            .binding(config.onlyForPlayers, { config.onlyForPlayers }, { config.onlyForPlayers = it })
-            .controller(TickBoxControllerBuilder::create).build()
-    ).build()
-)
+        val boostOnBlocks by rootOptions.registering {
+            binding(true, { config.boostOnBlocks }, { config.boostOnBlocks = it })
+            controller = tickBox()
+            descriptionBuilder {
+                addDefaultText(1)
+            }
+        }
+
+        val boostOnIce by rootOptions.registering {
+            binding(true, { config.boostOnIce }, { config.boostOnIce = it })
+            controller = tickBox()
+            descriptionBuilder {
+                addDefaultText(1)
+            }
+        }
+
+        val boostOnWater by rootOptions.registering {
+            binding(true, { config.boostOnWater }, { config.boostOnWater = it })
+            controller = tickBox()
+            descriptionBuilder {
+                addDefaultText(1)
+            }
+        }
+
+        val onlyForPlayers by rootOptions.registering {
+            binding(true, { config.onlyForPlayers }, { config.onlyForPlayers = it })
+            controller = tickBox()
+            descriptionBuilder {
+                addDefaultText(1)
+            }
+        }
+    }
+
+    save { saveConfig(config) }
+}.generateScreen(parent)

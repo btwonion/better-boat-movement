@@ -4,20 +4,24 @@ import dev.nyon.bbm.extensions.resourceLocation
 import dev.nyon.bbm.serverConfig
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
-import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.*
 import net.fabricmc.api.EnvType
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.Minecraft
 import net.minecraft.network.FriendlyByteBuf
-/*? if <1.20.5 {*/
+
+/*? if <1.20.6 {*/
 /*import net.fabricmc.fabric.api.networking.v1.FabricPacket
 import net.fabricmc.fabric.api.networking.v1.PacketType
 
 @Serializable
 data class Config(
-    var stepHeight: Float = 0.3f,
+    var stepHeight: Float = 0.35f,
     var playerEjectTicks: Float = 20f * 10f,
     var boostUnderwater: Boolean = true,
+    var boostOnBlocks: Boolean = true,
+    var boostOnIce: Boolean = true,
+    var boostOnWater: Boolean = true,
     var onlyForPlayers: Boolean = true
 ) : FabricPacket {
     companion object {
@@ -25,15 +29,26 @@ data class Config(
         val packetType: PacketType<Config> = PacketType.create(
             resourceLocation("better-boat-movement:sync")!!
         ) { buffer ->
-            Config(buffer.readFloat(), buffer.readFloat(), buffer.readBoolean(), buffer.readBoolean())
+            Config(
+                buffer.readFloat(),
+                buffer.readFloat(),
+                buffer.readBoolean(),
+                buffer.readBoolean(),
+                buffer.readBoolean(),
+                buffer.readBoolean(),
+                buffer.readBoolean()
+            )
         }
     }
 
-    override fun write(buffer: FriendlyByteBuf) {
-        buffer.writeFloat(stepHeight)
-        buffer.writeFloat(playerEjectTicks)
-        buffer.writeBoolean(boostUnderwater)
-        buffer.writeBoolean(onlyForPlayers)
+    override fun write(buf: FriendlyByteBuf) {
+        buf.writeFloat(stepHeight)
+        buf.writeFloat(playerEjectTicks)
+        buf.writeBoolean(boostUnderwater)
+        buf.writeBoolean(boostOnBlocks)
+        buf.writeBoolean(boostOnIce)
+        buf.writeBoolean(boostOnWater)
+        buf.writeBoolean(onlyForPlayers)
     }
 
     override fun getType(): PacketType<*> {
@@ -46,9 +61,12 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 
 @Serializable
 data class Config(
-    var stepHeight: Float = 0.2f,
+    var stepHeight: Float = 0.35f,
     var playerEjectTicks: Float = 20f * 10f,
     var boostUnderwater: Boolean = true,
+    var boostOnBlocks: Boolean = true,
+    var boostOnIce: Boolean = true,
+    var boostOnWater: Boolean = true,
     var onlyForPlayers: Boolean = true
 ) : CustomPacketPayload {
     companion object {
@@ -64,6 +82,9 @@ data class Config(
                         buf.readFloat(),
                         buf.readFloat(),
                         buf.readBoolean(),
+                        buf.readBoolean(),
+                        buf.readBoolean(),
+                        buf.readBoolean(),
                         buf.readBoolean()
                     )
                 }
@@ -75,6 +96,9 @@ data class Config(
                     buf.writeFloat(config.stepHeight)
                     buf.writeFloat(config.playerEjectTicks)
                     buf.writeBoolean(config.boostUnderwater)
+                    buf.writeBoolean(config.boostOnBlocks)
+                    buf.writeBoolean(config.boostOnIce)
+                    buf.writeBoolean(config.boostOnWater)
                     buf.writeBoolean(config.onlyForPlayers)
                 }
             }
@@ -94,11 +118,15 @@ fun getActiveConfig(): Config? {
     return serverConfig
 }
 
-
-@Suppress("UNUSED_PARAMETER")
 fun migrate(tree: JsonElement, version: Int?): Config? {
+    val jsonObject = tree.jsonObject
     return when (version) {
-        1 -> Config()
+        1 -> null
+        2 -> Config(
+            playerEjectTicks = jsonObject["playerEjectTicks"]?.jsonPrimitive?.floatOrNull ?: return null,
+            boostUnderwater = jsonObject["boostUnderwater"]?.jsonPrimitive?.booleanOrNull ?: return null,
+            onlyForPlayers = jsonObject["onlyForPlayers"]?.jsonPrimitive?.booleanOrNull ?: return null
+        )
         else -> null
     }
 }

@@ -15,12 +15,15 @@
 
 ```json5
 {
-    "version": 1, // just ignore that, only for migrations
+    "version": 3, // just ignore that, only for migrations
     "config": {
-        "stepHeight": 0.3, // the height the boat should travel upwards
-        "playerEjectTicks": 200.0, // defines the ticks that should pass before ejecting a player, when the player lost control over the boat
-        "boostUnderwater": true, // toggles, whether a boat, which is underwater should be boosted upwards with half of the step height
-        "onlyForPlayers": true // toggles, whether the boosts configured below should only work if the boat carries a player.
+        "stepHeight": 0.35, // The amount of blocks you are going to be boosted when triggering a boost
+        "playerEjectTicks": 200.0, // The ticks the game waits before kicking you out of a boat after the player lost control
+        "boostUnderwater": true, // Toggles, whether a boat, which is underwater should be boosted upwards
+        "boostOnBlocks": false, // Toggles, whether a boat, which is on a block should be boosted upwards when running against an elevation
+        "boostOnIce": true, // Toggles, whether a boat, which is on an ice block should be boosted upwards when running against an elevation
+        "boostOnWater": true, // Toggles, whether a boat, which is on water should be boosted upwards when floating against an elevation
+        "onlyForPlayers": true // Toggles, whether a boat should only be boosted when carrying a player
     }
 }
 ```
