@@ -1,6 +1,6 @@
 package dev.nyon.bbm.asm;
 
-import dev.nyon.bbm.BetterBoatMovement;
+import dev.nyon.bbm.config.ConfigKt;
 import net.minecraft.client.Minecraft;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -15,6 +15,6 @@ public class MinecraftMixin {
         at = @At("TAIL")
     )
     private void saveConfig(CallbackInfo ci) {
-        BetterBoatMovement.INSTANCE.saveConfig();
+        ConfigKt.saveConfig();
     }
 }

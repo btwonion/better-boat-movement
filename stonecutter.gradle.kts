@@ -1,6 +1,7 @@
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.*
+import org.gradle.configurationcache.extensions.capitalized
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
@@ -10,7 +11,13 @@ import java.time.Instant
 plugins {
     id("dev.kikugie.stonecutter")
 }
-stonecutter active "1.21" /* [SC] DO NOT EDIT */
+stonecutter active "1.21-fabric" /* [SC] DO NOT EDIT */
+
+stonecutter configureEach {
+    val currentPlatform = current.project.split('-')[1]
+    val platforms = listOf("fabric", "neoforge", "forge").map { it to (currentPlatform == it) }
+    consts(platforms)
+}
 
 stonecutter registerChiseled tasks.register("buildAllVersions", stonecutter.chiseled) {
     group = "mod"
@@ -32,43 +39,38 @@ private data class DiscordWebhook(
     val username: String, val avatarUrl: String, val embeds: List<Embed>
 )
 
+val majorVersion = property("mod.major-version").toString()
+val betaVersion = property("mod.beta").toString().toInt()
+val slug = property("mod.slug").toString()
+val repo = property("mod.repo").toString()
+val avatar = property("mod.icon-url").toString()
+val color = property("mod.color").toString().toInt()
+val supportedLoaders = property("mod.supported-loaders").toString().split(',').map { it.capitalized() }
 tasks.register("postUpdate") {
     group = "mod"
 
-    val version = project(stonecutter.versions.first().project).version.toString()
-    val hyphenCount = version.count { it == '-' }
-    val featureVersion = when (hyphenCount) {
-        1 -> version.split("-").first()
-        2 -> {
-            val split = version.split("-")
-            if (split.last().contains("rc") || split.last().contains("pre")) split.first()
-            else "${split.first()}-${split[1]}"
-        }
-        3 -> {
-            val split = version.split("-")
-            "${split.first()}-${split[1]}"
-        }
-        else -> return@register
-    }
+    val featureVersion = "$majorVersion${if (betaVersion != 0) "-beta$betaVersion" else ""}"
 
     val url = providers.environmentVariable("DISCORD_WEBHOOK").orNull ?: return@register
     val roleId = providers.environmentVariable("DISCORD_ROLE_ID").orNull ?: return@register
     val changelogText = rootProject.file("changelog.md").readText()
+
     val webhook = DiscordWebhook(
-        username = "${rootProject.name} Release Notifier",
-        avatarUrl = "https://raw.githubusercontent.com/btwonion/better-boat-movement/master/src/main/resources/assets/bbm/icon/icon.png",
-        embeds = listOf(
+        username = "${rootProject.name} Release Notifier", avatarUrl = avatar, embeds = listOf(
             Embed(
                 title = "v$featureVersion of ${rootProject.name} released!",
                 description = "# Changelog\n$changelogText",
                 timestamp = Instant.now().toString(),
-                color = 0x683912,
+                color = color,
                 fields = listOf(
                     Field(
-                        "Supported versions", stonecutter.versions.joinToString { it.version }, false
+                        "Supported versions", stonecutter.versions.map { it.version }.toSet().joinToString(), false
                     ),
-                    Field("Modrinth", "https://modrinth.com/mod/better-boat-movement", true),
-                    Field("GitHub", "https://github.com/btwonion/better-boat-movement", true)
+                    Field(
+                        "Supported loaders", supportedLoaders.joinToString(), false
+                    ),
+                    Field("Modrinth", "https://modrinth.com/mod/$slug", true),
+                    Field("GitHub", "https://github.com/$repo", true)
                 )
             )
         )
