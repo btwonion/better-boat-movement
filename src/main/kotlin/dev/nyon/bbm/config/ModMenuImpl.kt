@@ -1,5 +1,6 @@
 package dev.nyon.bbm.config
 
+/*? if fabric && >=1.20.1 {*/
 import com.terraformersmc.modmenu.api.ConfigScreenFactory
 import com.terraformersmc.modmenu.api.ModMenuApi
 
@@ -11,3 +12,4 @@ class ModMenuImpl : ModMenuApi {
         }
     }
 }
+/*?}*/

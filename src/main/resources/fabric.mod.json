@@ -3,14 +3,14 @@
     "id": "${id}",
     "name": "${name}",
     "description": "${description}",
-    "icon": "assets/bbm/icon/icon.png",
     "contact": {
-        "issues": "https://github.com/btwonion/better-boat-movement/issues",
-        "sources": "https://github.com/btwonion/better-boat-movement"
+        "issues": "https://github.com/${repo}/issues",
+        "sources": "https://github.com/${repo}"
     },
     "authors": [
         "btwonion"
     ],
+    "icon": "${icon}",
     "contributors": [],
     "license": [
         "GNU General Public License v3.0"
@@ -18,19 +18,19 @@
     "version": "${version}",
     "environment": "*",
     "depends": {
-        "fabric-language-kotlin": ">=1.11.0+kotlin.2.0.0",
-        "fabric-api": "*",
-        "yet_another_config_lib_v3": "*",
+        "fabric-language-kotlin": ">=${flk}",
+        "fabric-api": ">=${fapi}",
+        "yet_another_config_lib_v3": ">=${yacl}",
         "minecraft": "${mc}"
     },
     "suggests": {
-        "modmenu": "*"
+        "modmenu": "${modmenu}"
     },
     "entrypoints": {
-        "main": [
+        "client": [
             {
                 "adapter": "kotlin",
-                "value": "dev.nyon.bbm.BetterBoatMovement"
+                "value": "dev.nyon.bbm.BetterBoatMovementEntrypoint"
             }
         ],
         "modmenu": [
@@ -41,7 +41,7 @@
         ]
     },
     "mixins": [
-        "bbm.mixins.json"
+        "${mixins}"
     ],
     "custom": {
         "modmenu": {
