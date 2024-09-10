@@ -182,7 +182,7 @@ publishMods {
             requires { slug = "kotlin-for-forge" }
         }
 
-        requires { slug = "yacl" }
+        if (stonecutter.compare(mcVersion, "1.20.1") >= 0) requires { slug = "yacl" }
     }
 
     github {
