@@ -45,7 +45,9 @@ val slug = property("mod.slug").toString()
 val repo = property("mod.repo").toString()
 val avatar = property("mod.icon-url").toString()
 val color = property("mod.color").toString().toInt()
-val supportedLoaders = property("mod.supported-loaders").toString().split(',').map { it.capitalized() }
+val supportedLoaders = property("mod.supported-loaders").toString().split(',').map {
+    this.toString().replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+}
 tasks.register("postUpdate") {
     group = "mod"
 

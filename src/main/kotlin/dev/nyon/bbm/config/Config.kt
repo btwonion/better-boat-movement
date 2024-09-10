@@ -60,8 +60,8 @@ data class Config(
         return packetType
     }
 }
-/*?} else if fabric {*//*
-import net.fabricmc.fabric.api.networking.v1.FabricPacket
+/*?} else if fabric {*/
+/*import net.fabricmc.fabric.api.networking.v1.FabricPacket
 import net.fabricmc.fabric.api.networking.v1.PacketType
 
 @Serializable

@@ -44,7 +44,7 @@ object BetterBoatMovementEntrypoint : ModInitializer {
                 serverConfig = config
 
                 ServerPlayConnectionEvents.INIT.register { handler, _ ->
-                    ServerPlayNetworking.send(handler.player, dev.nyon.bbm.config.config)
+                    ServerPlayNetworking.send(handler.player, config)
                 }
             }
             else -> {}
@@ -145,7 +145,7 @@ object BetterBoatMovementEntrypoint {
     init {
         instantiateConfig(FMLLoader.getGamePath().resolve("config/better-boat-movement.json"))
 
-        val channel = NetworkRegistry.newSimpleChannel(resourceLocation("better-boat-movement:channel"), { "1" }, { true }, { true })
+        val channel = NetworkRegistry.newSimpleChannel(resourceLocation("better-boat-movement:channel"), { "3" }, { true }, { true })
         channel.registerMessage(
             0,
             Config::class.java,
@@ -177,12 +177,12 @@ object BetterBoatMovementEntrypoint {
             else -> {}
         }
 
-        // yacl 1.20.1 forge doesn't contains kotlin dsl
+        // yacl 1.20.1 forge doesn't contain kotlin dsl
         /^? if >1.20.1 {^/
-        ModLoadingContext.get().registerExtensionPoint(ConfigScreenFactory::class.java) {
+        /^ModLoadingContext.get().registerExtensionPoint(ConfigScreenFactory::class.java) {
             ConfigScreenFactory { _, parent -> generateYaclScreen(parent) }
         }
-        /^?}^/
+        ^//^?}^/
     }
 }
 *//*?}*/
