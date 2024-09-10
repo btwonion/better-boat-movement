@@ -28,12 +28,17 @@ base {
     archivesName.set(rootProject.name)
 }
 
+val mixinsFile = property("mod.mixins").toString()
 loom {
     if (stonecutter.current.isActive) {
         runConfigs.all {
             ideConfigGenerated(true)
             runDir("../../run")
         }
+    }
+
+    if (loader == ModPlatform.FORGE) forge {
+        mixinConfigs(mixinsFile)
     }
 
     mixin { useLegacyMixinAp = false }
@@ -93,7 +98,6 @@ val modName = property("mod.name").toString()
 val modDescription = property("mod.description").toString()
 val mcVersionRange = property("vers.mcVersionRange").toString()
 val icon = property("mod.icon").toString()
-val mixinsFile = property("mod.mixins").toString()
 val slug = property("mod.slug").toString()
 tasks {
     processResources {

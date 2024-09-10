@@ -1,6 +1,7 @@
 package dev.nyon.bbm
 
 import dev.nyon.bbm.config.Config
+import dev.nyon.bbm.config.config
 import dev.nyon.bbm.config.migrate
 import dev.nyon.bbm.config.serverConfig
 import dev.nyon.konfig.config.config
@@ -40,7 +41,7 @@ object BetterBoatMovementEntrypoint : ModInitializer {
                 }
             }
             EnvType.SERVER -> {
-                serverConfig = dev.nyon.bbm.config.config
+                serverConfig = config
 
                 ServerPlayConnectionEvents.INIT.register { handler, _ ->
                     ServerPlayNetworking.send(handler.player, dev.nyon.bbm.config.config)
@@ -65,15 +66,15 @@ import thedarkcolour.kotlinforforge.neoforge.forge.DIST
 import thedarkcolour.kotlinforforge.neoforge.forge.FORGE_BUS
 
 /^? if >=1.20.5 {^/
-/^import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent
-import net.neoforged.neoforge.network.handling.DirectionalPayloadHandler^/
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent
+import net.neoforged.neoforge.network.handling.DirectionalPayloadHandler
 /^?} else {^/
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent
+/^import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent
 import net.minecraft.network.FriendlyByteBuf
-/^?}^/
+^//^?}^/
 import thedarkcolour.kotlinforforge.neoforge.forge.MOD_BUS
 
-typealias CSF = /^? if <1.20.5 {^/ net.neoforged.neoforge.client.ConfigScreenHandler.ConfigScreenFactory /^?} else {^/ /^net.neoforged.neoforge.client.gui.IConfigScreenFactory ^//^?}^/
+typealias CSF = /^? if <1.20.5 {^/ /^net.neoforged.neoforge.client.ConfigScreenHandler.ConfigScreenFactory ^//^?} else {^/ net.neoforged.neoforge.client.gui.IConfigScreenFactory /^?}^/
 
 @Mod("bbm")
 object BetterBoatMovementEntrypoint {
@@ -81,7 +82,7 @@ object BetterBoatMovementEntrypoint {
         instantiateConfig(FMLLoader.getGamePath().resolve("config/better-boat-movement.json"))
 
         /^? if >=1.20.5 {^/
-        /^MOD_BUS.addListener<RegisterPayloadHandlersEvent> { event ->
+        MOD_BUS.addListener<RegisterPayloadHandlersEvent> { event ->
             val registrar = event.registrar("3")
             registrar.playToClient(Config.packetType, Config.codec, DirectionalPayloadHandler(
                 { config, _ ->
@@ -89,24 +90,23 @@ object BetterBoatMovementEntrypoint {
                 }, { _, _ -> }
             ))
         }
-        ^//^?} else {^/
-        MOD_BUS.addListener<RegisterPayloadHandlerEvent> { event ->
+        /^?} else {^/
+        /^MOD_BUS.addListener<RegisterPayloadHandlerEvent> { event ->
             val registrar = event.registrar("3")
             registrar.play(Config.identifier, FriendlyByteBuf.Reader{ buf -> Config(buf) }) { handler ->
                 handler.client { config, _ -> serverConfig = config }.server { _, _ -> }
             }
         }
-        /^?}^/
-
+        ^//^?}^/
 
         when (DIST) {
             Dist.DEDICATED_SERVER -> {
-                serverConfig = dev.nyon.bbm.config.config
+                serverConfig = config
                 FORGE_BUS.addListener<PlayerLoggedInEvent> { event ->
                     val player = event.entity
                     if (player !is ServerPlayer) return@addListener
-                    /^? if >=1.20.5 {^/ /^PacketDistributor.sendToPlayer(player, serverConfig!!)
-                    ^//^?} else {^/ PacketDistributor.PLAYER.with(player).send(serverConfig) /^?}^/
+                    /^? if >=1.20.5 {^/ PacketDistributor.sendToPlayer(player, serverConfig!!)
+                    /^?} else {^/ /^PacketDistributor.PLAYER.with(player).send(serverConfig) ^//^?}^/
                 }
             }
 
@@ -160,7 +160,7 @@ object BetterBoatMovementEntrypoint {
 
         when (DIST) {
             Dist.DEDICATED_SERVER -> {
-                serverConfig = dev.nyon.bbm.config.config
+                serverConfig = config
                 FORGE_BUS.addListener<PlayerEvent.PlayerLoggedInEvent> { event ->
                     val player = event.entity
                     if (player !is ServerPlayer) return@addListener
@@ -177,9 +177,12 @@ object BetterBoatMovementEntrypoint {
             else -> {}
         }
 
+        // yacl 1.20.1 forge doesn't contains kotlin dsl
+        /^? if >1.20.1 {^/
         ModLoadingContext.get().registerExtensionPoint(ConfigScreenFactory::class.java) {
             ConfigScreenFactory { _, parent -> generateYaclScreen(parent) }
         }
+        /^?}^/
     }
 }
 *//*?}*/
@@ -190,5 +193,5 @@ private fun instantiateConfig(path: Path) {
         3,
         Config()
     ) { element, version -> migrate(element, version) }
-    dev.nyon.bbm.config.config = loadConfig()
+    config = loadConfig()
 }
