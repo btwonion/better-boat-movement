@@ -27,7 +27,7 @@
         "modmenu": "${modmenu}"
     },
     "entrypoints": {
-        "client": [
+        "main": [
             {
                 "adapter": "kotlin",
                 "value": "dev.nyon.bbm.BetterBoatMovementEntrypoint"

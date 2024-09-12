@@ -1,3 +1,1 @@
-- add forge and neoforge support
-- change modid from better-boat-movement to bbm
-- add 1.19 support
+- fix crash on startup on fabric
