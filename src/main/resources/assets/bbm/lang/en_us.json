@@ -14,5 +14,7 @@
     "yacl3.config.bbm.category.general.root.option.boostOnWater": "Boost on water",
     "yacl3.config.bbm.category.general.root.option.boostOnWater.description": "Toggles, whether a boat, which is on water should be boosted upwards when floating against an elevation.",
     "yacl3.config.bbm.category.general.root.option.onlyForPlayers": "Only for players",
-    "yacl3.config.bbm.category.general.root.option.onlyForPlayers.description": "Toggles, whether a boat should only be boosted when carrying a player."
+    "yacl3.config.bbm.category.general.root.option.onlyForPlayers.description": "Toggles, whether a boat should only be boosted when carrying a player.",
+    "yacl3.config.bbm.category.general.root.option.extraCollisionDetectionRange": "Extra collision detection range",
+    "yacl3.config.bbm.category.general.root.option.extraCollisionDetectionRange.description": "Changes the detection range of a collision. Increasing this will boost a boat x blocks before actually touching the block it approaches.\n*You may encounter weird behaviour when changing this value to big numbers.*"
 }

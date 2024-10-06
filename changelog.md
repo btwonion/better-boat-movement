@@ -1,1 +1,1 @@
-- update version range to also accept snapshots and higher versions without an update
+- add option to change the detection range of collisions

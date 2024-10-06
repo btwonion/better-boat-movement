@@ -83,7 +83,7 @@ object BetterBoatMovementEntrypoint {
 
         /^? if >=1.20.5 {^/
         MOD_BUS.addListener<RegisterPayloadHandlersEvent> { event ->
-            val registrar = event.registrar("3")
+            val registrar = event.registrar("4")
             registrar.playToClient(Config.packetType, Config.codec, DirectionalPayloadHandler(
                 { config, _ ->
                     serverConfig = config
@@ -92,7 +92,7 @@ object BetterBoatMovementEntrypoint {
         }
         /^?} else {^/
         /^MOD_BUS.addListener<RegisterPayloadHandlerEvent> { event ->
-            val registrar = event.registrar("3")
+            val registrar = event.registrar("4")
             registrar.play(Config.identifier, FriendlyByteBuf.Reader{ buf -> Config(buf) }) { handler ->
                 handler.client { config, _ -> serverConfig = config }.server { _, _ -> }
             }
@@ -145,7 +145,7 @@ object BetterBoatMovementEntrypoint {
     init {
         instantiateConfig(FMLLoader.getGamePath().resolve("config/better-boat-movement.json"))
 
-        val channel = NetworkRegistry.newSimpleChannel(resourceLocation("better-boat-movement:channel"), { "3" }, { true }, { true })
+        val channel = NetworkRegistry.newSimpleChannel(resourceLocation("better-boat-movement:channel"), { "4" }, { true }, { true })
         channel.registerMessage(
             0,
             Config::class.java,
@@ -190,7 +190,7 @@ object BetterBoatMovementEntrypoint {
 private fun instantiateConfig(path: Path) {
     config(
         path,
-        3,
+        4,
         Config()
     ) { element, version -> migrate(element, version) }
     config = loadConfig()

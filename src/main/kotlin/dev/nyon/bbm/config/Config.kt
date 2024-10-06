@@ -19,7 +19,8 @@ data class Config(
     var boostOnBlocks: Boolean = true,
     var boostOnIce: Boolean = true,
     var boostOnWater: Boolean = true,
-    var onlyForPlayers: Boolean = true
+    var onlyForPlayers: Boolean = true,
+    var extraCollisionDetectionRange: Double = 0.0
 ) : CustomPacketPayload {
     companion object {
         @Transient
@@ -37,7 +38,8 @@ data class Config(
                         buf.readBoolean(),
                         buf.readBoolean(),
                         buf.readBoolean(),
-                        buf.readBoolean()
+                        buf.readBoolean(),
+                        buf.readDouble()
                     )
                 }
 
@@ -52,6 +54,7 @@ data class Config(
                     buf.writeBoolean(config.boostOnIce)
                     buf.writeBoolean(config.boostOnWater)
                     buf.writeBoolean(config.onlyForPlayers)
+                    buf.writeDouble(config.extraCollisionDetectionRange)
                 }
             }
     }
@@ -72,7 +75,8 @@ data class Config(
     var boostOnBlocks: Boolean = true,
     var boostOnIce: Boolean = true,
     var boostOnWater: Boolean = true,
-    var onlyForPlayers: Boolean = true
+    var onlyForPlayers: Boolean = true,
+    var extraCollisionDetectionRange: Double = 0.0
 ) : FabricPacket {
     companion object {
         @Transient
@@ -86,7 +90,8 @@ data class Config(
                 buffer.readBoolean(),
                 buffer.readBoolean(),
                 buffer.readBoolean(),
-                buffer.readBoolean()
+                buffer.readBoolean(),
+                buffer.readDouble()
             )
         }
     }
@@ -99,6 +104,7 @@ data class Config(
         buf.writeBoolean(boostOnIce)
         buf.writeBoolean(boostOnWater)
         buf.writeBoolean(onlyForPlayers)
+        buf.writeDouble(config.extraCollisionDetectionRange)
     }
 
     override fun getType(): PacketType<*> {
@@ -117,7 +123,8 @@ data class Config(
     var boostOnBlocks: Boolean = true,
     var boostOnIce: Boolean = true,
     var boostOnWater: Boolean = true,
-    var onlyForPlayers: Boolean = true
+    var onlyForPlayers: Boolean = true,
+    var extraCollisionDetectionRange: Double = 0.0
 ) : CustomPacketPayload {
     companion object {
         @Transient
@@ -131,7 +138,8 @@ data class Config(
         buf.readBoolean(),
         buf.readBoolean(),
         buf.readBoolean(),
-        buf.readBoolean()
+        buf.readBoolean(),
+        buf.readDouble()
     )
 
     override fun write(buf: FriendlyByteBuf) {
@@ -142,6 +150,7 @@ data class Config(
         buf.writeBoolean(config.boostOnIce)
         buf.writeBoolean(config.boostOnWater)
         buf.writeBoolean(config.onlyForPlayers)
+        buf.writeDouble(config.extraCollisionDetectionRange)
     }
 
     override fun id(): ResourceLocation {
@@ -156,7 +165,8 @@ data class Config(
     var boostOnBlocks: Boolean = true,
     var boostOnIce: Boolean = true,
     var boostOnWater: Boolean = true,
-    var onlyForPlayers: Boolean = true
+    var onlyForPlayers: Boolean = true,
+    var extraCollisionDetectionRange: Double = 0.0
 ) {
     constructor(buf: FriendlyByteBuf) : this(
         buf.readFloat(),
@@ -165,7 +175,8 @@ data class Config(
         buf.readBoolean(),
         buf.readBoolean(),
         buf.readBoolean(),
-        buf.readBoolean()
+        buf.readBoolean(),
+        buf.readDouble()
     )
 
     fun write(buf: FriendlyByteBuf) {
@@ -176,6 +187,7 @@ data class Config(
         buf.writeBoolean(config.boostOnIce)
         buf.writeBoolean(config.boostOnWater)
         buf.writeBoolean(config.onlyForPlayers)
+        buf.writeDouble(config.extraCollisionDetectionRange)
     }
 }
 
@@ -202,6 +214,16 @@ fun migrate(tree: JsonElement, version: Int?): Config? {
             playerEjectTicks = jsonObject["playerEjectTicks"]?.jsonPrimitive?.floatOrNull ?: return null,
             boostUnderwater = jsonObject["boostUnderwater"]?.jsonPrimitive?.booleanOrNull ?: return null,
             onlyForPlayers = jsonObject["onlyForPlayers"]?.jsonPrimitive?.booleanOrNull ?: return null
+        )
+        3 -> Config(
+            jsonObject["stepHeight"]?.jsonPrimitive?.floatOrNull ?: return null,
+            jsonObject["playerEjectTicks"]?.jsonPrimitive?.floatOrNull ?: return null,
+            jsonObject["boostUnderwater"]?.jsonPrimitive?.booleanOrNull ?: return null,
+            jsonObject["boostOnBlocks"]?.jsonPrimitive?.booleanOrNull ?: return null,
+            jsonObject["boostOnIce"]?.jsonPrimitive?.booleanOrNull ?: return null,
+            jsonObject["boostOnWater"]?.jsonPrimitive?.booleanOrNull ?: return null,
+            jsonObject["onlyForPlayers"]?.jsonPrimitive?.booleanOrNull ?: return null,
+            jsonObject["extraCollisionDetectionRange"]?.jsonPrimitive?.doubleOrNull ?: return null
         )
         else -> null
     }

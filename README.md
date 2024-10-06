@@ -15,7 +15,7 @@
 
 ```json5
 {
-    "version": 3, // just ignore that, only for migrations
+    "version": 4, // just ignore that, only for migrations
     "config": {
         "stepHeight": 0.35, // The amount of blocks you are going to be boosted when triggering a boost
         "playerEjectTicks": 200.0, // The ticks the game waits before kicking you out of a boat after the player lost control
@@ -23,7 +23,8 @@
         "boostOnBlocks": false, // Toggles, whether a boat, which is on a block should be boosted upwards when running against an elevation
         "boostOnIce": true, // Toggles, whether a boat, which is on an ice block should be boosted upwards when running against an elevation
         "boostOnWater": true, // Toggles, whether a boat, which is on water should be boosted upwards when floating against an elevation
-        "onlyForPlayers": true // Toggles, whether a boat should only be boosted when carrying a player
+        "onlyForPlayers": true, // Toggles, whether a boat should only be boosted when carrying a player,
+        "extraCollisionDetectionRange": 0.0 // Changes the detection range of a collision. Increasing this will boost a boat x blocks before actually touching the block it approaches. You may encounter weird behaviour when changing this value to big numbers.
     }
 }
 ```
