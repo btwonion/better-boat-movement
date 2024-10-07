@@ -24,7 +24,7 @@
         "boostOnIce": true, // Toggles, whether a boat, which is on an ice block should be boosted upwards when running against an elevation
         "boostOnWater": true, // Toggles, whether a boat, which is on water should be boosted upwards when floating against an elevation
         "onlyForPlayers": true, // Toggles, whether a boat should only be boosted when carrying a player,
-        "extraCollisionDetectionRange": 0.0 // Changes the detection range of a collision. Increasing this will boost a boat x blocks before actually touching the block it approaches. You may encounter weird behaviour when changing this value to big numbers.
+        "extraCollisionDetectionRange": 0.5 // Changes the detection range of a collision. Increasing this will boost a boat x blocks before actually touching the block it approaches.
     }
 }
 ```
@@ -37,7 +37,5 @@ Prior to v1.1.1 it is possible to get flagged by anti-cheat on multiplayer serve
 Please use v1.1.1 or higher to be on the safe side.
 
 ### Other
-
-Currently supported versions are: 1.20.1, 1.20.4, 1.20.6 and 1.21. This can change in the future!
 
 If you need help with any of my mods just join my [discord server](https://nyon.dev/discord).

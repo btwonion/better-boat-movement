@@ -1,1 +1,2 @@
 - add option to change the detection range of collisions
+  - automatically set to 0.5 blocks

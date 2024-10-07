@@ -1,6 +1,7 @@
 package dev.nyon.bbm.asm;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import dev.nyon.bbm.BbmBoat;
 import dev.nyon.bbm.config.Config;
 import dev.nyon.bbm.config.ConfigKt;
 import net.minecraft.core.BlockPos;
@@ -24,10 +25,14 @@ import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("AddedMixinMembersNamePattern")
 @Mixin(Boat.class)
-abstract class BoatMixin extends Entity {
+abstract class BoatMixin extends Entity implements BbmBoat {
     @Shadow
     private Boat.Status status;
+
+    @Unique
+    private boolean jumpCollision = false;
 
     public BoatMixin(
         EntityType<?> entityType,
@@ -101,12 +106,12 @@ abstract class BoatMixin extends Entity {
                     if (carryingBlocks.stream()
                         .noneMatch(state -> state.is(BlockTags.ICE))) return original;
                 }
-                if (!horizontalCollision) return original;
+                if (!jumpCollision && !horizontalCollision) return original;
             }
             case IN_WATER -> {
                 if (!ConfigKt.getActiveConfig()
                     .getBoostOnWater()) return original;
-                if (!horizontalCollision) return original;
+                if (!jumpCollision && !horizontalCollision) return original;
             }
             case UNDER_WATER, UNDER_FLOWING_WATER -> {
                 if (!ConfigKt.getActiveConfig()
@@ -146,5 +151,15 @@ abstract class BoatMixin extends Entity {
         if (!config.getOnlyForPlayers()) return false;
         return getPassengers().stream()
             .noneMatch(entity -> entity instanceof Player);
+    }
+
+    @Override
+    public void setJumpCollision(boolean b) {
+        jumpCollision = b;
+    }
+
+    @Override
+    public boolean getJumpCollision() {
+        return jumpCollision;
     }
 }

@@ -20,7 +20,7 @@ data class Config(
     var boostOnIce: Boolean = true,
     var boostOnWater: Boolean = true,
     var onlyForPlayers: Boolean = true,
-    var extraCollisionDetectionRange: Double = 0.0
+    var extraCollisionDetectionRange: Double = 0.5
 ) : CustomPacketPayload {
     companion object {
         @Transient
@@ -76,7 +76,7 @@ data class Config(
     var boostOnIce: Boolean = true,
     var boostOnWater: Boolean = true,
     var onlyForPlayers: Boolean = true,
-    var extraCollisionDetectionRange: Double = 0.0
+    var extraCollisionDetectionRange: Double = 0.5
 ) : FabricPacket {
     companion object {
         @Transient
@@ -124,7 +124,7 @@ data class Config(
     var boostOnIce: Boolean = true,
     var boostOnWater: Boolean = true,
     var onlyForPlayers: Boolean = true,
-    var extraCollisionDetectionRange: Double = 0.0
+    var extraCollisionDetectionRange: Double = 0.5
 ) : CustomPacketPayload {
     companion object {
         @Transient
@@ -166,7 +166,7 @@ data class Config(
     var boostOnIce: Boolean = true,
     var boostOnWater: Boolean = true,
     var onlyForPlayers: Boolean = true,
-    var extraCollisionDetectionRange: Double = 0.0
+    var extraCollisionDetectionRange: Double = 0.5
 ) {
     constructor(buf: FriendlyByteBuf) : this(
         buf.readFloat(),

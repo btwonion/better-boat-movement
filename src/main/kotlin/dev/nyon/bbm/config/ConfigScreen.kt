@@ -63,7 +63,7 @@ fun generateYaclScreen(parent: Screen?): Screen = YetAnotherConfigLib("bbm") {
         }
 
         val extraCollisionDetectionRange by rootOptions.registering {
-            binding(0.0, { config.extraCollisionDetectionRange }, { config.extraCollisionDetectionRange = it })
+            binding(0.5, { config.extraCollisionDetectionRange }, { config.extraCollisionDetectionRange = it })
             controller = numberField(0.0)
             descriptionBuilder {
                 addDefaultText(1)
