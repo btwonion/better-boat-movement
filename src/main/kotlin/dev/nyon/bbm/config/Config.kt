@@ -17,7 +17,7 @@ data class Config(
     var playerEjectTicks: Float = 20f * 10f,
     var boostUnderwater: Boolean = true,
     var boostOnBlocks: Boolean = true,
-    var boostOnIce: Boolean = true,
+    var boostOnIce: Boolean = false,
     var boostOnWater: Boolean = true,
     var onlyForPlayers: Boolean = true,
     var extraCollisionDetectionRange: Double = 0.5
@@ -73,7 +73,7 @@ data class Config(
     var playerEjectTicks: Float = 20f * 10f,
     var boostUnderwater: Boolean = true,
     var boostOnBlocks: Boolean = true,
-    var boostOnIce: Boolean = true,
+    var boostOnIce: Boolean = false,
     var boostOnWater: Boolean = true,
     var onlyForPlayers: Boolean = true,
     var extraCollisionDetectionRange: Double = 0.5
@@ -121,7 +121,7 @@ data class Config(
     var playerEjectTicks: Float = 20f * 10f,
     var boostUnderwater: Boolean = true,
     var boostOnBlocks: Boolean = true,
-    var boostOnIce: Boolean = true,
+    var boostOnIce: Boolean = false,
     var boostOnWater: Boolean = true,
     var onlyForPlayers: Boolean = true,
     var extraCollisionDetectionRange: Double = 0.5
@@ -163,7 +163,7 @@ data class Config(
     var playerEjectTicks: Float = 20f * 10f,
     var boostUnderwater: Boolean = true,
     var boostOnBlocks: Boolean = true,
-    var boostOnIce: Boolean = true,
+    var boostOnIce: Boolean = false,
     var boostOnWater: Boolean = true,
     var onlyForPlayers: Boolean = true,
     var extraCollisionDetectionRange: Double = 0.5

@@ -21,7 +21,7 @@
         "playerEjectTicks": 200.0, // The ticks the game waits before kicking you out of a boat after the player lost control
         "boostUnderwater": true, // Toggles, whether a boat, which is underwater should be boosted upwards
         "boostOnBlocks": false, // Toggles, whether a boat, which is on a block should be boosted upwards when running against an elevation
-        "boostOnIce": true, // Toggles, whether a boat, which is on an ice block should be boosted upwards when running against an elevation
+        "boostOnIce": false, // Toggles, whether a boat, should only be boosted on blocks, when laying on an ice block.
         "boostOnWater": true, // Toggles, whether a boat, which is on water should be boosted upwards when floating against an elevation
         "onlyForPlayers": true, // Toggles, whether a boat should only be boosted when carrying a player,
         "extraCollisionDetectionRange": 0.5 // Changes the detection range of a collision. Increasing this will boost a boat x blocks before actually touching the block it approaches.

@@ -1,3 +1,5 @@
 - migrate to kotlin-lang-forge
 - migrate all network namespaces from 'better-boat-movement' to 'bbm'
 - remove config from forge environments
+- improve boostOnIce description
+- set boostOnIce by default to false to prevent issues with getting boosted on different blocks than ice

@@ -40,7 +40,7 @@ fun generateYaclScreen(parent: Screen?): Screen = YetAnotherConfigLib("bbm") {
         }
 
         val boostOnIce by rootOptions.registering {
-            binding(true, { config.boostOnIce }, { config.boostOnIce = it })
+            binding(false, { config.boostOnIce }, { config.boostOnIce = it })
             controller = tickBox()
             descriptionBuilder {
                 addDefaultText(1)
