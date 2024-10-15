@@ -24,7 +24,7 @@ data class Config(
 ) : CustomPacketPayload {
     companion object {
         @Transient
-        val packetType: CustomPacketPayload.Type<Config> = CustomPacketPayload.Type(resourceLocation("better-boat-movement:sync")!!)
+        val packetType: CustomPacketPayload.Type<Config> = CustomPacketPayload.Type(resourceLocation("bbm:sync")!!)
 
         @Transient
         @Suppress("unused")
@@ -81,7 +81,7 @@ data class Config(
     companion object {
         @Transient
         val packetType: PacketType<Config> = PacketType.create(
-            resourceLocation("better-boat-movement:sync")!!
+            resourceLocation("bbm:sync")!!
         ) { buffer ->
             Config(
                 buffer.readFloat(),
@@ -128,7 +128,7 @@ data class Config(
 ) : CustomPacketPayload {
     companion object {
         @Transient
-        val identifier = resourceLocation("better-boat-movement:sync")!!
+        val identifier = resourceLocation("bbm:sync")!!
     }
 
     constructor(buf: FriendlyByteBuf) : this(

@@ -1,6 +1,6 @@
-modLoader = "kotlinforforge"
+modLoader = "klf"
 loaderVersion = "[1,)"
-license = "LGPLv3"
+license = "GPLv3"
 
 issueTrackerURL = "https://github.com/${repo}/issues"
 
