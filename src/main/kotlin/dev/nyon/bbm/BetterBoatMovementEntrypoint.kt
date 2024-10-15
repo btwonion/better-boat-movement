@@ -53,17 +53,15 @@ object BetterBoatMovementEntrypoint : ModInitializer {
 }
 
 /*?} else if neoforge {*/
-/*import dev.nyon.bbm.config.generateYaclScreen
+/*import dev.nyon.klf.MOD_BUS
 import net.minecraft.server.level.ServerPlayer
 import net.neoforged.api.distmarker.Dist
-import net.neoforged.fml.ModLoadingContext
 import net.neoforged.fml.common.Mod
 import net.neoforged.fml.loading.FMLLoader
+import net.neoforged.neoforge.common.NeoForge
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent
 import net.neoforged.neoforge.network.PacketDistributor
-import thedarkcolour.kotlinforforge.neoforge.forge.DIST
-import thedarkcolour.kotlinforforge.neoforge.forge.FORGE_BUS
 
 /^? if >=1.20.5 {^/
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent
@@ -72,9 +70,6 @@ import net.neoforged.neoforge.network.handling.DirectionalPayloadHandler
 /^import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent
 import net.minecraft.network.FriendlyByteBuf
 ^//^?}^/
-import thedarkcolour.kotlinforforge.neoforge.forge.MOD_BUS
-
-typealias CSF = /^? if <1.20.5 {^/ /^net.neoforged.neoforge.client.ConfigScreenHandler.ConfigScreenFactory ^//^?} else {^/ net.neoforged.neoforge.client.gui.IConfigScreenFactory /^?}^/
 
 @Mod("bbm")
 object BetterBoatMovementEntrypoint {
@@ -83,7 +78,7 @@ object BetterBoatMovementEntrypoint {
 
         /^? if >=1.20.5 {^/
         MOD_BUS.addListener<RegisterPayloadHandlersEvent> { event ->
-            val registrar = event.registrar("4")
+            val registrar = event.registrar("bbm").versioned("4")
             registrar.playToClient(Config.packetType, Config.codec, DirectionalPayloadHandler(
                 { config, _ ->
                     serverConfig = config
@@ -92,17 +87,17 @@ object BetterBoatMovementEntrypoint {
         }
         /^?} else {^/
         /^MOD_BUS.addListener<RegisterPayloadHandlerEvent> { event ->
-            val registrar = event.registrar("4")
+            val registrar = event.registrar("bbm").versioned("4")
             registrar.play(Config.identifier, FriendlyByteBuf.Reader{ buf -> Config(buf) }) { handler ->
                 handler.client { config, _ -> serverConfig = config }.server { _, _ -> }
             }
         }
         ^//^?}^/
 
-        when (DIST) {
+        when (FMLLoader.getDist()) {
             Dist.DEDICATED_SERVER -> {
                 serverConfig = config
-                FORGE_BUS.addListener<PlayerLoggedInEvent> { event ->
+                NeoForge.EVENT_BUS.addListener<PlayerLoggedInEvent> { event ->
                     val player = event.entity
                     if (player !is ServerPlayer) return@addListener
                     /^? if >=1.20.5 {^/ PacketDistributor.sendToPlayer(player, serverConfig!!)
@@ -111,33 +106,25 @@ object BetterBoatMovementEntrypoint {
             }
 
             Dist.CLIENT -> {
-                FORGE_BUS.addListener<PlayerLoggedOutEvent> {
+                NeoForge.EVENT_BUS.addListener<PlayerLoggedOutEvent> {
                     serverConfig = null
                 }
             }
             else -> {}
         }
-
-        ModLoadingContext.get().registerExtensionPoint(CSF::class.java) {
-            CSF { _, parent -> generateYaclScreen(parent) }
-        }
     }
 }
 *//*?} else {*/
-/*import dev.nyon.bbm.config.generateYaclScreen
-import dev.nyon.bbm.extensions.resourceLocation
+/*import dev.nyon.bbm.extensions.resourceLocation
 import net.minecraft.server.level.ServerPlayer
 import net.minecraftforge.api.distmarker.Dist
-import net.minecraftforge.client.ConfigScreenHandler.ConfigScreenFactory
+import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.event.entity.player.PlayerEvent
-import net.minecraftforge.fml.ModLoadingContext
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.loading.FMLLoader
 import net.minecraftforge.network.NetworkDirection
 import net.minecraftforge.network.NetworkRegistry
 import net.minecraftforge.network.PacketDistributor
-import thedarkcolour.kotlinforforge.forge.DIST
-import thedarkcolour.kotlinforforge.forge.FORGE_BUS
 import java.util.*
 
 @Mod("bbm")
@@ -145,7 +132,7 @@ object BetterBoatMovementEntrypoint {
     init {
         instantiateConfig(FMLLoader.getGamePath().resolve("config/better-boat-movement.json"))
 
-        val channel = NetworkRegistry.newSimpleChannel(resourceLocation("better-boat-movement:channel"), { "4" }, { true }, { true })
+        val channel = NetworkRegistry.newSimpleChannel(resourceLocation("bbm:channel"), { "4" }, { true }, { true })
         channel.registerMessage(
             0,
             Config::class.java,
@@ -158,10 +145,10 @@ object BetterBoatMovementEntrypoint {
             Optional.of(NetworkDirection.PLAY_TO_CLIENT)
         )
 
-        when (DIST) {
+        when (FMLLoader.getDist()) {
             Dist.DEDICATED_SERVER -> {
                 serverConfig = config
-                FORGE_BUS.addListener<PlayerEvent.PlayerLoggedInEvent> { event ->
+                MinecraftForge.EVENT_BUS.addListener<PlayerEvent.PlayerLoggedInEvent> { event ->
                     val player = event.entity
                     if (player !is ServerPlayer) return@addListener
                     channel.send(PacketDistributor.PLAYER.with { player }, serverConfig)
@@ -169,20 +156,13 @@ object BetterBoatMovementEntrypoint {
             }
 
             Dist.CLIENT -> {
-                FORGE_BUS.addListener<PlayerEvent.PlayerLoggedOutEvent> {
+                MinecraftForge.EVENT_BUS.addListener<PlayerEvent.PlayerLoggedOutEvent> {
                     serverConfig = null
                 }
             }
 
             else -> {}
         }
-
-        // yacl 1.20.1 forge doesn't contain kotlin dsl
-        /^? if >1.20.1 {^/
-        /^ModLoadingContext.get().registerExtensionPoint(ConfigScreenFactory::class.java) {
-            ConfigScreenFactory { _, parent -> generateYaclScreen(parent) }
-        }
-        ^//^?}^/
     }
 }
 *//*?}*/

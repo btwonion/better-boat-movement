@@ -55,9 +55,9 @@ repositories {
     maven("https://maven.neoforged.net/releases/")
 }
 
-val yaclVersion = property("vers.deps.yacl").toString()
 val flk: String = "${libs.versions.fabric.language.kotlin.orNull}${libs.versions.kotlin.orNull}"
 val fapi: String by lazy { property("vers.deps.fapi").toString() }
+val yacl: String by lazy { property("vers.deps.yacl").toString() }
 val modmenu: String by lazy { property("vers.deps.modMenu").toString() }
 dependencies {
     minecraft("com.mojang:minecraft:$mcVersion")
@@ -74,6 +74,7 @@ dependencies {
         modImplementation("net.fabricmc.fabric-api:fabric-api:$fapi")
         modImplementation("net.fabricmc:fabric-language-kotlin:$flk")
         modImplementation("com.terraformersmc:modmenu:$modmenu")
+        modImplementation("dev.isxander:yet-another-config-lib:$yacl")
     } else {
         if (loader == ModPlatform.FORGE) {
             "forge"("net.minecraftforge:forge:$mcVersion-${property("vers.deps.fml")}")
@@ -83,16 +84,14 @@ dependencies {
             implementation(libs.mixinextras.forge)
         } else
             "neoForge"("net.neoforged:neoforge:${property("vers.deps.fml")}")
-        implementation("thedarkcolour:kotlinforforge${if (loader == ModPlatform.NEOFORGE) "-neoforge" else ""}:${property("vers.deps.kff")}")
+        modImplementation("dev.nyon:KotlinLangForge:1.0.3-k${libs.versions.kotlin.orNull}-$mcVersion+${loader.name.lowercase()}")
     }
-
-    modImplementation("dev.isxander:yet-another-config-lib:$yaclVersion")
 
     modImplementation(libs.konfig)
     include(libs.konfig)
 }
 
-val javaVersion = property("vers.javaVer").toString()
+val javaVersion = if (stonecutter.eval(mcVersion, ">=1.20.6")) 21 else 17
 val modId = property("mod.id").toString()
 val modName = property("mod.name").toString()
 val modDescription = property("mod.description").toString()
@@ -110,7 +109,7 @@ tasks {
             "mc" to mcVersionRange,
             "flk" to if (!isFabric) null else flk,
             "fapi" to if (!isFabric) null else fapi,
-            "yacl" to yaclVersion,
+            "yacl" to if (!isFabric) null else yacl,
             "modmenu" to if (!isFabric) null else modmenu,
             "repo" to githubRepo,
             "icon" to icon,
@@ -138,12 +137,12 @@ tasks {
     }
 
     withType<JavaCompile> {
-        options.release = javaVersion.toInt()
+        options.release = javaVersion
     }
 
     withType<KotlinCompile> {
         compilerOptions {
-            jvmTarget = JvmTarget.fromTarget(javaVersion)
+            jvmTarget = JvmTarget.fromTarget(javaVersion.toString())
         }
     }
 }
@@ -178,11 +177,10 @@ publishMods {
             requires { slug = "fabric-api" }
             requires { slug = "fabric-language-kotlin" }
             optional { slug = "modmenu" }
+            if (stonecutter.compare(mcVersion, "1.20.1") >= 0) requires { slug = "yacl" }
         } else {
-            requires { slug = "kotlin-for-forge" }
+            requires { slug = "kotlin-lang-forge" }
         }
-
-        if (stonecutter.compare(mcVersion, "1.20.1") >= 0) requires { slug = "yacl" }
     }
 
     github {

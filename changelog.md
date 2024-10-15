@@ -1,2 +1,3 @@
-- add option to change the detection range of collisions
-  - automatically set to 0.5 blocks
+- migrate to kotlin-lang-forge
+- migrate all network namespaces from 'better-boat-movement' to 'bbm'
+- remove config from forge environments

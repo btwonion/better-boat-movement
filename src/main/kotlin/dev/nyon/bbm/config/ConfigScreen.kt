@@ -1,5 +1,6 @@
 package dev.nyon.bbm.config
 
+/*? if fabric && >=1.20.1 {*/
 import dev.isxander.yacl3.dsl.*
 import dev.nyon.konfig.config.saveConfig
 import net.minecraft.client.gui.screens.Screen
@@ -73,3 +74,4 @@ fun generateYaclScreen(parent: Screen?): Screen = YetAnotherConfigLib("bbm") {
 
     save { saveConfig(config) }
 }.generateScreen(parent)
+/*?}*/
