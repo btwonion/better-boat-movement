@@ -119,13 +119,12 @@ tasks {
 
         props.forEach(inputs::property)
 
-        (if (isFabric) listOf("fabric.mod.json") else listOf(
-            "META-INF/mods.toml",
-            "META-INF/neoforge.mods.toml"
-        )).forEach { filesMatching(it) { expand(props) } }
-
-        filesMatching("pack.mcmeta") {
-            if (isFabric) exclude()
+        if (isFabric) {
+            filesMatching("fabric.mod.json") { expand(props) }
+            exclude(listOf("META-INF/mods.toml", "META-INF/neoforge.mods.toml", "pack.mcmeta"))
+        } else {
+            filesMatching(listOf("META-INF/mods.toml", "META-INF/neoforge.mods.toml")) { expand(props) }
+            exclude("fabric.mod.json")
         }
     }
 
@@ -177,7 +176,7 @@ publishMods {
             requires { slug = "fabric-api" }
             requires { slug = "fabric-language-kotlin" }
             optional { slug = "modmenu" }
-            if (stonecutter.compare(mcVersion, "1.20.1") >= 0) requires { slug = "yacl" }
+            if (stonecutter.compare(mcVersion, "1.20.1") >= 0) optional { slug = "yacl" }
         } else {
             requires { slug = "kotlin-lang-forge" }
         }
