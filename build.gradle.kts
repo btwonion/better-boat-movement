@@ -74,7 +74,7 @@ dependencies {
         modImplementation("net.fabricmc.fabric-api:fabric-api:$fapi")
         modImplementation("net.fabricmc:fabric-language-kotlin:$flk")
         modImplementation("com.terraformersmc:modmenu:$modmenu")
-        modImplementation("dev.isxander:yet-another-config-lib:$yacl")
+        modCompileOnly("dev.isxander:yet-another-config-lib:$yacl")
     } else {
         if (loader == ModPlatform.FORGE) {
             "forge"("net.minecraftforge:forge:$mcVersion-${property("vers.deps.fml")}")
