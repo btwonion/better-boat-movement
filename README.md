@@ -1,12 +1,12 @@
 # Better Boat Movement
 
-> Improves (ice) boating by enabling stepping up blocks
+> Improves (ice) boating by allowing you to step up blocks
 
 ## Features
 
 **Ice Boating preview**
 *Settings: stepHeight = 0.4, extraCollisionDetectionRange = 2.0*
-![Ice Boating preview](https://raw.githubusercontent.com/btwonion/better-boat-movement/refs/head/master/media/bbm-ice-boating.webp)
+![Ice Boating preview](https://raw.githubusercontent.com/btwonion/better-boat-movement/refs/heads/master/media/bbm-ice-boating.webp)
 
 - change boat stepHeight to move up blocks
 - change collision detection range to step up blocks without getting stopped at high speeds
