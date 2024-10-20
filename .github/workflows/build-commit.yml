@@ -9,13 +9,16 @@ on:
       - "changelog.md"
       - ".editorconfig"
       - "src/*/resources/lang/*"
+      - "media/"
   pull_request:
     paths-ignore:
       - "README.md"
       - "LICENSE"
       - ".gitignore"
+      - "changelog.md"
       - ".editorconfig"
       - "src/*/resources/lang/*"
+      - "media/"
   workflow_dispatch:
 
 jobs:
