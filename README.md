@@ -1,12 +1,15 @@
 # Better Boat Movement
 
-> Adds quality of life improvements to boats
+> Improves (ice) boating by enabling stepping up blocks
 
 ## Features
 
-- configure step height to avoid getting stuck in front of blocks, that are slightly higher
-- configure player ejection time when player loses control of the boat
-- boost boat upwards when underwater
+**Ice Boating preview**
+*Settings: stepHeight = 0.4, extraCollisionDetectionRange = 2.0*
+![Ice Boating preview](https://raw.githubusercontent.com/btwonion/better-boat-movement/refs/head/master/media/bbm-ice-boating.webp)
+
+- change boat stepHeight to move up blocks
+- change collision detection range to step up blocks without getting stopped at high speeds
 
 ## Configuration
 
@@ -38,4 +41,4 @@ Please use v1.1.1 or higher to be on the safe side.
 
 ### Other
 
-If you need help with any of my mods just join my [discord server](https://nyon.dev/discord).
+If you need help with any of my mods, join my [discord server](https://nyon.dev/discord).
