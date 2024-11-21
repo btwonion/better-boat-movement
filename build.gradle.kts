@@ -176,7 +176,7 @@ publishMods {
             requires { slug = "fabric-api" }
             requires { slug = "fabric-language-kotlin" }
             optional { slug = "modmenu" }
-            if (stonecutter.compare(mcVersion, "1.20.1") >= 0) optional { slug = "yacl" }
+            if (stonecutter.compare(mcVersion, "1.20.1") >= 0) requires { slug = "yacl" }
         } else {
             requires { slug = "kotlin-lang-forge" }
         }
