@@ -1,5 +1,3 @@
-import dev.kikugie.stonecutter.StonecutterSettings
-
 rootProject.name = "better-boat-movement"
 
 pluginManagement {
@@ -11,11 +9,12 @@ pluginManagement {
         maven("https://maven.minecraftforge.net")
         maven("https://maven.neoforged.net/releases/")
         maven("https://maven.kikugie.dev/releases")
+        maven("https://maven.kikugie.dev/snapshots")
     }
 }
 
 plugins {
-    id("dev.kikugie.stonecutter") version "0.4.+"
+    id("dev.kikugie.stonecutter") version "0.5-beta.5"
 }
 
 buildscript {
@@ -25,7 +24,7 @@ buildscript {
     }
 }
 
-extensions.configure<StonecutterSettings> {
+stonecutter {
     kotlinController = true
     centralScript = "build.gradle.kts"
     shared {
