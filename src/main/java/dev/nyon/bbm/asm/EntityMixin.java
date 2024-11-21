@@ -7,6 +7,8 @@ import dev.nyon.bbm.config.ConfigKt;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+//? if >=1.21.3
+/*import net.minecraft.world.entity.vehicle.AbstractBoat;*/
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -48,7 +50,7 @@ public abstract class EntityMixin {
         List<VoxelShape> shapes
     ) {
         if (!expandCollision) return box;
-        if (!(entity instanceof Boat boat)) return box;
+        if (!(entity instanceof /*? if >=1.21.3 {*/ /*AbstractBoat boat *//*?} else {*/ Boat boat /*?}*/)) return box;
         Config config = ConfigKt.getActiveConfig();
         if (config == null) return box;
 
@@ -73,7 +75,7 @@ public abstract class EntityMixin {
         Config config = ConfigKt.getActiveConfig();
         if (config == null) return original;
         if (config.getExtraCollisionDetectionRange() == 0.0) return original;
-        if (!(instance instanceof Boat boat && instance instanceof BbmBoat bbmBoat)) return original;
+        if (!(instance instanceof /*? if >=1.21.3 {*/ /*AbstractBoat boat *//*?} else {*/ Boat boat /*?}*/ && instance instanceof BbmBoat bbmBoat)) return original;
         if (!boat.hasControllingPassenger()) return original;
 
         expandCollision = true;

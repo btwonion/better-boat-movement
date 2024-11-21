@@ -84,7 +84,7 @@ dependencies {
             implementation(libs.mixinextras.forge)
         } else
             "neoForge"("net.neoforged:neoforge:${property("vers.deps.fml")}")
-        modImplementation("dev.nyon:KotlinLangForge:1.0.3-k${libs.versions.kotlin.orNull}-$mcVersion+${loader.name.lowercase()}")
+        modImplementation("dev.nyon:KotlinLangForge:1.2.0-k${libs.versions.kotlin.orNull}-$mcVersion+${loader.name.lowercase()}")
     }
 
     modImplementation(libs.konfig)

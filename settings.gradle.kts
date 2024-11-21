@@ -39,6 +39,8 @@ extensions.configure<StonecutterSettings> {
         vers("1.20.6-fabric", "1.20.6")
         vers("1.21-neoforge", "1.21")
         vers("1.21-fabric", "1.21")
+        vers("1.21.3-neoforge", "1.21.3")
+        vers("1.21.3-fabric", "1.21.3")
         vcsVersion = "1.21-fabric"
     }
     create(rootProject)

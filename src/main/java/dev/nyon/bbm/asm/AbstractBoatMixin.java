@@ -7,15 +7,14 @@ import dev.nyon.bbm.config.ConfigKt;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.vehicle.Boat;
-import net.minecraft.world.level.Level;
+//? if >=1.21.3
+/*import net.minecraft.world.entity.vehicle.AbstractBoat;*/
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -26,14 +25,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("AddedMixinMembersNamePattern")
-@Mixin(Boat.class)
-abstract class BoatMixin extends Entity implements BbmBoat {
-    public BoatMixin(
-        EntityType<?> entityType,
-        Level level
-    ) {
-        super(entityType, level);
-    }
+@Pseudo
+@Mixin(targets = "net.minecraft.world.entity.vehicle.AbstractBoat")
+public class AbstractBoatMixin implements BbmBoat {
 
     @Unique
     private boolean jumpCollision = false;
@@ -48,25 +42,18 @@ abstract class BoatMixin extends Entity implements BbmBoat {
         return jumpCollision;
     }
 
-    /*? if <1.21.3 {*/
-    @Shadow
-    private Boat.Status status;
-
+    /*? if >=1.21.3 {*/
+    /*@Shadow
+    private AbstractBoat.Status status;
     @Unique
-    private Level bbm$getLevel() {
-        //? if >1.19.4
-        return this.level();
-
-        //? if <=1.19.4
-        /*return this.getLevel();*/
-    }
+    private AbstractBoat instance = (AbstractBoat) (Object) this;
 
     @SuppressWarnings("resource")
     @Unique
     private List<BlockState> getCarryingBlocks() {
         List<BlockState> states = new ArrayList<>();
 
-        AABB aABB = this.getBoundingBox();
+        AABB aABB = this.instance.getBoundingBox();
         AABB aABB2 = new AABB(aABB.minX, aABB.minY - 0.001, aABB.minZ, aABB.maxX, aABB.minY, aABB.maxZ);
         int i = Mth.floor(aABB2.minX) - 1;
         int j = Mth.ceil(aABB2.maxX) + 1;
@@ -83,7 +70,7 @@ abstract class BoatMixin extends Entity implements BbmBoat {
                     for (int s = k; s < l; s++) {
                         if (r <= 0 || s != k && s != l - 1) {
                             mutableBlockPos.set(p, s, q);
-                            BlockState blockState = bbm$getLevel().getBlockState(mutableBlockPos);
+                            BlockState blockState = instance.level().getBlockState(mutableBlockPos);
                             states.add(blockState);
                         }
                     }
@@ -94,12 +81,11 @@ abstract class BoatMixin extends Entity implements BbmBoat {
         return states;
     }
 
-    @SuppressWarnings("DataFlowIssue")
     @ModifyExpressionValue(
         method = "floatBoat",
         at = @At(
             value = "INVOKE",
-            target = "Lnet/minecraft/world/entity/vehicle/Boat;getDeltaMovement()Lnet/minecraft/world/phys/Vec3;",
+            target = "Lnet/minecraft/world/entity/vehicle/AbstractBoat;getDeltaMovement()Lnet/minecraft/world/phys/Vec3;",
             ordinal = 1
         )
     )
@@ -117,12 +103,12 @@ abstract class BoatMixin extends Entity implements BbmBoat {
                     if (carryingBlocks.stream()
                         .noneMatch(state -> state.is(BlockTags.ICE))) return original;
                 }
-                if (!jumpCollision && !horizontalCollision) return original;
+                if (!jumpCollision && !instance.horizontalCollision) return original;
             }
             case IN_WATER -> {
                 if (!ConfigKt.getActiveConfig()
                     .getBoostOnWater()) return original;
-                if (!jumpCollision && !horizontalCollision) return original;
+                if (!jumpCollision && !instance.horizontalCollision) return original;
             }
             case UNDER_WATER, UNDER_FLOWING_WATER -> {
                 if (!ConfigKt.getActiveConfig()
@@ -160,8 +146,8 @@ abstract class BoatMixin extends Entity implements BbmBoat {
         if (config == null) return true;
 
         if (!config.getOnlyForPlayers()) return false;
-        return getPassengers().stream()
+        return instance.getPassengers().stream()
             .noneMatch(entity -> entity instanceof Player);
     }
-    /*?}*/
+    *//*?}*/
 }

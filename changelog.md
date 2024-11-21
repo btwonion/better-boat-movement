@@ -1,2 +1,2 @@
-- fix mod metadata resource insertion
-- make yacl optional from now on
+- require yacl again
+- add support for 1.21.3
