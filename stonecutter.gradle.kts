@@ -14,8 +14,8 @@ plugins {
 stonecutter active "1.21-fabric" /* [SC] DO NOT EDIT */
 
 stonecutter parameters {
-    val currentPlatform = stonecutter.current.project.split('-')[1]
-    val platforms = listOf("fabric", "neoforge", "forge").map { it to (currentPlatform == it) }
+    val platform = node!!.property("loom.platform")
+    val platforms = listOf("fabric", "neoforge", "forge").map { it to (platform == it) }
     consts(platforms)
 }
 
