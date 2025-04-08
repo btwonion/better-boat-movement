@@ -1,3 +1,5 @@
+[![Minecraft Storage article banner](https://raw.githubusercontent.com/btwonion/better-boat-movement/refs/heads/master/media/banner_mcstorage.png)](https://minecraftstorage.com/mods/better-boat-movement)
+
 # Better Boat Movement
 
 > Improves (ice) boating by allowing you to step up blocks
