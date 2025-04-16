@@ -176,7 +176,22 @@ publishMods {
             requires { slug = "fabric-api" }
             requires { slug = "fabric-language-kotlin" }
             optional { slug = "modmenu" }
-            if (stonecutter.compare(mcVersion, "1.20.1") >= 0) requires { slug = "yacl" }
+            if (stonecutter.eval(mcVersion, ">=1.20.1")) requires { slug = "yacl" }
+        } else {
+            requires { slug = "kotlin-lang-forge" }
+        }
+    }
+
+    curseforge {
+        projectId = "1244671"
+        accessToken = providers.environmentVariable("CURSEFORGE_API_KEY")
+        minecraftVersions.addAll(supportedMcVersions)
+
+        if (isFabric) {
+            requires { slug = "fabric-api" }
+            requires { slug = "fabric-language-kotlin" }
+            optional { slug = "modmenu" }
+            if (stonecutter.eval(mcVersion, ">=1.20.1")) requires { slug = "yacl" }
         } else {
             requires { slug = "kotlin-lang-forge" }
         }
