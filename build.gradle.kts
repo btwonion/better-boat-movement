@@ -28,6 +28,11 @@ base {
     archivesName.set(rootProject.name)
 }
 
+stonecutter {
+    listOf("forge", "neoforge", "fabric").map { it to (loader.name.lowercase() == it) }
+        .forEach { (name, isCurrent) -> const(name, isCurrent) }
+}
+
 val mixinsFile = property("mod.mixins").toString()
 loom {
     if (stonecutter.current.isActive) {
@@ -56,6 +61,7 @@ repositories {
 }
 
 val flk: String = "${libs.versions.fabric.language.kotlin.orNull}${libs.versions.kotlin.orNull}"
+val forgeLk: String by lazy { property("vers.deps.klf").toString() }
 val fapi: String by lazy { property("vers.deps.fapi").toString() }
 val yacl: String by lazy { property("vers.deps.yacl").toString() }
 val modmenu: String by lazy { property("vers.deps.modMenu").toString() }
@@ -73,8 +79,8 @@ dependencies {
         implementation(libs.fabric.loader)
         modImplementation("net.fabricmc.fabric-api:fabric-api:$fapi")
         modImplementation("net.fabricmc:fabric-language-kotlin:$flk")
-        modImplementation("com.terraformersmc:modmenu:$modmenu")
-        modCompileOnly("dev.isxander:yet-another-config-lib:$yacl")
+        modImplementation("dev.isxander:yet-another-config-lib:$yacl")
+        modCompileOnly("com.terraformersmc:modmenu:$modmenu")
     } else {
         if (loader == ModPlatform.FORGE) {
             "forge"("net.minecraftforge:forge:$mcVersion-${property("vers.deps.fml")}")
@@ -84,7 +90,7 @@ dependencies {
             implementation(libs.mixinextras.forge)
         } else
             "neoForge"("net.neoforged:neoforge:${property("vers.deps.fml")}")
-        modImplementation("dev.nyon:KotlinLangForge:1.2.0-k${libs.versions.kotlin.orNull}-$mcVersion+${loader.name.lowercase()}")
+        modImplementation("dev.nyon:KotlinLangForge:2.7.1-k${libs.versions.kotlin.orNull}-$forgeLk+${loader.name.lowercase()}")
     }
 
     modImplementation(libs.konfig)
@@ -193,7 +199,7 @@ publishMods {
             optional { slug = "modmenu" }
             if (stonecutter.eval(mcVersion, ">=1.20.1")) requires { slug = "yacl" }
         } else {
-            requires { slug = "kotlin-lang-forge" }
+            requires { slug = "kotlinlangforge" }
         }
     }
 

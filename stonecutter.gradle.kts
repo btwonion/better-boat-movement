@@ -1,7 +1,6 @@
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.*
-import org.gradle.configurationcache.extensions.capitalized
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
@@ -12,12 +11,6 @@ plugins {
     id("dev.kikugie.stonecutter")
 }
 stonecutter active "1.21-fabric" /* [SC] DO NOT EDIT */
-
-stonecutter parameters {
-    val platform = node!!.property("loom.platform")
-    val platforms = listOf("fabric", "neoforge", "forge").map { it to (platform == it) }
-    consts(platforms)
-}
 
 stonecutter registerChiseled tasks.register("buildAllVersions", stonecutter.chiseled) {
     group = "mod"
@@ -46,7 +39,7 @@ val repo = property("mod.repo").toString()
 val avatar = property("mod.icon-url").toString()
 val color = property("mod.color").toString().toInt()
 val supportedLoaders = property("mod.supported-loaders").toString().split(',').map {
-    it.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+    it.replaceFirstChar { char -> if (char.isLowerCase()) char.titlecase() else char.toString() }
 }
 tasks.register("postUpdate") {
     group = "mod"
@@ -66,8 +59,9 @@ tasks.register("postUpdate") {
                 color = color,
                 fields = listOf(
                     Field(
-                        "Supported versions", stonecutter.tree.nodes.map { it.property("vers.supportedMcVersions").toString().split(',') }
-                            .flatten().toSet().joinToString(), false
+                        "Supported versions", stonecutter.tree.nodes.map {
+                            it.project.property("vers.supportedMcVersions").toString().split(',')
+                        }.flatten().toSet().joinToString(), false
                     ),
                     Field(
                         "Supported loaders", supportedLoaders.joinToString(), false

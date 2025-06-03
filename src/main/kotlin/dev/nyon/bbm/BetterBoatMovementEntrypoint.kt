@@ -172,6 +172,6 @@ private fun instantiateConfig(path: Path) {
         path,
         4,
         Config()
-    ) { element, version -> migrate(element, version) }
+    ) { _, element, version -> migrate(element, version) }
     config = loadConfig()
 }
