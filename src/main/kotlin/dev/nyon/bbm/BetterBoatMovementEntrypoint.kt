@@ -12,42 +12,40 @@ import java.nio.file.Path
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
-//? if >=1.20.5
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.fabricmc.loader.api.FabricLoader
-import net.fabricmc.api.EnvType
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
 
 object BetterBoatMovementEntrypoint : ModInitializer {
     override fun onInitialize() {
         instantiateConfig(FabricLoader.getInstance().configDir.resolve("better-boat-movement.json"))
-        //? if >=1.20.5
+        setupNetworking()
+        KeyBindingHelper.registerKeyBinding(KeyBindings.jumpKeyBind)
+    }
+
+    private fun setupNetworking() {
         PayloadTypeRegistry.playS2C().register(Config.packetType, Config.codec)
-        when (FabricLoader.getInstance().environmentType) {
-            EnvType.CLIENT -> {
-                /*? if <1.20.5 {*//*ClientPlayNetworking.registerGlobalReceiver(Config.packetType.id) { _, _, buf, _ ->
-                    serverConfig = Config.packetType.read(buf)
-                }
-                *//*?} else {*/
-                ClientPlayConnectionEvents.INIT.register { _, _ ->
-                    ClientPlayNetworking.registerReceiver(Config.packetType) { packet, _ ->
-                        serverConfig = packet
-                    }
-                }/*?}*/
+        PayloadTypeRegistry.playC2S().register(PressJumpKeybindingPacket.packetType, PressJumpKeybindingPacket.codec)
 
-                ClientPlayConnectionEvents.DISCONNECT.register { _, _ ->
-                    serverConfig = null
-                }
+        ClientPlayConnectionEvents.INIT.register { _, _ ->
+            ClientPlayNetworking.registerGlobalReceiver(Config.packetType) { packet, _ ->
+                serverConfig = packet
             }
-            EnvType.SERVER -> {
-                serverConfig = config
+        }
 
-                ServerPlayConnectionEvents.INIT.register { handler, _ ->
-                    ServerPlayNetworking.send(handler.player, config)
-                }
-            }
-            else -> {}
+        ClientPlayConnectionEvents.DISCONNECT.register { _, _ ->
+            serverConfig = null
+        }
+
+        serverConfig = config
+        ServerPlayNetworking.registerGlobalReceiver(PressJumpKeybindingPacket.packetType) { _, context ->
+            PressJumpKeybindingPacket.handlePacket(context.player())
+        }
+
+        ServerPlayConnectionEvents.INIT.register { handler, _ ->
+            ServerPlayNetworking.send(handler.player, config)
         }
     }
 }
@@ -58,41 +56,41 @@ import net.minecraft.server.level.ServerPlayer
 import net.neoforged.api.distmarker.Dist
 import net.neoforged.fml.common.Mod
 import net.neoforged.fml.loading.FMLLoader
+import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent
 import net.neoforged.neoforge.common.NeoForge
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent
 import net.neoforged.neoforge.network.PacketDistributor
-
-/^? if >=1.20.5 {^/
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent
 import net.neoforged.neoforge.network.handling.DirectionalPayloadHandler
-/^?} else {^/
-/^import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent
-import net.minecraft.network.FriendlyByteBuf
-^//^?}^/
 
 @Mod("bbm")
 object BetterBoatMovementEntrypoint {
     init {
         instantiateConfig(FMLLoader.getGamePath().resolve("config/better-boat-movement.json"))
+        setupNetworking()
+        MOD_BUS.addListener<RegisterKeyMappingsEvent> {
+            it.register(KeyBindings.jumpKeyBind)
+        }
+    }
 
-        /^? if >=1.20.5 {^/
+    private fun setupNetworking() {
         MOD_BUS.addListener<RegisterPayloadHandlersEvent> { event ->
-            val registrar = event.registrar("bbm").versioned("4")
+            val registrar = event.registrar("bbm").versioned("5")
             registrar.playToClient(Config.packetType, Config.codec, DirectionalPayloadHandler(
                 { config, _ ->
                     serverConfig = config
                 }, { _, _ -> }
             ))
+            registrar.playToServer(PressJumpKeybindingPacket.packetType, PressJumpKeybindingPacket.codec,
+                DirectionalPayloadHandler(
+                    { _, _ -> },
+                    { _, context ->
+                        PressJumpKeybindingPacket.handlePacket(context.player())
+                    }
+                )
+            )
         }
-        /^?} else {^/
-        /^MOD_BUS.addListener<RegisterPayloadHandlerEvent> { event ->
-            val registrar = event.registrar("bbm").versioned("4")
-            registrar.play(Config.identifier, FriendlyByteBuf.Reader{ buf -> Config(buf) }) { handler ->
-                handler.client { config, _ -> serverConfig = config }.server { _, _ -> }
-            }
-        }
-        ^//^?}^/
 
         when (FMLLoader.getDist()) {
             Dist.DEDICATED_SERVER -> {
@@ -100,8 +98,7 @@ object BetterBoatMovementEntrypoint {
                 NeoForge.EVENT_BUS.addListener<PlayerLoggedInEvent> { event ->
                     val player = event.entity
                     if (player !is ServerPlayer) return@addListener
-                    /^? if >=1.20.5 {^/ PacketDistributor.sendToPlayer(player, serverConfig!!)
-                    /^?} else {^/ /^PacketDistributor.PLAYER.with(player).send(serverConfig) ^//^?}^/
+                    PacketDistributor.sendToPlayer(player, serverConfig!!)
                 }
             }
 
@@ -114,63 +111,12 @@ object BetterBoatMovementEntrypoint {
         }
     }
 }
-*//*?} else {*/
-/*import dev.nyon.bbm.extensions.resourceLocation
-import net.minecraft.server.level.ServerPlayer
-import net.minecraftforge.api.distmarker.Dist
-import net.minecraftforge.common.MinecraftForge
-import net.minecraftforge.event.entity.player.PlayerEvent
-import net.minecraftforge.fml.common.Mod
-import net.minecraftforge.fml.loading.FMLLoader
-import net.minecraftforge.network.NetworkDirection
-import net.minecraftforge.network.NetworkRegistry
-import net.minecraftforge.network.PacketDistributor
-import java.util.*
-
-@Mod("bbm")
-object BetterBoatMovementEntrypoint {
-    init {
-        instantiateConfig(FMLLoader.getGamePath().resolve("config/better-boat-movement.json"))
-
-        val channel = NetworkRegistry.newSimpleChannel(resourceLocation("bbm:channel"), { "4" }, { true }, { true })
-        channel.registerMessage(
-            0,
-            Config::class.java,
-            { config, buf -> config.write(buf) },
-            { buf -> Config(buf) },
-            { config, context ->
-                serverConfig = config
-                context.get().packetHandled = true
-            },
-            Optional.of(NetworkDirection.PLAY_TO_CLIENT)
-        )
-
-        when (FMLLoader.getDist()) {
-            Dist.DEDICATED_SERVER -> {
-                serverConfig = config
-                MinecraftForge.EVENT_BUS.addListener<PlayerEvent.PlayerLoggedInEvent> { event ->
-                    val player = event.entity
-                    if (player !is ServerPlayer) return@addListener
-                    channel.send(PacketDistributor.PLAYER.with { player }, serverConfig)
-                }
-            }
-
-            Dist.CLIENT -> {
-                MinecraftForge.EVENT_BUS.addListener<PlayerEvent.PlayerLoggedOutEvent> {
-                    serverConfig = null
-                }
-            }
-
-            else -> {}
-        }
-    }
-}
 *//*?}*/
 
 private fun instantiateConfig(path: Path) {
     config(
         path,
-        4,
+        5,
         Config()
     ) { _, element, version -> migrate(element, version) }
     config = loadConfig()

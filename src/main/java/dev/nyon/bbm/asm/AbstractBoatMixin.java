@@ -9,7 +9,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 //? if >=1.21.3
-/*import net.minecraft.world.entity.vehicle.AbstractBoat;*/
+import net.minecraft.world.entity.vehicle.AbstractBoat;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -43,7 +43,7 @@ public class AbstractBoatMixin implements BbmBoat {
     }
 
     /*? if >=1.21.3 {*/
-    /*@Shadow
+    @Shadow
     private AbstractBoat.Status status;
     @Unique
     private AbstractBoat instance = (AbstractBoat) (Object) this;
@@ -149,5 +149,5 @@ public class AbstractBoatMixin implements BbmBoat {
         return instance.getPassengers().stream()
             .noneMatch(entity -> entity instanceof Player);
     }
-    *//*?}*/
+    /*?}*/
 }

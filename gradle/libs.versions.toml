@@ -6,14 +6,11 @@ fabric-loader = "0.16.14"
 fabric-language-kotlin = "1.13.3+kotlin."
 vineflower = "1.11.1"
 konfig = "3.0.0"
-mixinextras = "0.4.1"
 
 [libraries]
 vineflower = { module = "org.vineflower:vineflower", version.ref = "vineflower" }
 konfig = { module = "dev.nyon:konfig", version.ref = "konfig" }
 fabric-loader = { module = "net.fabricmc:fabric-loader", version.ref = "fabric-loader" }
-mixinextras-common = { module = "io.github.llamalad7:mixinextras-common", version.ref = "mixinextras" }
-mixinextras-forge = { module = "io.github.llamalad7:mixinextras-forge", version.ref = "mixinextras" }
 
 [plugins]
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

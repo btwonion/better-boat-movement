@@ -49,19 +49,9 @@ abstract class BoatMixin extends Entity implements BbmBoat {
     }
 
     /*? if <1.21.3 {*/
-    @Shadow
+    /*@Shadow
     private Boat.Status status;
 
-    @Unique
-    private Level bbm$getLevel() {
-        //? if >1.19.4
-        return this.level();
-
-        //? if <=1.19.4
-        /*return this.getLevel();*/
-    }
-
-    @SuppressWarnings("resource")
     @Unique
     private List<BlockState> getCarryingBlocks() {
         List<BlockState> states = new ArrayList<>();
@@ -83,7 +73,7 @@ abstract class BoatMixin extends Entity implements BbmBoat {
                     for (int s = k; s < l; s++) {
                         if (r <= 0 || s != k && s != l - 1) {
                             mutableBlockPos.set(p, s, q);
-                            BlockState blockState = bbm$getLevel().getBlockState(mutableBlockPos);
+                            BlockState blockState = this.level().getBlockState(mutableBlockPos);
                             states.add(blockState);
                         }
                     }
@@ -163,5 +153,5 @@ abstract class BoatMixin extends Entity implements BbmBoat {
         return getPassengers().stream()
             .noneMatch(entity -> entity instanceof Player);
     }
-    /*?}*/
+    *//*?}*/
 }
