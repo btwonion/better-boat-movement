@@ -6,8 +6,6 @@ import kotlinx.serialization.Transient
 import kotlinx.serialization.json.*
 import net.minecraft.client.Minecraft
 import net.minecraft.network.FriendlyByteBuf
-
-/*? if >=1.20.5 {*/
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
 
@@ -20,7 +18,9 @@ data class Config(
     var boostOnIce: Boolean = false,
     var boostOnWater: Boolean = true,
     var onlyForPlayers: Boolean = true,
-    var extraCollisionDetectionRange: Double = 0.5
+    var extraCollisionDetectionRange: Double = 0.5,
+    var allowJumpKeybind: Boolean = false,
+    var keybindJumpHeightMultiplier: Double = 1.5
 ) : CustomPacketPayload {
     companion object {
         @Transient
@@ -39,6 +39,8 @@ data class Config(
                         buf.readBoolean(),
                         buf.readBoolean(),
                         buf.readBoolean(),
+                        buf.readDouble(),
+                        buf.readBoolean(),
                         buf.readDouble()
                     )
                 }
@@ -55,6 +57,8 @@ data class Config(
                     buf.writeBoolean(config.boostOnWater)
                     buf.writeBoolean(config.onlyForPlayers)
                     buf.writeDouble(config.extraCollisionDetectionRange)
+                    buf.writeBoolean(config.allowJumpKeybind)
+                    buf.writeDouble(config.keybindJumpHeightMultiplier)
                 }
             }
     }
@@ -63,141 +67,11 @@ data class Config(
         return packetType
     }
 }
-/*?} else if fabric {*/
-/*import net.fabricmc.fabric.api.networking.v1.FabricPacket
-import net.fabricmc.fabric.api.networking.v1.PacketType
-
-@Serializable
-data class Config(
-    var stepHeight: Float = 0.35f,
-    var playerEjectTicks: Float = 20f * 10f,
-    var boostUnderwater: Boolean = true,
-    var boostOnBlocks: Boolean = true,
-    var boostOnIce: Boolean = false,
-    var boostOnWater: Boolean = true,
-    var onlyForPlayers: Boolean = true,
-    var extraCollisionDetectionRange: Double = 0.5
-) : FabricPacket {
-    companion object {
-        @Transient
-        val packetType: PacketType<Config> = PacketType.create(
-            resourceLocation("bbm:sync")!!
-        ) { buffer ->
-            Config(
-                buffer.readFloat(),
-                buffer.readFloat(),
-                buffer.readBoolean(),
-                buffer.readBoolean(),
-                buffer.readBoolean(),
-                buffer.readBoolean(),
-                buffer.readBoolean(),
-                buffer.readDouble()
-            )
-        }
-    }
-
-    override fun write(buf: FriendlyByteBuf) {
-        buf.writeFloat(stepHeight)
-        buf.writeFloat(playerEjectTicks)
-        buf.writeBoolean(boostUnderwater)
-        buf.writeBoolean(boostOnBlocks)
-        buf.writeBoolean(boostOnIce)
-        buf.writeBoolean(boostOnWater)
-        buf.writeBoolean(onlyForPlayers)
-        buf.writeDouble(config.extraCollisionDetectionRange)
-    }
-
-    override fun getType(): PacketType<*> {
-        return packetType
-    }
-}
-*//*?} else if neoforge {*/
-/*import net.minecraft.network.protocol.common.custom.CustomPacketPayload
-import net.minecraft.resources.ResourceLocation
-
-@Serializable
-data class Config(
-    var stepHeight: Float = 0.35f,
-    var playerEjectTicks: Float = 20f * 10f,
-    var boostUnderwater: Boolean = true,
-    var boostOnBlocks: Boolean = true,
-    var boostOnIce: Boolean = false,
-    var boostOnWater: Boolean = true,
-    var onlyForPlayers: Boolean = true,
-    var extraCollisionDetectionRange: Double = 0.5
-) : CustomPacketPayload {
-    companion object {
-        @Transient
-        val identifier = resourceLocation("bbm:sync")!!
-    }
-
-    constructor(buf: FriendlyByteBuf) : this(
-        buf.readFloat(),
-        buf.readFloat(),
-        buf.readBoolean(),
-        buf.readBoolean(),
-        buf.readBoolean(),
-        buf.readBoolean(),
-        buf.readBoolean(),
-        buf.readDouble()
-    )
-
-    override fun write(buf: FriendlyByteBuf) {
-        buf.writeFloat(config.stepHeight)
-        buf.writeFloat(config.playerEjectTicks)
-        buf.writeBoolean(config.boostUnderwater)
-        buf.writeBoolean(config.boostOnBlocks)
-        buf.writeBoolean(config.boostOnIce)
-        buf.writeBoolean(config.boostOnWater)
-        buf.writeBoolean(config.onlyForPlayers)
-        buf.writeDouble(config.extraCollisionDetectionRange)
-    }
-
-    override fun id(): ResourceLocation {
-        return identifier
-    }
-}*//*?} else {*/
-/*@Serializable
-data class Config(
-    var stepHeight: Float = 0.35f,
-    var playerEjectTicks: Float = 20f * 10f,
-    var boostUnderwater: Boolean = true,
-    var boostOnBlocks: Boolean = true,
-    var boostOnIce: Boolean = false,
-    var boostOnWater: Boolean = true,
-    var onlyForPlayers: Boolean = true,
-    var extraCollisionDetectionRange: Double = 0.5
-) {
-    constructor(buf: FriendlyByteBuf) : this(
-        buf.readFloat(),
-        buf.readFloat(),
-        buf.readBoolean(),
-        buf.readBoolean(),
-        buf.readBoolean(),
-        buf.readBoolean(),
-        buf.readBoolean(),
-        buf.readDouble()
-    )
-
-    fun write(buf: FriendlyByteBuf) {
-        buf.writeFloat(config.stepHeight)
-        buf.writeFloat(config.playerEjectTicks)
-        buf.writeBoolean(config.boostUnderwater)
-        buf.writeBoolean(config.boostOnBlocks)
-        buf.writeBoolean(config.boostOnIce)
-        buf.writeBoolean(config.boostOnWater)
-        buf.writeBoolean(config.onlyForPlayers)
-        buf.writeDouble(config.extraCollisionDetectionRange)
-    }
-}
-
-*//*?}*/
 
 lateinit var config: Config
 
 val platform = /*? if fabric {*/
-    net.fabricmc.loader.api.FabricLoader.getInstance().environmentType.toString().lowercase() /*?} else if forge {*/
-    /*net.minecraftforge.fml.loading.FMLLoader.getDist().toString().lowercase() *//*?} else {*/
+    net.fabricmc.loader.api.FabricLoader.getInstance().environmentType.toString().lowercase() /*?} else {*/
     /*net.neoforged.fml.loading.FMLLoader.getDist().toString().lowercase() *//*?}*/
 
 fun getActiveConfig(): Config? {
@@ -215,7 +89,7 @@ fun migrate(tree: JsonElement, version: Int?): Config? {
             boostUnderwater = jsonObject["boostUnderwater"]?.jsonPrimitive?.booleanOrNull ?: return null,
             onlyForPlayers = jsonObject["onlyForPlayers"]?.jsonPrimitive?.booleanOrNull ?: return null
         )
-        3 -> Config(
+        3, 4 -> Config(
             jsonObject["stepHeight"]?.jsonPrimitive?.floatOrNull ?: return null,
             jsonObject["playerEjectTicks"]?.jsonPrimitive?.floatOrNull ?: return null,
             jsonObject["boostUnderwater"]?.jsonPrimitive?.booleanOrNull ?: return null,

@@ -1,6 +1,6 @@
 package dev.nyon.bbm.config
 
-/*? if fabric && >=1.20.1 {*/
+/*? if fabric {*/
 import com.terraformersmc.modmenu.api.ConfigScreenFactory
 import com.terraformersmc.modmenu.api.ModMenuApi
 

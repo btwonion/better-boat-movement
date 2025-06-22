@@ -1,6 +1,6 @@
 package dev.nyon.bbm.config
 
-/*? if fabric && >=1.20.1 {*/
+/*? if fabric {*/
 import dev.isxander.yacl3.dsl.*
 import dev.nyon.konfig.config.saveConfig
 import net.minecraft.client.gui.screens.Screen
@@ -65,6 +65,22 @@ fun generateYaclScreen(parent: Screen?): Screen = YetAnotherConfigLib("bbm") {
 
         val extraCollisionDetectionRange by rootOptions.registering {
             binding(0.5, { config.extraCollisionDetectionRange }, { config.extraCollisionDetectionRange = it })
+            controller = numberField(0.0)
+            descriptionBuilder {
+                addDefaultText(1)
+            }
+        }
+
+        val allowJumpKeybind by rootOptions.registering {
+            binding(false, { config.allowJumpKeybind }, { config.allowJumpKeybind = it })
+            controller = tickBox()
+            descriptionBuilder {
+                addDefaultText(1)
+            }
+        }
+
+        val keybindJumpHeightMultiplier by rootOptions.registering {
+            binding(2.0, { config.keybindJumpHeightMultiplier }, { config.keybindJumpHeightMultiplier = it })
             controller = numberField(0.0)
             descriptionBuilder {
                 addDefaultText(1)

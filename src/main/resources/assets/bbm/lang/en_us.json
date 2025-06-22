@@ -16,5 +16,11 @@
     "yacl3.config.bbm.category.general.root.option.onlyForPlayers": "Only for players",
     "yacl3.config.bbm.category.general.root.option.onlyForPlayers.description": "Toggles, whether a boat should only be boosted when carrying a player.",
     "yacl3.config.bbm.category.general.root.option.extraCollisionDetectionRange": "Extra collision detection range",
-    "yacl3.config.bbm.category.general.root.option.extraCollisionDetectionRange.description": "Changes the detection range of a collision. Increasing this will boost a boat x blocks before actually touching the block it approaches.\n*You may encounter weird behaviour when changing this value to big numbers.*"
+    "yacl3.config.bbm.category.general.root.option.extraCollisionDetectionRange.description": "Changes the detection range of a collision. Increasing this will boost a boat x blocks before actually touching the block it approaches.\n*You may encounter weird behaviour when changing this value to big numbers.*",
+    "yacl3.config.bbm.category.general.root.option.allowJumpKeybind": "Allow Jump Keybind",
+    "yacl3.config.bbm.category.general.root.option.allowJumpKeybind.description": "Toggles, whether a player should be able to jump with a boat via a keybind.",
+    "yacl3.config.bbm.category.general.root.option.keybindJumpHeightMultiplier": "Keybind jump height multiplier",
+    "yacl3.config.bbm.category.general.root.option.keybindJumpHeightMultiplier.description": "Specifies the multiplier that will be applied to the jump height when a player uses the keybind to jump.",
+    "key.bbm.category": "Better Boat Movement",
+    "key.bbm.jump": "Boat Jump"
 }
