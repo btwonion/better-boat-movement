@@ -1,0 +1,3 @@
+- drop support for 1.19.4, 1.20.4, 1.20.6
+- add keybind for manual jumping
+  - by default: `h` - fix [**#11**](https://github.com/btwonion/better-boat-movement/issues/11)

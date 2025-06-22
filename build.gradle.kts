@@ -29,7 +29,7 @@ base {
 }
 
 stonecutter {
-    listOf("forge", "neoforge", "fabric").map { it to (loader.name.lowercase() == it) }
+    listOf("neoforge", "fabric").map { it to (loader.name.lowercase() == it) }
         .forEach { (name, isCurrent) -> const(name, isCurrent) }
 }
 
@@ -42,10 +42,6 @@ loom {
         }
     }
 
-    if (loader == ModPlatform.FORGE) forge {
-        mixinConfigs(mixinsFile)
-    }
-
     mixin { useLegacyMixinAp = false }
     silentMojangMappingsLicense()
 }
@@ -56,7 +52,6 @@ repositories {
     maven("https://maven.quiltmc.org/repository/release/")
     maven("https://repo.nyon.dev/releases")
     maven("https://maven.isxander.dev/releases")
-    maven("https://thedarkcolour.github.io/KotlinForForge/")
     maven("https://maven.neoforged.net/releases/")
 }
 
@@ -82,22 +77,14 @@ dependencies {
         modImplementation("dev.isxander:yet-another-config-lib:$yacl")
         modCompileOnly("com.terraformersmc:modmenu:$modmenu")
     } else {
-        if (loader == ModPlatform.FORGE) {
-            "forge"("net.minecraftforge:forge:$mcVersion-${property("vers.deps.fml")}")
-            compileOnly(libs.mixinextras.common)
-            annotationProcessor(libs.mixinextras.common)
-            include(libs.mixinextras.forge)
-            implementation(libs.mixinextras.forge)
-        } else
-            "neoForge"("net.neoforged:neoforge:${property("vers.deps.fml")}")
-        modImplementation("dev.nyon:KotlinLangForge:2.7.1-k${libs.versions.kotlin.orNull}-$forgeLk+${loader.name.lowercase()}")
+        "neoForge"("net.neoforged:neoforge:${property("vers.deps.fml")}")
+        modImplementation("dev.nyon:KotlinLangForge:2.7.1-k${libs.versions.kotlin.orNull}-$forgeLk+neoforge")
     }
 
     modImplementation(libs.konfig)
     include(libs.konfig)
 }
 
-val javaVersion = if (stonecutter.eval(mcVersion, ">=1.20.6")) 21 else 17
 val modId = property("mod.id").toString()
 val modName = property("mod.name").toString()
 val modDescription = property("mod.description").toString()
@@ -127,9 +114,9 @@ tasks {
 
         if (isFabric) {
             filesMatching("fabric.mod.json") { expand(props) }
-            exclude(listOf("META-INF/mods.toml", "META-INF/neoforge.mods.toml", "pack.mcmeta"))
+            exclude(listOf("META-INF/neoforge.mods.toml", "pack.mcmeta"))
         } else {
-            filesMatching(listOf("META-INF/mods.toml", "META-INF/neoforge.mods.toml")) { expand(props) }
+            filesMatching(listOf("META-INF/neoforge.mods.toml")) { expand(props) }
             exclude("fabric.mod.json")
         }
     }
@@ -142,12 +129,12 @@ tasks {
     }
 
     withType<JavaCompile> {
-        options.release = javaVersion
+        options.release = 21
     }
 
     withType<KotlinCompile> {
         compilerOptions {
-            jvmTarget = JvmTarget.fromTarget(javaVersion.toString())
+            jvmTarget = JvmTarget.JVM_21
         }
     }
 }
@@ -168,7 +155,6 @@ publishMods {
     type = if (beta != 0) BETA else STABLE
     when (loader) {
         ModPlatform.FABRIC -> modLoaders.addAll("fabric", "quilt")
-        ModPlatform.FORGE -> modLoaders.addAll("forge")
         ModPlatform.NEOFORGE -> modLoaders.addAll("neoforge")
         else -> {}
     }
@@ -234,7 +220,7 @@ publishing {
 java {
     withSourcesJar()
 
-    javaVersion.toInt().let { JavaVersion.values()[it - 1] }.let {
+    JavaVersion.VERSION_21.let {
         sourceCompatibility = it
         targetCompatibility = it
     }
