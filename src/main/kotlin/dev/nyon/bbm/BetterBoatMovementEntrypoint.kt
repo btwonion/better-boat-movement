@@ -76,7 +76,7 @@ object BetterBoatMovementEntrypoint {
 
     private fun setupNetworking() {
         MOD_BUS.addListener<RegisterPayloadHandlersEvent> { event ->
-            val registrar = event.registrar("bbm").versioned("5")
+            val registrar = event.registrar("bbm").versioned("6")
             registrar.playToClient(Config.packetType, Config.codec, DirectionalPayloadHandler(
                 { config, _ ->
                     serverConfig = config
@@ -116,7 +116,7 @@ object BetterBoatMovementEntrypoint {
 private fun instantiateConfig(path: Path) {
     config(
         path,
-        5,
+        6,
         Config()
     ) { _, element, version -> migrate(element, version) }
     config = loadConfig()
