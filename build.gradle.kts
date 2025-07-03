@@ -74,13 +74,13 @@ dependencies {
         implementation(libs.fabric.loader)
         modImplementation("net.fabricmc.fabric-api:fabric-api:$fapi")
         modImplementation("net.fabricmc:fabric-language-kotlin:$flk")
-        modImplementation("dev.isxander:yet-another-config-lib:$yacl")
         modCompileOnly("com.terraformersmc:modmenu:$modmenu")
     } else {
         "neoForge"("net.neoforged:neoforge:${property("vers.deps.fml")}")
         modImplementation("dev.nyon:KotlinLangForge:2.7.1-k${libs.versions.kotlin.orNull}-$forgeLk+neoforge")
     }
 
+    modImplementation("dev.isxander:yet-another-config-lib:$yacl")
     modImplementation(libs.konfig)
     include(libs.konfig)
 }
@@ -168,10 +168,11 @@ publishMods {
             requires { slug = "fabric-api" }
             requires { slug = "fabric-language-kotlin" }
             optional { slug = "modmenu" }
-            if (stonecutter.eval(mcVersion, ">=1.20.1")) requires { slug = "yacl" }
         } else {
             requires { slug = "kotlin-lang-forge" }
         }
+
+        requires { slug = "yacl" }
     }
 
     curseforge {
@@ -183,10 +184,11 @@ publishMods {
             requires { slug = "fabric-api" }
             requires { slug = "fabric-language-kotlin" }
             optional { slug = "modmenu" }
-            if (stonecutter.eval(mcVersion, ">=1.20.1")) requires { slug = "yacl" }
         } else {
             requires { slug = "kotlinlangforge" }
         }
+
+        requires { slug = "yacl" }
     }
 
     github {

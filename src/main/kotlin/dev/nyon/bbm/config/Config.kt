@@ -20,7 +20,8 @@ data class Config(
     var onlyForPlayers: Boolean = true,
     var extraCollisionDetectionRange: Double = 0.5,
     var allowJumpKeybind: Boolean = false,
-    var keybindJumpHeightMultiplier: Double = 1.5
+    var keybindJumpHeightMultiplier: Double = 1.5,
+    var onlyKeybindJumpOnGroundOrWater: Boolean = true
 ) : CustomPacketPayload {
     companion object {
         @Transient
@@ -41,7 +42,8 @@ data class Config(
                         buf.readBoolean(),
                         buf.readDouble(),
                         buf.readBoolean(),
-                        buf.readDouble()
+                        buf.readDouble(),
+                        buf.readBoolean()
                     )
                 }
 
@@ -59,6 +61,7 @@ data class Config(
                     buf.writeDouble(config.extraCollisionDetectionRange)
                     buf.writeBoolean(config.allowJumpKeybind)
                     buf.writeDouble(config.keybindJumpHeightMultiplier)
+                    buf.writeBoolean(config.onlyKeybindJumpOnGroundOrWater)
                 }
             }
     }
@@ -98,6 +101,18 @@ fun migrate(tree: JsonElement, version: Int?): Config? {
             jsonObject["boostOnWater"]?.jsonPrimitive?.booleanOrNull ?: return null,
             jsonObject["onlyForPlayers"]?.jsonPrimitive?.booleanOrNull ?: return null,
             jsonObject["extraCollisionDetectionRange"]?.jsonPrimitive?.doubleOrNull ?: return null
+        )
+        5 -> Config(
+            jsonObject["stepHeight"]?.jsonPrimitive?.floatOrNull ?: return null,
+            jsonObject["playerEjectTicks"]?.jsonPrimitive?.floatOrNull ?: return null,
+            jsonObject["boostUnderwater"]?.jsonPrimitive?.booleanOrNull ?: return null,
+            jsonObject["boostOnBlocks"]?.jsonPrimitive?.booleanOrNull ?: return null,
+            jsonObject["boostOnIce"]?.jsonPrimitive?.booleanOrNull ?: return null,
+            jsonObject["boostOnWater"]?.jsonPrimitive?.booleanOrNull ?: return null,
+            jsonObject["onlyForPlayers"]?.jsonPrimitive?.booleanOrNull ?: return null,
+            jsonObject["extraCollisionDetectionRange"]?.jsonPrimitive?.doubleOrNull ?: return null,
+            jsonObject["allowJumpKeybind"]?.jsonPrimitive?.booleanOrNull ?: return null,
+            jsonObject["keybindJumpHeightMultiplier"]?.jsonPrimitive?.doubleOrNull ?: return null
         )
         else -> null
     }

@@ -1,6 +1,5 @@
 package dev.nyon.bbm.config
 
-/*? if fabric {*/
 import dev.isxander.yacl3.dsl.*
 import dev.nyon.konfig.config.saveConfig
 import net.minecraft.client.gui.screens.Screen
@@ -86,8 +85,15 @@ fun generateYaclScreen(parent: Screen?): Screen = YetAnotherConfigLib("bbm") {
                 addDefaultText(1)
             }
         }
+
+        val onlyKeybindJumpOnGroundOrWater by rootOptions.registering {
+            binding(true, { config.onlyKeybindJumpOnGroundOrWater }, { config.onlyKeybindJumpOnGroundOrWater = it })
+            controller = tickBox()
+            descriptionBuilder {
+                addDefaultText(1)
+            }
+        }
     }
 
     save { saveConfig(config) }
 }.generateScreen(parent)
-/*?}*/

@@ -1,6 +1,7 @@
 package dev.nyon.bbm
 
 import com.mojang.blaze3d.platform.InputConstants
+import dev.nyon.bbm.config.getActiveConfig
 //? if fabric
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 //? if neoforge
@@ -16,7 +17,7 @@ object KeyBindings {
     }
 
     fun handleKeyBindings() {
-        if (jumpKeyBind.isDown) {
+        if (jumpKeyBind.isDown && getActiveConfig()?.allowJumpKeybind == true) {
             /*? if fabric {*/
             ClientPlayNetworking.send(PressJumpKeybindingPacket)
             /*?} else {*/
