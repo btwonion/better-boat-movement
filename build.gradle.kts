@@ -50,6 +50,7 @@ repositories {
     mavenCentral()
     maven("https://maven.terraformersmc.com")
     maven("https://maven.quiltmc.org/repository/release/")
+    maven("https://thedarkcolour.github.io/KotlinForForge/")
     maven("https://repo.nyon.dev/releases")
     maven("https://maven.isxander.dev/releases")
     maven("https://maven.neoforged.net/releases/")
