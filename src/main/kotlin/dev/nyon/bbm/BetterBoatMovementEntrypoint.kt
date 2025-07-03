@@ -2,6 +2,7 @@ package dev.nyon.bbm
 
 import dev.nyon.bbm.config.Config
 import dev.nyon.bbm.config.config
+import dev.nyon.bbm.config.generateYaclScreen
 import dev.nyon.bbm.config.migrate
 import dev.nyon.bbm.config.serverConfig
 import dev.nyon.konfig.config.config
@@ -54,9 +55,11 @@ object BetterBoatMovementEntrypoint : ModInitializer {
 /*import dev.nyon.klf.MOD_BUS
 import net.minecraft.server.level.ServerPlayer
 import net.neoforged.api.distmarker.Dist
+import net.neoforged.fml.ModLoadingContext
 import net.neoforged.fml.common.Mod
 import net.neoforged.fml.loading.FMLLoader
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent
+import net.neoforged.neoforge.client.gui.IConfigScreenFactory
 import net.neoforged.neoforge.common.NeoForge
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent
@@ -71,6 +74,10 @@ object BetterBoatMovementEntrypoint {
         setupNetworking()
         MOD_BUS.addListener<RegisterKeyMappingsEvent> {
             it.register(KeyBindings.jumpKeyBind)
+        }
+
+        ModLoadingContext.get().registerExtensionPoint(IConfigScreenFactory::class.java) {
+            IConfigScreenFactory { _, parent -> generateYaclScreen(parent) }
         }
     }
 

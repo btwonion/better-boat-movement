@@ -30,7 +30,8 @@
         "onlyForPlayers": true, // Toggles, whether a boat should only be boosted when carrying a player
         "extraCollisionDetectionRange": 0.5, // Changes the detection range of a collision. Increasing this will boost a boat x blocks before actually touching the block it approaches.
         "allowJumpKeybind": false, // Toggles, whether a player should be able to jump with a boat via a keybind
-        "keybindJumpHeightMultiplier": 1.5 // Specifies the multiplier that will be applied to the jump height when a player uses the keybind to jump
+        "keybindJumpHeightMultiplier": 1.5, // Specifies the multiplier that will be applied to the jump height when a player uses the keybind to jump
+        "onlyKeybindJumpOnGroundOrWater": false // Decides whether you are allowed to jump mid-air by keybind or not.
     }
 }
 ```

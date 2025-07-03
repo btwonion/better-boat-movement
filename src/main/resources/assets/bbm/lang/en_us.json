@@ -21,6 +21,8 @@
     "yacl3.config.bbm.category.general.root.option.allowJumpKeybind.description": "Toggles, whether a player should be able to jump with a boat via a keybind.",
     "yacl3.config.bbm.category.general.root.option.keybindJumpHeightMultiplier": "Keybind jump height multiplier",
     "yacl3.config.bbm.category.general.root.option.keybindJumpHeightMultiplier.description": "Specifies the multiplier that will be applied to the jump height when a player uses the keybind to jump.",
+    "yacl3.config.bbm.category.general.root.option.onlyKeybindJumpOnGroundOrWater": "Only jump by keybind on ground or water",
+    "yacl3.config.bbm.category.general.root.option.onlyKeybindJumpOnGroundOrWater.description": "Decides whether you are allowed to jump mid-air by keybind or not.",
     "key.bbm.category": "Better Boat Movement",
     "key.bbm.jump": "Boat Jump"
 }

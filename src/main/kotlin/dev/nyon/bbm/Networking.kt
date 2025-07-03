@@ -33,10 +33,11 @@ object PressJumpKeybindingPacket : CustomPacketPayload {
     }
 
     fun handlePacket(player: Player) {
+        if (getActiveConfig()?.allowJumpKeybind == false) return
         val vehicle = player.vehicle ?: return
         val boat = vehicle as? ThisIsMyBoat ?: return
         val config = getActiveConfig() ?: return
-        if ((!boat.onGround() && !boat.isInWater && !boat.isUnderWater) || boat.isInPowderSnow) return
+        if (getActiveConfig()?.onlyKeybindJumpOnGroundOrWater == true && !boat.onGround() && !boat.isInWater && !boat.isUnderWater) return
         boat.addDeltaMovement(Vec3(0.0, config.stepHeight.toDouble() * config.keybindJumpHeightMultiplier, 0.0))
     }
 }
