@@ -1,6 +1,5 @@
 package dev.nyon.bbm.asm;
 
-import dev.nyon.bbm.KeyBindings;
 import dev.nyon.bbm.config.ConfigKt;
 import net.minecraft.client.Minecraft;
 import org.spongepowered.asm.mixin.Mixin;
@@ -17,13 +16,5 @@ public class MinecraftMixin {
     )
     private void saveConfig(CallbackInfo ci) {
         ConfigKt.saveConfig();
-    }
-
-    @Inject(
-        method = "tick",
-        at = @At("TAIL")
-    )
-    public void onTick(CallbackInfo ci) {
-        KeyBindings.INSTANCE.handleKeyBindings();
     }
 }

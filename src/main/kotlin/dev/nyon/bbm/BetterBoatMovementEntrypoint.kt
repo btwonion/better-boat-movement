@@ -2,7 +2,6 @@ package dev.nyon.bbm
 
 import dev.nyon.bbm.config.Config
 import dev.nyon.bbm.config.config
-import dev.nyon.bbm.config.generateYaclScreen
 import dev.nyon.bbm.config.migrate
 import dev.nyon.bbm.config.serverConfig
 import dev.nyon.konfig.config.config
@@ -28,7 +27,6 @@ object BetterBoatMovementEntrypoint : ModInitializer {
 
     private fun setupNetworking() {
         PayloadTypeRegistry.playS2C().register(Config.packetType, Config.codec)
-        PayloadTypeRegistry.playC2S().register(PressJumpKeybindingPacket.packetType, PressJumpKeybindingPacket.codec)
 
         ClientPlayConnectionEvents.INIT.register { _, _ ->
             ClientPlayNetworking.registerGlobalReceiver(Config.packetType) { packet, _ ->
@@ -41,9 +39,6 @@ object BetterBoatMovementEntrypoint : ModInitializer {
         }
 
         serverConfig = config
-        ServerPlayNetworking.registerGlobalReceiver(PressJumpKeybindingPacket.packetType) { _, context ->
-            PressJumpKeybindingPacket.handlePacket(context.player())
-        }
 
         ServerPlayConnectionEvents.INIT.register { handler, _ ->
             ServerPlayNetworking.send(handler.player, config)
@@ -52,7 +47,8 @@ object BetterBoatMovementEntrypoint : ModInitializer {
 }
 
 /*?} else if neoforge {*/
-/*import dev.nyon.klf.MOD_BUS
+/*import dev.nyon.bbm.config.generateYaclScreen
+import dev.nyon.klf.MOD_BUS
 import net.minecraft.server.level.ServerPlayer
 import net.neoforged.api.distmarker.Dist
 import net.neoforged.fml.ModLoadingContext
@@ -89,14 +85,6 @@ object BetterBoatMovementEntrypoint {
                     serverConfig = config
                 }, { _, _ -> }
             ))
-            registrar.playToServer(PressJumpKeybindingPacket.packetType, PressJumpKeybindingPacket.codec,
-                DirectionalPayloadHandler(
-                    { _, _ -> },
-                    { _, context ->
-                        PressJumpKeybindingPacket.handlePacket(context.player())
-                    }
-                )
-            )
         }
 
         when (FMLLoader.getDist()) {

@@ -1,3 +1,4 @@
 - add config screen to neoforge again
 - actually enforce jump keybind rule on server
-- add an option to jump not only on ground
+- add an option to jump not only on the ground
+- drastically improve jump keybind handling

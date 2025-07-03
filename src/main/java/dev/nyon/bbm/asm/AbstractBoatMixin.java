@@ -2,6 +2,7 @@ package dev.nyon.bbm.asm;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import dev.nyon.bbm.BbmBoat;
+import dev.nyon.bbm.KeyBindings;
 import dev.nyon.bbm.config.Config;
 import dev.nyon.bbm.config.ConfigKt;
 import net.minecraft.core.BlockPos;
@@ -19,7 +20,9 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Constant;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -138,6 +141,23 @@ public class AbstractBoatMixin implements BbmBoat {
         Config config = ConfigKt.getActiveConfig();
         if (config == null) return constant;
         return config.getPlayerEjectTicks();
+    }
+
+    @Inject(
+        method = "tick",
+        at = @At("HEAD")
+    )
+    private void triggerJump(CallbackInfo ci) {
+        Config config = ConfigKt.getActiveConfig();
+        if (config == null) return;
+        if (!KeyBindings.INSTANCE.getJumpKeyBind().isDown() || !config.getAllowJumpKeybind()) return;
+        if (
+            config.getOnlyKeybindJumpOnGroundOrWater()
+                && !instance.onGround()
+                && !instance.isInWater()
+                && !instance.isUnderWater()
+        ) return;
+        instance.addDeltaMovement(new Vec3(0.0, config.getStepHeight() * config.getKeybindJumpHeightMultiplier(), 0.0));
     }
 
     @Unique
