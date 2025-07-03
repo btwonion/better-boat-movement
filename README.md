@@ -1,21 +1,29 @@
 # Better Boat Movement
 
-> Improves (ice) boating by allowing you to step up blocks
+**Jump your boat! Adds the ability to jump with boats and customize some boat behavior for a more dynamic water adventure.**  
+Take control of your voyage with new boat-jumping mechanics and personalizable settings!
 
-## Features
+---
 
-**Ice Boating preview**
+## ✨ Features
+
+- 🦘 **Boat Jumping**: Make your boat leap out of the water by pressing a key or by approaching obstacles.
+- 🗝 **Customizable Keybind**: Assign your preferred key for jumping with your boat.
+- ⚙️ **Adjustable Behavior**: Fine-tune how boat jumping works to best fit your play style.
+- 🌊 **Multiplayer Friendly**: Works perfectly on both servers and singleplayer.
+
+---
+
+## 🎬 Demo - See the boat jump
+
 *Settings: stepHeight = 0.4, extraCollisionDetectionRange = 2.0*
 ![Ice Boating preview](https://raw.githubusercontent.com/btwonion/better-boat-movement/refs/heads/master/media/bbm-ice-boating.webp)
 
-- change boat stepHeight to move up blocks
-- change collision detection range to step up blocks without getting stopped at high speeds
-- use hotkey to manually jump with the boat (by default: `h`)
+---
 
-## Configuration
+## ⚙️ Configuration
 
-<details>
-<summary>/config/better-boat-movement.json</summary>
+Configure your boat-jumping experience via `/config/better-boat-movement.json`:
 
 ```json5
 {
@@ -36,13 +44,18 @@
 }
 ```
 
-</details>
+Changes require a server or game restart to take effect.
 
-## Note
+---
 
-Prior to v1.1.1 it is possible to get flagged by anti-cheat on multiplayer servers.
+### ℹ️ Note on Multiplayer Safety
+
+Prior to v1.1.1 it is possible to get flagged by anti-cheat on multiplayer servers.  
 Please use v1.1.1 or higher to be on the safe side.
 
-### Other
+---
 
-If you need help with any of my mods, join my [discord server](https://nyon.dev/discord).
+## 💬 Support & Feedback
+
+- Open an [issue](https://github.com/btwonion/better-boat-movement/issues) for bugs or suggestions.
+- Join our [Discord](https://nyon.dev/discord) for help and community.
