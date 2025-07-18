@@ -12,16 +12,6 @@ plugins {
 }
 stonecutter active "1.21.3-fabric" /* [SC] DO NOT EDIT */
 
-stonecutter registerChiseled tasks.register("buildAllVersions", stonecutter.chiseled) {
-    group = "mod"
-    ofTask("build")
-}
-
-stonecutter registerChiseled tasks.register("releaseAllVersions", stonecutter.chiseled) {
-    group = "mod"
-    ofTask("releaseMod")
-}
-
 private data class Field(val name: String, val value: String, val inline: Boolean)
 
 private data class Embed(

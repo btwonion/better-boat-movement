@@ -30,7 +30,7 @@ base {
 
 stonecutter {
     listOf("neoforge", "fabric").map { it to (loader.name.lowercase() == it) }
-        .forEach { (name, isCurrent) -> const(name, isCurrent) }
+        .forEach { (name, isCurrent) -> constants[name] = isCurrent }
 }
 
 val mixinsFile = property("mod.mixins").toString()
