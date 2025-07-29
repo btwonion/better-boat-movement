@@ -61,7 +61,11 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedInEven
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent
 import net.neoforged.neoforge.network.PacketDistributor
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent
+//? if <1.21.7 {
 import net.neoforged.neoforge.network.handling.DirectionalPayloadHandler
+//?} else {
+/^import net.neoforged.neoforge.client.network.event.RegisterClientPayloadHandlersEvent
+^///?}
 
 @Mod("bbm")
 object BetterBoatMovementEntrypoint {
@@ -80,11 +84,15 @@ object BetterBoatMovementEntrypoint {
     private fun setupNetworking() {
         MOD_BUS.addListener<RegisterPayloadHandlersEvent> { event ->
             val registrar = event.registrar("bbm").versioned("6")
+            //? if <1.21.7 {
             registrar.playToClient(Config.packetType, Config.codec, DirectionalPayloadHandler(
                 { config, _ ->
                     serverConfig = config
                 }, { _, _ -> }
             ))
+            //?} else {
+            /^registrar.playToClient(Config.packetType, Config.codec)
+            ^///?}
         }
 
         when (FMLLoader.getDist()) {
@@ -98,6 +106,16 @@ object BetterBoatMovementEntrypoint {
             }
 
             Dist.CLIENT -> {
+                //? if >=1.21.7 {
+                /^MOD_BUS.addListener<RegisterClientPayloadHandlersEvent> { event ->
+                    event.register(
+                        Config.packetType
+                    ) { config, _ ->
+                        serverConfig = config
+                    }
+                }
+                ^///?}
+
                 NeoForge.EVENT_BUS.addListener<PlayerLoggedOutEvent> {
                     serverConfig = null
                 }

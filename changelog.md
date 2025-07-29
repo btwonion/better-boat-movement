@@ -1,4 +1,2 @@
-- add config screen to neoforge again
-- actually enforce jump keybind rule on server
-- add an option to jump not only on the ground
-- drastically improve jump keybind handling
+- add support for 1.21.7, 1.21.8 on NeoForge
+- do not mark yacl as required on NeoForge
