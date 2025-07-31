@@ -9,39 +9,39 @@ import dev.nyon.konfig.config.loadConfig
 import java.nio.file.Path
 
 /*? if fabric {*/
+import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.api.ModInitializer
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking
 import net.fabricmc.loader.api.FabricLoader
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
 
-object BetterBoatMovementEntrypoint : ModInitializer {
+object BetterBoatMovementEntrypoint : ModInitializer, ClientModInitializer {
     override fun onInitialize() {
         instantiateConfig(FabricLoader.getInstance().configDir.resolve("better-boat-movement.json"))
-        setupNetworking()
-        KeyBindingHelper.registerKeyBinding(KeyBindings.jumpKeyBind)
-    }
 
-    private fun setupNetworking() {
         PayloadTypeRegistry.playS2C().register(Config.packetType, Config.codec)
-
-        ClientPlayConnectionEvents.INIT.register { _, _ ->
-            ClientPlayNetworking.registerGlobalReceiver(Config.packetType) { packet, _ ->
-                serverConfig = packet
-            }
-        }
-
-        ClientPlayConnectionEvents.DISCONNECT.register { _, _ ->
-            serverConfig = null
-        }
-
         serverConfig = config
 
         ServerPlayConnectionEvents.INIT.register { handler, _ ->
             ServerPlayNetworking.send(handler.player, config)
+        }
+    }
+
+    override fun onInitializeClient() {
+        KeyBindings.register()
+        setupClientNetworking()
+    }
+
+    private fun setupClientNetworking() {
+        net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents.INIT.register { _, _ ->
+            net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking.registerGlobalReceiver(Config.packetType) { packet, _ ->
+                serverConfig = packet
+            }
+        }
+
+        net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents.DISCONNECT.register { _, _ ->
+            serverConfig = null
         }
     }
 }
@@ -54,34 +54,22 @@ import net.neoforged.api.distmarker.Dist
 import net.neoforged.fml.ModLoadingContext
 import net.neoforged.fml.common.Mod
 import net.neoforged.fml.loading.FMLLoader
-import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent
-import net.neoforged.neoforge.client.gui.IConfigScreenFactory
 import net.neoforged.neoforge.common.NeoForge
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent
 import net.neoforged.neoforge.network.PacketDistributor
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent
-//? if <1.21.7 {
+//? if <1.21.7
 import net.neoforged.neoforge.network.handling.DirectionalPayloadHandler
-//?} else {
-/^import net.neoforged.neoforge.client.network.event.RegisterClientPayloadHandlersEvent
-^///?}
 
 @Mod("bbm")
 object BetterBoatMovementEntrypoint {
     init {
         instantiateConfig(FMLLoader.getGamePath().resolve("config/better-boat-movement.json"))
-        setupNetworking()
-        MOD_BUS.addListener<RegisterKeyMappingsEvent> {
-            it.register(KeyBindings.jumpKeyBind)
-        }
-
-        ModLoadingContext.get().registerExtensionPoint(IConfigScreenFactory::class.java) {
-            IConfigScreenFactory { _, parent -> generateYaclScreen(parent) }
-        }
+        setupDistDependant()
     }
 
-    private fun setupNetworking() {
+    private fun setupDistDependant() {
         MOD_BUS.addListener<RegisterPayloadHandlersEvent> { event ->
             val registrar = event.registrar("bbm").versioned("6")
             //? if <1.21.7 {
@@ -106,8 +94,13 @@ object BetterBoatMovementEntrypoint {
             }
 
             Dist.CLIENT -> {
+                ModLoadingContext.get().registerExtensionPoint(net.neoforged.neoforge.client.gui.IConfigScreenFactory::class.java) {
+                    net.neoforged.neoforge.client.gui.IConfigScreenFactory { _, parent -> generateYaclScreen(parent) }
+                }
+
+                KeyBindings.register()
                 //? if >=1.21.7 {
-                /^MOD_BUS.addListener<RegisterClientPayloadHandlersEvent> { event ->
+                /^MOD_BUS.addListener<net.neoforged.neoforge.client.network.event.RegisterClientPayloadHandlersEvent> { event ->
                     event.register(
                         Config.packetType
                     ) { config, _ ->

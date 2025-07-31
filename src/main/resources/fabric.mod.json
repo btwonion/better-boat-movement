@@ -33,6 +33,12 @@
                 "value": "dev.nyon.bbm.BetterBoatMovementEntrypoint"
             }
         ],
+        "client": [
+            {
+                "adapter": "kotlin",
+                "value": "dev.nyon.bbm.BetterBoatMovementEntrypoint"
+            }
+        ],
         "modmenu": [
             {
                 "adapter": "kotlin",

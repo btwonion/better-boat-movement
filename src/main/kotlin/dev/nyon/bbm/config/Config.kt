@@ -1,10 +1,10 @@
 package dev.nyon.bbm.config
 
+import dev.nyon.bbm.extensions.isClient
 import dev.nyon.bbm.extensions.resourceLocation
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import kotlinx.serialization.json.*
-import net.minecraft.client.Minecraft
 import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
@@ -79,7 +79,7 @@ val platform = /*? if fabric {*/
 
 fun getActiveConfig(): Config? {
     if (platform.contains("server")) return config
-    if (Minecraft.getInstance().isSingleplayer) return config
+    if (isClient && net.minecraft.client.Minecraft.getInstance().isSingleplayer) return config
     return serverConfig
 }
 

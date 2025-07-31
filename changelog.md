@@ -1,2 +1,1 @@
-- add support for 1.21.7, 1.21.8 on NeoForge
-- do not mark yacl as required on NeoForge
+- remove client related code from dedicated server code that caused the game to crash - fix [#15](https://github.com/btwonion/better-boat-movement/issues/15)
