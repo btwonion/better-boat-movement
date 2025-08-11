@@ -1,1 +1,1 @@
-- remove client related code from dedicated server code that caused the game to crash - fix [#15](https://github.com/btwonion/better-boat-movement/issues/15)
+- fix crash on <=1.21.3 servers [#16](https://github.com/btwonion/better-boat-movement/issues/16)

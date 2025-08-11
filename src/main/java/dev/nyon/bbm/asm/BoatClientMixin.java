@@ -23,7 +23,8 @@ public abstract class BoatClientMixin extends Entity {
         super(type, world);
     }
 
-    @Inject(
+    /*? if <1.21.3 {*/
+    /*@Inject(
         method = "tick",
         at = @At("HEAD")
     )
@@ -40,4 +41,5 @@ public abstract class BoatClientMixin extends Entity {
         ) return;
         addDeltaMovement(new Vec3(0.0, config.getStepHeight() * config.getKeybindJumpHeightMultiplier(), 0.0));
     }
+    *//*?}*/
 }
