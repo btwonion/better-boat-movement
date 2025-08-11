@@ -9,7 +9,7 @@ import dev.nyon.konfig.config.loadConfig
 import java.nio.file.Path
 
 /*? if fabric {*/
-import net.fabricmc.api.ClientModInitializer
+/*import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents
@@ -46,8 +46,8 @@ object BetterBoatMovementEntrypoint : ModInitializer, ClientModInitializer {
     }
 }
 
-/*?} else if neoforge {*/
-/*import dev.nyon.bbm.config.generateYaclScreen
+*//*?} else if neoforge {*/
+import dev.nyon.bbm.config.generateYaclScreen
 import dev.nyon.klf.MOD_BUS
 import net.minecraft.server.level.ServerPlayer
 import net.neoforged.api.distmarker.Dist
@@ -60,7 +60,7 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedOutEve
 import net.neoforged.neoforge.network.PacketDistributor
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent
 //? if <1.21.7
-import net.neoforged.neoforge.network.handling.DirectionalPayloadHandler
+/*import net.neoforged.neoforge.network.handling.DirectionalPayloadHandler*/
 
 @Mod("bbm")
 object BetterBoatMovementEntrypoint {
@@ -73,14 +73,14 @@ object BetterBoatMovementEntrypoint {
         MOD_BUS.addListener<RegisterPayloadHandlersEvent> { event ->
             val registrar = event.registrar("bbm").versioned("6")
             //? if <1.21.7 {
-            registrar.playToClient(Config.packetType, Config.codec, DirectionalPayloadHandler(
+            /*registrar.playToClient(Config.packetType, Config.codec, DirectionalPayloadHandler(
                 { config, _ ->
                     serverConfig = config
                 }, { _, _ -> }
             ))
-            //?} else {
-            /^registrar.playToClient(Config.packetType, Config.codec)
-            ^///?}
+            *///?} else {
+            registrar.playToClient(Config.packetType, Config.codec)
+            //?}
         }
 
         when (FMLLoader.getDist()) {
@@ -100,14 +100,14 @@ object BetterBoatMovementEntrypoint {
 
                 KeyBindings.register()
                 //? if >=1.21.7 {
-                /^MOD_BUS.addListener<net.neoforged.neoforge.client.network.event.RegisterClientPayloadHandlersEvent> { event ->
+                MOD_BUS.addListener<net.neoforged.neoforge.client.network.event.RegisterClientPayloadHandlersEvent> { event ->
                     event.register(
                         Config.packetType
                     ) { config, _ ->
                         serverConfig = config
                     }
                 }
-                ^///?}
+                //?}
 
                 NeoForge.EVENT_BUS.addListener<PlayerLoggedOutEvent> {
                     serverConfig = null
@@ -117,7 +117,7 @@ object BetterBoatMovementEntrypoint {
         }
     }
 }
-*//*?}*/
+/*?}*/
 
 private fun instantiateConfig(path: Path) {
     config(

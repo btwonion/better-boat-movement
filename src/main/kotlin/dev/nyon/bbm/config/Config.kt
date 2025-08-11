@@ -74,8 +74,8 @@ data class Config(
 lateinit var config: Config
 
 val platform = /*? if fabric {*/
-    net.fabricmc.loader.api.FabricLoader.getInstance().environmentType.toString().lowercase() /*?} else {*/
-    /*net.neoforged.fml.loading.FMLLoader.getDist().toString().lowercase() *//*?}*/
+    /*net.fabricmc.loader.api.FabricLoader.getInstance().environmentType.toString().lowercase() *//*?} else {*/
+    net.neoforged.fml.loading.FMLLoader.getDist().toString().lowercase() /*?}*/
 
 fun getActiveConfig(): Config? {
     if (platform.contains("server")) return config

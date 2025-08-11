@@ -49,7 +49,7 @@ abstract class BoatMixin extends Entity implements BbmBoat {
     }
 
     /*? if <1.21.3 {*/
-    @Shadow
+    /*@Shadow
     private Boat.Status status;
 
     @Unique
@@ -153,5 +153,5 @@ abstract class BoatMixin extends Entity implements BbmBoat {
         return getPassengers().stream()
             .noneMatch(entity -> entity instanceof Player);
     }
-    /*?}*/
+    *//*?}*/
 }
