@@ -1,1 +1,2 @@
-- fix crash on <=1.21.3 servers [#16](https://github.com/btwonion/better-boat-movement/issues/16)
+- update to 1.21.9
+- fix extraCollisionRange option

@@ -1,7 +1,7 @@
 package dev.nyon.bbm.asm;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import dev.nyon.bbm.BbmBoat;
+import dev.nyon.bbm.logic.BbmBoat;
 import dev.nyon.bbm.config.Config;
 import dev.nyon.bbm.config.ConfigKt;
 import net.minecraft.core.BlockPos;
@@ -91,6 +91,7 @@ public class AbstractBoatMixin implements BbmBoat {
     )
     private Vec3 changeMovement(Vec3 original) {
         if (failsPlayerCondition()) return original;
+        BbmBoat bbmBoat = (BbmBoat) instance;
 
         switch (status) {
             case ON_LAND -> {
@@ -103,12 +104,12 @@ public class AbstractBoatMixin implements BbmBoat {
                     if (carryingBlocks.stream()
                         .noneMatch(state -> state.is(BlockTags.ICE))) return original;
                 }
-                if (!jumpCollision && !instance.horizontalCollision) return original;
+                if (!bbmBoat.getJumpCollision() && !instance.horizontalCollision) return original;
             }
             case IN_WATER -> {
                 if (!ConfigKt.getActiveConfig()
                     .getBoostOnWater()) return original;
-                if (!jumpCollision && !instance.horizontalCollision) return original;
+                if (!bbmBoat.getJumpCollision() && !instance.horizontalCollision) return original;
             }
             case UNDER_WATER, UNDER_FLOWING_WATER -> {
                 if (!ConfigKt.getActiveConfig()
@@ -119,6 +120,7 @@ public class AbstractBoatMixin implements BbmBoat {
             }
         }
 
+        bbmBoat.setJumpCollision(false);
         return new Vec3(
             original.x,
             ConfigKt.getActiveConfig()

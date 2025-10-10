@@ -1,15 +1,20 @@
 package dev.nyon.bbm.asm;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import dev.nyon.bbm.BbmBoat;
+import dev.nyon.bbm.extensions.NetworkingKt;
+import dev.nyon.bbm.logic.BbmBoat;
 import dev.nyon.bbm.config.Config;
 import dev.nyon.bbm.config.ConfigKt;
+import dev.nyon.bbm.logic.JumpCollisionPacket;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 //? if >=1.21.3
 import net.minecraft.world.entity.vehicle.AbstractBoat;
-import net.minecraft.world.entity.vehicle.Boat;
+//? if <1.21.3
+/*import net.minecraft.world.entity.vehicle.Boat;*/
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -81,9 +86,17 @@ public abstract class EntityMixin {
         expandCollision = true;
         Vec3 withFakeBb = collide(movement);
         expandCollision = false;
-        boolean bl = !Mth.equal(movement.x, withFakeBb.x);
-        boolean bl2 = !Mth.equal(movement.z, withFakeBb.z);
-        bbmBoat.setJumpCollision(bl || bl2);
+        boolean xEqual = Mth.equal(movement.x, withFakeBb.x);
+        boolean zEqual = Mth.equal(movement.z, withFakeBb.z);
+        if (xEqual && zEqual) return original;
+        // Set the jump collision for server executed entities that may control the boat
+        bbmBoat.setJumpCollision(true);
+
+        // Set the jump collision for players controlling the boat
+        LivingEntity controllingPassenger = instance.getControllingPassenger();
+        if (!(controllingPassenger instanceof ServerPlayer player)) return original;
+        var id = /*? if >1.21.3 {*/ instance.getUUID() /*?} else {*/ /*instance.getId() *//*?}*/;
+        NetworkingKt.sendToClient(player, new JumpCollisionPacket(id));
 
         return original;
     }

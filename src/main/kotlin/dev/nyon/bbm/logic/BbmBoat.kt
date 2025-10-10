@@ -1,4 +1,4 @@
-package dev.nyon.bbm
+package dev.nyon.bbm.logic
 
 interface BbmBoat {
     var jumpCollision: Boolean

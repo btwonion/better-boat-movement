@@ -12,13 +12,13 @@ pluginManagement {
 }
 
 plugins {
-    id("dev.kikugie.stonecutter") version "0.7.5"
+    id("dev.kikugie.stonecutter") version "0.7.10"
 }
 
 buildscript {
     repositories { mavenCentral() }
     dependencies {
-        classpath("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1")
+        classpath("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
     }
 }
 
@@ -26,12 +26,14 @@ stonecutter {
     kotlinController = true
     centralScript = "build.gradle.kts"
     shared {
-        vers("1.21-neoforge", "1.21")
-        vers("1.21-fabric", "1.21")
-        vers("1.21.3-neoforge", "1.21.3")
-        vers("1.21.3-fabric", "1.21.3")
-        vers("1.21.7-neoforge", "1.21.7")
-        vcsVersion = "1.21.3-fabric"
+        version("1.21-neoforge", "1.21")
+        version("1.21-fabric", "1.21")
+        version("1.21.3-neoforge", "1.21.3")
+        version("1.21.3-fabric", "1.21.3")
+        version("1.21.7-neoforge", "1.21.7")
+        version("1.21.9-neoforge", "1.21.9")
+        version("1.21.9-fabric", "1.21.9")
+        vcsVersion = "1.21.9-fabric"
     }
     create(rootProject)
 }

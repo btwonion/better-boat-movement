@@ -1,5 +1,6 @@
 package dev.nyon.bbm.config
 
+import dev.nyon.bbm.BetterBoatMovementEntrypoint
 import dev.nyon.bbm.extensions.isClient
 import dev.nyon.bbm.extensions.resourceLocation
 import kotlinx.serialization.Serializable
@@ -74,8 +75,8 @@ data class Config(
 lateinit var config: Config
 
 val platform = /*? if fabric {*/
-    /*net.fabricmc.loader.api.FabricLoader.getInstance().environmentType.toString().lowercase() *//*?} else {*/
-    net.neoforged.fml.loading.FMLLoader.getDist().toString().lowercase() /*?}*/
+    net.fabricmc.loader.api.FabricLoader.getInstance().environmentType.toString().lowercase() /*?} else {*/
+    /*BetterBoatMovementEntrypoint.dist.toString().lowercase() *//*?}*/
 
 fun getActiveConfig(): Config? {
     if (platform.contains("server")) return config
