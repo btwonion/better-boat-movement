@@ -1,2 +1,1 @@
-- update to 1.21.9
-- fix extraCollisionRange option
+- fix error in console on NeoForge, when JumpCollisionPacket should have been sent, but Config packet was sent
