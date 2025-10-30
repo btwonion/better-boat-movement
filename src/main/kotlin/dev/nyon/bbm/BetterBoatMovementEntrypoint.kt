@@ -4,6 +4,7 @@ import dev.nyon.bbm.config.Config
 import dev.nyon.bbm.config.config
 import dev.nyon.bbm.config.migrate
 import dev.nyon.bbm.config.serverConfig
+import dev.nyon.bbm.extensions.isClient
 import dev.nyon.bbm.extensions.sendToClient
 import dev.nyon.bbm.logic.JumpCollisionPacket
 import dev.nyon.konfig.config.config
@@ -20,10 +21,10 @@ import net.fabricmc.loader.api.FabricLoader
 object BetterBoatMovementEntrypoint : ModInitializer, ClientModInitializer {
     override fun onInitialize() {
         instantiateConfig(FabricLoader.getInstance().configDir.resolve("better-boat-movement.json"))
+        if (!isClient) serverConfig = config
 
         PayloadTypeRegistry.playS2C().register(Config.packetType, Config.codec)
         PayloadTypeRegistry.playS2C().register(JumpCollisionPacket.packetType, JumpCollisionPacket.codec)
-        serverConfig = config
 
         ServerPlayConnectionEvents.INIT.register { handler, _ ->
             sendToClient(handler.player, config)
