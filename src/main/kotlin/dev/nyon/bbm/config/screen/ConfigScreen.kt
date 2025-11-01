@@ -1,6 +1,7 @@
-package dev.nyon.bbm.config
+package dev.nyon.bbm.config.screen
 
 import dev.isxander.yacl3.dsl.*
+import dev.nyon.bbm.config.config
 import dev.nyon.konfig.config.saveConfig
 import net.minecraft.client.gui.screens.Screen
 

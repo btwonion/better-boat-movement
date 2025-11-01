@@ -1,6 +1,7 @@
 package dev.nyon.bbm.asm;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import dev.nyon.bbm.config.ConfigCacheKt;
 import dev.nyon.bbm.logic.BbmBoat;
 import dev.nyon.bbm.config.Config;
 import dev.nyon.bbm.config.ConfigKt;
@@ -90,8 +91,22 @@ public class AbstractBoatMixin implements BbmBoat {
         )
     )
     private Vec3 changeMovement(Vec3 original) {
-        if (failsPlayerCondition()) return original;
+        Config config = ConfigKt.getActiveConfig();
+        if (config == null) return original;
+        if (failsPlayerCondition(config)) return original;
         BbmBoat bbmBoat = (BbmBoat) instance;
+
+        if (!config.getBoosting().getBoostStates().contains(status)) return original;
+        if (status == AbstractBoat.Status.ON_LAND) {
+            if (!ConfigCacheKt.getAllowedSupportingBlocks().isEmpty()) {
+                List<BlockState> carryingBlocks = getCarryingBlocks();
+                if (carryingBlocks.stream().noneMatch(state -> ConfigCacheKt.getAllowedSupportingBlocks().contains(state.getBlock()))
+                    return original;
+            }
+            if (!ConfigCacheKt.getAllowedCollidingBlocks().isEmpty()) {
+
+            }
+        }
 
         switch (status) {
             case ON_LAND -> {
@@ -143,11 +158,8 @@ public class AbstractBoatMixin implements BbmBoat {
     }
 
     @Unique
-    private boolean failsPlayerCondition() {
-        Config config = ConfigKt.getActiveConfig();
-        if (config == null) return true;
-
-        if (!config.getOnlyForPlayers()) return false;
+    private boolean failsPlayerCondition(Config config) {
+        if (!config.getBoosting().getOnlyForPlayers()) return false;
         return instance.getPassengers().stream()
             .noneMatch(entity -> entity instanceof Player);
     }

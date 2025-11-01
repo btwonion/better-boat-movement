@@ -63,9 +63,9 @@ public abstract class EntityMixin {
             .stream()
             .filter(passenger -> passenger instanceof Player)
             .toList()
-            .isEmpty() && config.getOnlyForPlayers()) return box;
+            .isEmpty() && config.getBoosting().getOnlyForPlayers()) return box;
 
-        return box.inflate(config.getExtraCollisionDetectionRange(), 0, config.getExtraCollisionDetectionRange());
+        return box.inflate(config.getBoosting().getExtraCollisionDetectionRange(), 0, config.getBoosting().getExtraCollisionDetectionRange());
     }
 
     @ModifyExpressionValue(
@@ -79,7 +79,7 @@ public abstract class EntityMixin {
         Vec3 original = collide(movement);
         Config config = ConfigKt.getActiveConfig();
         if (config == null) return original;
-        if (config.getExtraCollisionDetectionRange() == 0.0) return original;
+        if (config.getBoosting().getExtraCollisionDetectionRange() == 0.0) return original;
         if (!(instance instanceof /*? if >=1.21.3 {*/ AbstractBoat boat /*?} else {*/ /*Boat boat *//*?}*/ && instance instanceof BbmBoat bbmBoat)) return original;
         if (!boat.hasControllingPassenger()) return original;
 

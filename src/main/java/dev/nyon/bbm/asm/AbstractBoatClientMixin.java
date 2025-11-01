@@ -32,14 +32,14 @@ public class AbstractBoatClientMixin {
         if (!DistKt.isClient()) return;
         Config config = ConfigKt.getActiveConfig();
         if (config == null) return;
-        if (!KeyBindings.INSTANCE.getJumpKeyBind().isDown() || !config.getAllowJumpKeybind()) return;
+        if (!KeyBindings.INSTANCE.getJumpKeyBind().isDown() || !config.getKeybind().getAllowJumpKeybind()) return;
         if (
-            config.getOnlyKeybindJumpOnGroundOrWater()
+            config.getKeybind().getOnlyKeybindJumpOnGroundOrWater()
                 && !instance.onGround()
                 && !instance.isInWater()
                 && !instance.isUnderWater()
         ) return;
-        instance.addDeltaMovement(new Vec3(0.0, config.getStepHeight() * config.getKeybindJumpHeightMultiplier(), 0.0));
+        instance.addDeltaMovement(new Vec3(0.0, config.getStepHeight() * config.getKeybind().getKeybindJumpHeightMultiplier(), 0.0));
     }
     /*?}*/
 }

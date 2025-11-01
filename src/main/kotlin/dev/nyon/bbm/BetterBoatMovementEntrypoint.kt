@@ -1,8 +1,11 @@
 package dev.nyon.bbm
 
 import dev.nyon.bbm.config.Config
+import dev.nyon.bbm.config.allowedCollidingBlocks
+import dev.nyon.bbm.config.allowedSupportingBlocks
 import dev.nyon.bbm.config.config
-import dev.nyon.bbm.config.migrate
+import dev.nyon.bbm.config.loadBlocks
+import dev.nyon.bbm.config.migrateConfig
 import dev.nyon.bbm.config.serverConfig
 import dev.nyon.bbm.extensions.isClient
 import dev.nyon.bbm.extensions.sendToClient
@@ -14,6 +17,7 @@ import java.nio.file.Path
 /*? if fabric {*/
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.api.ModInitializer
+import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents
 import net.fabricmc.loader.api.FabricLoader
@@ -25,6 +29,11 @@ object BetterBoatMovementEntrypoint : ModInitializer, ClientModInitializer {
 
         PayloadTypeRegistry.playS2C().register(Config.packetType, Config.codec)
         PayloadTypeRegistry.playS2C().register(JumpCollisionPacket.packetType, JumpCollisionPacket.codec)
+
+        CommonLifecycleEvents.TAGS_LOADED.register { _, _ ->
+            allowedSupportingBlocks = loadBlocks(config.boosting.allowedSupportingBlocks)
+            allowedCollidingBlocks = loadBlocks(config.boosting.allowedCollidingBlocks)
+        }
 
         ServerPlayConnectionEvents.INIT.register { handler, _ ->
             sendToClient(handler.player, config)
@@ -54,7 +63,7 @@ object BetterBoatMovementEntrypoint : ModInitializer, ClientModInitializer {
 }
 
 /*?} else if neoforge {*/
-/*import dev.nyon.bbm.config.generateYaclScreen
+/*import dev.nyon.bbm.config.screen.generateYaclScreen
 import dev.nyon.klf.MOD_BUS
 import net.minecraft.server.level.ServerPlayer
 import net.neoforged.api.distmarker.Dist
@@ -138,8 +147,8 @@ object BetterBoatMovementEntrypoint {
 private fun instantiateConfig(path: Path) {
     config(
         path,
-        6,
+        7,
         Config()
-    ) { _, element, version -> migrate(element, version) }
+    ) { _, element, version -> migrateConfig(element, version) }
     config = loadConfig()
 }
