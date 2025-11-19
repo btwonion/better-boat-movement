@@ -42,7 +42,7 @@
         "modmenu": [
             {
                 "adapter": "kotlin",
-                "value": "dev.nyon.bbm.config.ModMenuImpl"
+                "value": "dev.nyon.bbm.config.screen.ModMenuImpl"
             }
         ]
     },

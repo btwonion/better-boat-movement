@@ -1,15 +1,16 @@
 package dev.nyon.bbm.asm;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import dev.nyon.bbm.config.ConfigCacheKt;
 import dev.nyon.bbm.logic.BbmBoat;
 import dev.nyon.bbm.config.Config;
 import dev.nyon.bbm.config.ConfigKt;
 import net.minecraft.core.BlockPos;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 //? if >=1.21.3
 import net.minecraft.world.entity.vehicle.AbstractBoat;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -23,6 +24,7 @@ import org.spongepowered.asm.mixin.injection.ModifyConstant;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @SuppressWarnings("AddedMixinMembersNamePattern")
 @Pseudo
@@ -31,6 +33,9 @@ public class AbstractBoatMixin implements BbmBoat {
 
     @Unique
     private boolean jumpCollision = false;
+
+    @Unique
+    private boolean correctCollision = false;
 
     @Override
     public void setJumpCollision(boolean b) {
@@ -42,13 +47,18 @@ public class AbstractBoatMixin implements BbmBoat {
         return jumpCollision;
     }
 
+    @Override
+    public void setCorrectCollision(boolean b) { correctCollision = b; }
+
+    @Override
+    public boolean getCorrectCollision() { return correctCollision; }
+
     /*? if >=1.21.3 {*/
     @Shadow
     private AbstractBoat.Status status;
     @Unique
     private AbstractBoat instance = (AbstractBoat) (Object) this;
 
-    @SuppressWarnings("resource")
     @Unique
     private List<BlockState> getCarryingBlocks() {
         List<BlockState> states = new ArrayList<>();
@@ -90,37 +100,26 @@ public class AbstractBoatMixin implements BbmBoat {
         )
     )
     private Vec3 changeMovement(Vec3 original) {
-        if (failsPlayerCondition()) return original;
+        Config config = ConfigKt.getActiveConfig();
+        if (config == null) return original;
+        if (failsPlayerCondition(config)) return original;
         BbmBoat bbmBoat = (BbmBoat) instance;
 
-        switch (status) {
-            case ON_LAND -> {
-                if (!ConfigKt.getActiveConfig()
-                    .getBoostOnBlocks() && !ConfigKt.getActiveConfig()
-                    .getBoostOnIce()) return original;
-                if (ConfigKt.getActiveConfig()
-                    .getBoostOnIce()) {
-                    List<BlockState> carryingBlocks = getCarryingBlocks();
-                    if (carryingBlocks.stream()
-                        .noneMatch(state -> state.is(BlockTags.ICE))) return original;
-                }
-                if (!bbmBoat.getJumpCollision() && !instance.horizontalCollision) return original;
-            }
-            case IN_WATER -> {
-                if (!ConfigKt.getActiveConfig()
-                    .getBoostOnWater()) return original;
-                if (!bbmBoat.getJumpCollision() && !instance.horizontalCollision) return original;
-            }
-            case UNDER_WATER, UNDER_FLOWING_WATER -> {
-                if (!ConfigKt.getActiveConfig()
-                    .getBoostUnderwater()) return original;
-            }
-            case IN_AIR -> {
-                return original;
+        if (!config.getBoosting().getBoostStates().contains(status)) return original;
+        if (!ConfigCacheKt.getAllowedCollidingBlocks().isEmpty() && !bbmBoat.getCorrectCollision()) return original;
+        if (status == AbstractBoat.Status.ON_LAND) {
+            Set<Block> allowedBlocks = ConfigCacheKt.getAllowedSupportingBlocks();
+            if (!allowedBlocks.isEmpty()) {
+                List<BlockState> carryingBlocks = getCarryingBlocks();
+                if (carryingBlocks.stream().noneMatch(state -> allowedBlocks.contains(state.getBlock())))
+                    return original;
             }
         }
 
+        if (!bbmBoat.getJumpCollision() && !instance.horizontalCollision) return original;
+
         bbmBoat.setJumpCollision(false);
+        bbmBoat.setCorrectCollision(false);
         return new Vec3(
             original.x,
             ConfigKt.getActiveConfig()
@@ -143,11 +142,8 @@ public class AbstractBoatMixin implements BbmBoat {
     }
 
     @Unique
-    private boolean failsPlayerCondition() {
-        Config config = ConfigKt.getActiveConfig();
-        if (config == null) return true;
-
-        if (!config.getOnlyForPlayers()) return false;
+    private boolean failsPlayerCondition(Config config) {
+        if (!config.getBoosting().getOnlyForPlayers()) return false;
         return instance.getPassengers().stream()
             .noneMatch(entity -> entity instanceof Player);
     }

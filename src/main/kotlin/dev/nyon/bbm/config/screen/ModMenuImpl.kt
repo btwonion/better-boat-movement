@@ -1,4 +1,4 @@
-package dev.nyon.bbm.config
+package dev.nyon.bbm.config.screen
 
 /*? if fabric {*/
 import com.terraformersmc.modmenu.api.ConfigScreenFactory

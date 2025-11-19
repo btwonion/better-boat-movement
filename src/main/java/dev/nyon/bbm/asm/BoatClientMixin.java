@@ -1,5 +1,6 @@
 package dev.nyon.bbm.asm;
 
+import dev.nyon.bbm.KeyBindings;
 import dev.nyon.bbm.config.Config;
 import dev.nyon.bbm.config.ConfigKt;
 import dev.nyon.bbm.extensions.DistKt;
@@ -32,14 +33,14 @@ public abstract class BoatClientMixin extends Entity {
         if (!DistKt.isClient()) return;
         Config config = ConfigKt.getActiveConfig();
         if (config == null) return;
-        if (!dev.nyon.bbm.KeyBindings.INSTANCE.getJumpKeyBind().isDown() || !config.getAllowJumpKeybind()) return;
+        if (!KeyBindings.INSTANCE.getJumpKeyBind().isDown() || !config.getKeybind().getAllowJumpKeybind()) return;
         if (
-            config.getOnlyKeybindJumpOnGroundOrWater()
+            config.getKeybind().getOnlyKeybindJumpOnGroundOrWater()
                 && !onGround()
                 && !isInWater()
                 && !isUnderWater()
         ) return;
-        addDeltaMovement(new Vec3(0.0, config.getStepHeight() * config.getKeybindJumpHeightMultiplier(), 0.0));
+        addDeltaMovement(new Vec3(0.0, config.getStepHeight() * config.getKeybind().getKeybindJumpHeightMultiplier(), 0.0));
     }
     *//*?}*/
 }
