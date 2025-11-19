@@ -8,9 +8,9 @@ import net.minecraft.server.level.ServerPlayer
 
 fun sendToClient(player: ServerPlayer, packet: CustomPacketPayload) {
     //? if fabric
-    /*net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.send(player, packet)*/
+    net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.send(player, packet)
     //? if neoforge
-    net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(player, packet)
+    /*net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(player, packet)*/
 }
 
 fun FriendlyByteBuf.writeIdentifierSet(set: MutableSet<Identifier>) {

@@ -10,11 +10,11 @@ object KeyBindings {
 
     fun register() {
         //? if fabric {
-        /*net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper.registerKeyBinding(jumpKeyBind)
-        *///?} else {
-        dev.nyon.klf.MOD_BUS.addListener<net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent> {
+        net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper.registerKeyBinding(jumpKeyBind)
+        //?} else {
+        /*dev.nyon.klf.MOD_BUS.addListener<net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent> {
             it.register(jumpKeyBind)
         }
-        //?}
+        *///?}
     }
 }
