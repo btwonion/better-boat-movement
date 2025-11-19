@@ -2,10 +2,9 @@ package dev.nyon.bbm
 
 import dev.nyon.bbm.config.Config
 import dev.nyon.bbm.config.allowedCollidingBlocks
-import dev.nyon.bbm.config.allowedSupportingBlocks
 import dev.nyon.bbm.config.config
-import dev.nyon.bbm.config.loadBlocks
 import dev.nyon.bbm.config.migrateConfig
+import dev.nyon.bbm.config.reloadCache
 import dev.nyon.bbm.config.serverConfig
 import dev.nyon.bbm.extensions.isClient
 import dev.nyon.bbm.extensions.sendToClient
@@ -15,7 +14,7 @@ import dev.nyon.konfig.config.loadConfig
 import java.nio.file.Path
 
 /*? if fabric {*/
-import net.fabricmc.api.ClientModInitializer
+/*import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry
@@ -31,8 +30,7 @@ object BetterBoatMovementEntrypoint : ModInitializer, ClientModInitializer {
         PayloadTypeRegistry.playS2C().register(JumpCollisionPacket.packetType, JumpCollisionPacket.codec)
 
         CommonLifecycleEvents.TAGS_LOADED.register { _, _ ->
-            allowedSupportingBlocks = loadBlocks(config.boosting.allowedSupportingBlocks)
-            allowedCollidingBlocks = loadBlocks(config.boosting.allowedCollidingBlocks)
+            reloadCache()
         }
 
         ServerPlayConnectionEvents.INIT.register { handler, _ ->
@@ -62,8 +60,8 @@ object BetterBoatMovementEntrypoint : ModInitializer, ClientModInitializer {
     }
 }
 
-/*?} else if neoforge {*/
-/*import dev.nyon.bbm.config.screen.generateYaclScreen
+*//*?} else if neoforge {*/
+import dev.nyon.bbm.config.screen.generateYaclScreen
 import dev.nyon.klf.MOD_BUS
 import net.minecraft.server.level.ServerPlayer
 import net.neoforged.api.distmarker.Dist
@@ -72,16 +70,17 @@ import net.neoforged.fml.common.Mod
 import net.neoforged.fml.loading.FMLLoader
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory
 import net.neoforged.neoforge.common.NeoForge
+import net.neoforged.neoforge.event.TagsUpdatedEvent
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent
 //? if <1.21.7
-/^import net.neoforged.neoforge.network.handling.DirectionalPayloadHandler^/
+/*import net.neoforged.neoforge.network.handling.DirectionalPayloadHandler*/
 
 @Mod("bbm")
 object BetterBoatMovementEntrypoint {
-    private val gamePath = /^? if >1.21.8 {^/ FMLLoader.getCurrent().gameDir /^?} else {^/ /^FMLLoader.getGamePath()^//^?}^/
-    val dist: Dist = /^? if >1.21.8 {^/ FMLLoader.getCurrent().dist /^?} else {^/ /^FMLLoader.getDist()^//^?}^/
+    private val gamePath = /*? if >1.21.8 {*/ FMLLoader.getCurrent().gameDir /*?} else {*/ /*FMLLoader.getGamePath()*//*?}*/
+    val dist: Dist = /*? if >1.21.8 {*/ FMLLoader.getCurrent().dist /*?} else {*/ /*FMLLoader.getDist()*//*?}*/
 
     init {
         instantiateConfig(gamePath.resolve("config/better-boat-movement.json"))
@@ -92,7 +91,7 @@ object BetterBoatMovementEntrypoint {
         MOD_BUS.addListener<RegisterPayloadHandlersEvent> { event ->
             val registrar = event.registrar("bbm").versioned("6")
             //? if <1.21.7 {
-            /^registrar.playToClient(Config.packetType, Config.codec, DirectionalPayloadHandler(
+            /*registrar.playToClient(Config.packetType, Config.codec, DirectionalPayloadHandler(
                 { config, _ ->
                     serverConfig = config
                 }, { _, _ -> }
@@ -102,10 +101,14 @@ object BetterBoatMovementEntrypoint {
                     packet.handle(context.player())
                 }, { _, _ -> }
             ))
-            ^///?} else {
+            *///?} else {
             registrar.playToClient(Config.packetType, Config.codec)
             registrar.playToClient(JumpCollisionPacket.packetType, JumpCollisionPacket.codec)
             //?}
+        }
+
+        NeoForge.EVENT_BUS.addListener<TagsUpdatedEvent> {
+            reloadCache()
         }
 
         when (dist) {
@@ -142,7 +145,7 @@ object BetterBoatMovementEntrypoint {
         }
     }
 }
-*//*?}*/
+/*?}*/
 
 private fun instantiateConfig(path: Path) {
     config(

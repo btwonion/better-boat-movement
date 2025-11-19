@@ -83,8 +83,8 @@ data class Config(
 lateinit var config: Config
 
 val platform = /*? if fabric {*/
-    net.fabricmc.loader.api.FabricLoader.getInstance().environmentType.toString()
-        .lowercase() /*?} else {*//*BetterBoatMovementEntrypoint.dist.toString().lowercase() *//*?}*/
+    /*net.fabricmc.loader.api.FabricLoader.getInstance().environmentType.toString()
+        .lowercase() *//*?} else {*/dev.nyon.bbm.BetterBoatMovementEntrypoint.dist.toString().lowercase() /*?}*/
 
 fun getActiveConfig(): Config? {
     if (platform.contains("server")) return config
