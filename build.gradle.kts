@@ -33,7 +33,6 @@ stonecutter {
         .forEach { (name, isCurrent) -> constants[name] = isCurrent }
 }
 
-val mixinsFile = property("mod.mixins").toString()
 loom {
     if (stonecutter.current.isActive) {
         runConfigs.all {
@@ -54,6 +53,18 @@ repositories {
     maven("https://repo.nyon.dev/releases")
     maven("https://maven.isxander.dev/releases")
     maven("https://maven.neoforged.net/releases/")
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = "Modrinth"
+                url = uri("https://api.modrinth.com/maven")
+            }
+        }
+        filter {
+            includeGroup("maven.modrinth")
+        }
+    }
+    maven("https://maven.bawnorton.com/releases")
 }
 
 val flk: String = "${libs.versions.fabric.language.kotlin.orNull}${libs.versions.kotlin.orNull}"
@@ -76,14 +87,25 @@ dependencies {
         modImplementation("net.fabricmc.fabric-api:fabric-api:$fapi")
         modImplementation("net.fabricmc:fabric-language-kotlin:$flk")
         modImplementation("com.terraformersmc:modmenu:$modmenu")
+
+        implementation(libs.mixin.squared.fabric)
+        include(libs.mixin.squared.fabric)
+        annotationProcessor(libs.mixin.squared.fabric)
     } else {
         "neoForge"("net.neoforged:neoforge:${property("vers.deps.fml")}")
         modImplementation("dev.nyon:KotlinLangForge:2.10.6-k${libs.versions.kotlin.orNull}-$forgeLk+neoforge")
+
+        compileOnly(libs.mixin.squared.common)
+        annotationProcessor(libs.mixin.squared.common)
+        include(libs.mixin.squared.neoforge)
+        implementation(libs.mixin.squared.neoforge)
     }
 
     modImplementation("dev.isxander:yet-another-config-lib:$yacl")
     modImplementation(libs.konfig)
     include(libs.konfig)
+
+    modCompileOnly("maven.modrinth:lithium:MntErhV2")
 }
 
 val modId = property("mod.id").toString()
@@ -92,6 +114,7 @@ val modDescription = property("mod.description").toString()
 val mcVersionRange = property("vers.mcVersionRange").toString()
 val icon = property("mod.icon").toString()
 val slug = property("mod.slug").toString()
+val mixinsFiles = property("mod.mixins").toString().split(',')
 tasks {
     processResources {
         val props: Map<String, String?> = mapOf(
@@ -107,7 +130,18 @@ tasks {
             "modmenu" to if (!isFabric) null else modmenu,
             "repo" to githubRepo,
             "icon" to icon,
-            "mixins" to mixinsFile,
+            "mixins" to mixinsFiles.map {
+                if (isFabric) {
+                    return@map buildString {
+                        appendLine("\"$it\",")
+                    }
+                }
+                return@map buildString {
+                    appendLine()
+                    appendLine("[[mixins]]")
+                    appendLine("config = \"$it\"")
+                }
+            }.joinToString(separator = ""),
             "slug" to slug
         ).filterNot { it.value == null }
 

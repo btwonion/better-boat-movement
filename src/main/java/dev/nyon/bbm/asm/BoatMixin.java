@@ -43,6 +43,9 @@ abstract class BoatMixin extends Entity implements BbmBoat {
     @Unique
     private boolean correctCollision = false;
 
+    @Unique
+    private boolean expandBb = false;
+
     @Override
     public void setJumpCollision(boolean b) {
         jumpCollision = b;
@@ -58,6 +61,12 @@ abstract class BoatMixin extends Entity implements BbmBoat {
 
     @Override
     public boolean getCorrectCollision() { return correctCollision; }
+
+    @Override
+    public void setExpandBb(boolean b) { expandBb = b; }
+
+    @Override
+    public boolean getExpandBb() { return expandBb; }
 
     /*? if <1.21.3 {*/
     /*@Shadow

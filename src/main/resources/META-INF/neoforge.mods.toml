@@ -15,8 +15,7 @@ ${description}
 '''
 logoFile = "${icon}"
 
-[[mixins]]
-config = "${mixins}"
+${mixins}
 
 [[dependencies.${id}]]
 modId = "minecraft"

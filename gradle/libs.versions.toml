@@ -6,11 +6,15 @@ fabric-loader = "0.18.0"
 fabric-language-kotlin = "1.13.7+kotlin."
 vineflower = "1.11.1"
 konfig = "3.0.1"
+mixin-squared = "0.3.7-beta.1"
 
 [libraries]
 vineflower = { module = "org.vineflower:vineflower", version.ref = "vineflower" }
 konfig = { module = "dev.nyon:konfig", version.ref = "konfig" }
 fabric-loader = { module = "net.fabricmc:fabric-loader", version.ref = "fabric-loader" }
+mixin-squared-common = { module = "com.github.bawnorton.mixinsquared:mixinsquared-common", version.ref = "mixin-squared" }
+mixin-squared-fabric = { module = "com.github.bawnorton.mixinsquared:mixinsquared-fabric", version.ref = "mixin-squared" }
+mixin-squared-neoforge = { module = "com.github.bawnorton.mixinsquared:mixinsquared-forge", version.ref = "mixin-squared" }
 
 [plugins]
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
