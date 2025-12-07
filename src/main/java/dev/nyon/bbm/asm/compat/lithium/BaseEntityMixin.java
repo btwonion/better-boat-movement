@@ -6,18 +6,17 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyArgs;
-import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.List;
 
 @Mixin(Entity.class)
 public abstract class BaseEntityMixin {
 
-    @ModifyArgs(
+    @Inject(
         method = "collideBoundingBox",
         at = @At(
             value = "INVOKE",
@@ -25,13 +24,13 @@ public abstract class BaseEntityMixin {
         )
     )
     private static void checkForHorizontalCollision(
-        Args args,
-        @Nullable Entity entity,
+        Entity entity,
         Vec3 movement,
         AABB entityBoundingBox,
         Level world,
-        List<VoxelShape> shapes
+        List<VoxelShape> shapes,
+        CallbackInfoReturnable<Vec3> cir
     ) {
-        CompatMixinHelper.checkForHorizontalCollision(entity, args.get(2), world);
+        CompatMixinHelper.checkForHorizontalCollision(entity, shapes, world);
     }
 }

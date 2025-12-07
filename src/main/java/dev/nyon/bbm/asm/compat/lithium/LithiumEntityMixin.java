@@ -13,7 +13,9 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.*;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.List;
@@ -39,7 +41,8 @@ public class LithiumEntityMixin {
         @Local(
             ordinal = 0,
             argsOnly = true
-        ) Entity entity
+        )
+        Entity entity
     ) {
         if (entity == null) return original;
         return CompatMixinHelper.expandBox(original, entity);
@@ -65,9 +68,8 @@ public class LithiumEntityMixin {
         CallbackInfoReturnable<Vec3> cir,
         @Local(name = "blockCollisions")
         LazyList<VoxelShape> blockCollisions
-        ) {
+    ) {
         if (!(entity instanceof BbmBoat)) return;
-
         CompatMixinHelper.checkForHorizontalCollision(entity, blockCollisions, world);
     }
 }
