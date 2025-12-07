@@ -10,8 +10,7 @@ import java.util.Set;
 public class LithiumMixinPlugin implements IMixinConfigPlugin {
     private boolean isModLoaded(String modName) {
         //? if fabric
-        return net.fabricmc.loader.api.FabricLoader.getInstance()
-            .isModLoaded(modName);
+        return net.fabricmc.loader.api.FabricLoader.getInstance().isModLoaded(modName);
         //? if neoforge && >1.21.7
         /*return net.neoforged.fml.loading.FMLLoader.getCurrent().getLoadingModList().getModFileById(modName) != null;*/
         //? if neoforge && <=1.21.7
