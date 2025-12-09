@@ -1,2 +1,1 @@
-- fix compatibility with Lithium [#21](https://github.com/btwonion/better-boat-movement/issues/21):
-  - `expandCollisionRange` is still broken
+- add support for 1.21.11
