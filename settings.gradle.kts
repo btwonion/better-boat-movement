@@ -6,7 +6,6 @@ pluginManagement {
         gradlePluginPortal()
         maven("https://maven.fabricmc.net/")
         maven("https://maven.architectury.dev")
-        maven("https://maven.minecraftforge.net")
         maven("https://maven.neoforged.net/releases/")
     }
 }
@@ -33,7 +32,9 @@ stonecutter {
         version("1.21.7-neoforge", "1.21.7")
         version("1.21.9-neoforge", "1.21.9")
         version("1.21.9-fabric", "1.21.9")
-        vcsVersion = "1.21.9-fabric"
+        version("1.21.11-neoforge", "1.21.11")
+        version("1.21.11-fabric", "1.21.11")
+        vcsVersion = "1.21.11-fabric"
     }
     create(rootProject)
 }

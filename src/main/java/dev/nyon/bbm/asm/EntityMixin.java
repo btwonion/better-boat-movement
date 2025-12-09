@@ -12,10 +12,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-//? if >=1.21.3
-import net.minecraft.world.entity.vehicle.AbstractBoat;
-//? if <1.21.3
-/*import net.minecraft.world.entity.vehicle.Boat;*/
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -67,7 +63,7 @@ public abstract class EntityMixin {
         Config config = ConfigKt.getActiveConfig();
         if (config == null) return original;
         if (config.getBoosting().getExtraCollisionDetectionRange() == 0.0) return original;
-        if (!(instance instanceof /*? if >=1.21.3 {*/ AbstractBoat boat /*?} else {*/ /*Boat boat *//*?}*/ && instance instanceof BbmBoat bbmBoat)) return original;
+        if (!(instance instanceof /*$ boat {*/net.minecraft.world.entity.vehicle.boat.AbstractBoat/*$}*/ boat && instance instanceof BbmBoat bbmBoat)) return original;
         if (!boat.hasControllingPassenger()) return original;
 
         bbmBoat.setExpandBb(true);

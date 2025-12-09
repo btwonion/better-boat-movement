@@ -1,7 +1,6 @@
 package dev.nyon.bbm
 
 import dev.nyon.bbm.config.Config
-import dev.nyon.bbm.config.allowedCollidingBlocks
 import dev.nyon.bbm.config.config
 import dev.nyon.bbm.config.migrateConfig
 import dev.nyon.bbm.config.reloadCache

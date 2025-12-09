@@ -1,11 +1,12 @@
 package dev.nyon.bbm.config
 
+import dev.nyon.bbm.extensions.ResourceLocation
+import dev.nyon.bbm.extensions.id
 import net.minecraft.core.HolderSet
 import net.minecraft.core.RegistryAccess
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
 import net.minecraft.resources.ResourceKey
-import net.minecraft.resources.ResourceLocation
 import net.minecraft.tags.TagKey
 import net.minecraft.world.level.block.Block
 import kotlin.jvm.optionals.getOrDefault
@@ -34,7 +35,7 @@ private fun ResourceLocation.getTagEntries(): List<ResourceLocation> {
     val locations = entries.getOrDefault(HolderSet.empty()).map { it.unwrapKey().get().location() }
     *///?} else >1.21 {
     val entries = registry.getTagOrEmpty(tagKey)
-    val locations = entries.map { it.unwrapKey().get().location() }
+    val locations = entries.map { it.unwrapKey().get().id() }
     //?}
 
     return locations

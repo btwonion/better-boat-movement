@@ -31,6 +31,18 @@ base {
 stonecutter {
     listOf("neoforge", "fabric").map { it to (loader.name.lowercase() == it) }
         .forEach { (name, isCurrent) -> constants[name] = isCurrent }
+
+    swaps["boat"] = when {
+        eval(current.version, ">=1.21.11") -> "net.minecraft.world.entity.vehicle.boat.AbstractBoat"
+        eval(current.version, ">=1.21.3") -> "net.minecraft.world.entity.vehicle.AbstractBoat"
+        else -> "net.minecraft.world.entity.vehicle.Boat"
+    }
+
+    swaps["boat_status"] = when {
+        eval(current.version, ">=1.21.11") -> "net.minecraft.world.entity.vehicle.boat.AbstractBoat.Status"
+        eval(current.version, ">=1.21.3") -> "net.minecraft.world.entity.vehicle.AbstractBoat.Status"
+        else -> "net.minecraft.world.entity.vehicle.Boat.Status"
+    }
 }
 
 loom {

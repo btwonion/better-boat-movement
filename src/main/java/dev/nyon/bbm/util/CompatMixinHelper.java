@@ -41,7 +41,7 @@ public class CompatMixinHelper {
     public static AABB expandBox(AABB original, Entity entity) {
         if (!(entity instanceof BbmBoat bbmBoat)) return original;
         if (!bbmBoat.getExpandBb()) return original;
-        if (!(entity instanceof /*? if >=1.21.3 {*/ net.minecraft.world.entity.vehicle.AbstractBoat boat /*?} else {*/ /*net.minecraft.world.entity.vehicle.Boat boat *//*?}*/)) return original;
+        if (!(entity instanceof /*$ boat {*/net.minecraft.world.entity.vehicle.boat.AbstractBoat/*$}*/ boat)) return original;
         Config config = ConfigKt.getActiveConfig();
         if (config == null) return original;
 

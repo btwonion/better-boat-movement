@@ -1,34 +1,37 @@
 package dev.nyon.bbm.asm;
 
+//? if >=1.21.3 {
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import dev.nyon.bbm.config.ConfigCacheKt;
-import dev.nyon.bbm.logic.BbmBoat;
 import dev.nyon.bbm.config.Config;
 import dev.nyon.bbm.config.ConfigKt;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
-//? if >=1.21.3
-import net.minecraft.world.entity.vehicle.AbstractBoat;
+import /*$ boat {*/net.minecraft.world.entity.vehicle.boat.AbstractBoat/*$}*/;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+//?}
 
-@SuppressWarnings("AddedMixinMembersNamePattern")
+import dev.nyon.bbm.logic.BbmBoat;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Pseudo;
+import org.spongepowered.asm.mixin.Unique;
+
+
+//? if >=1.21.3 {
+@Mixin(/*$ boat {*/net.minecraft.world.entity.vehicle.boat.AbstractBoat/*$}*/.class)
+//?}
 @Pseudo
-@Mixin(targets = "net.minecraft.world.entity.vehicle.AbstractBoat")
 public class AbstractBoatMixin implements BbmBoat {
 
     @Unique
@@ -104,7 +107,7 @@ public class AbstractBoatMixin implements BbmBoat {
         method = "floatBoat",
         at = @At(
             value = "INVOKE",
-            target = "Lnet/minecraft/world/entity/vehicle/AbstractBoat;getDeltaMovement()Lnet/minecraft/world/phys/Vec3;",
+            target = /*? if >=1.21.11 {*/"Lnet/minecraft/world/entity/vehicle/boat/AbstractBoat;getDeltaMovement()Lnet/minecraft/world/phys/Vec3;"/*?} else {*//*"Lnet/minecraft/world/entity/vehicle/AbstractBoat;getDeltaMovement()Lnet/minecraft/world/phys/Vec3;"*//*?}*/,
             ordinal = 1
         )
     )

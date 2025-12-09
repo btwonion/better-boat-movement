@@ -7,7 +7,7 @@ import dev.nyon.bbm.KeyBindings;
 import dev.nyon.bbm.config.Config;
 import dev.nyon.bbm.config.ConfigKt;
 import dev.nyon.bbm.extensions.DistKt;
-import net.minecraft.world.entity.vehicle.AbstractBoat;
+import /*$ boat {*/net.minecraft.world.entity.vehicle.boat.AbstractBoat/*$}*/;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -15,12 +15,13 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 /*?}*/
 
-@Mixin(targets = "net.minecraft.world.entity.vehicle.AbstractBoat")
+//? if >=1.21.3 {
+@Mixin(/*$ boat {*/net.minecraft.world.entity.vehicle.boat.AbstractBoat/*$}*/.class)
+//?}
 @Pseudo
 public class AbstractBoatClientMixin {
 
     /*? if >=1.21.3 {*/
-    
     @Unique
     private AbstractBoat instance = (AbstractBoat) (Object) this;
 
