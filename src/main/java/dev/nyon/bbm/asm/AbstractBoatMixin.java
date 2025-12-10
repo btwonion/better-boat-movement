@@ -28,9 +28,7 @@ import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.Unique;
 
 
-//? if >=1.21.3 {
 @Mixin(/*$ boat {*/net.minecraft.world.entity.vehicle.boat.AbstractBoat/*$}*/.class)
-//?}
 @Pseudo
 public class AbstractBoatMixin implements BbmBoat {
 

@@ -1,1 +1,1 @@
-- add support for 1.21.11
+- fix crash on <1.21.3

@@ -15,9 +15,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 /*?}*/
 
-//? if >=1.21.3 {
 @Mixin(/*$ boat {*/net.minecraft.world.entity.vehicle.boat.AbstractBoat/*$}*/.class)
-//?}
 @Pseudo
 public class AbstractBoatClientMixin {
 
