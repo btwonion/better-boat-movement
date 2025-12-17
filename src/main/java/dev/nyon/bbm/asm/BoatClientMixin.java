@@ -11,8 +11,8 @@ import org.spongepowered.asm.mixin.Pseudo;
 import dev.nyon.bbm.config.Config;
 import dev.nyon.bbm.config.ConfigKt;
 import dev.nyon.bbm.extensions.DistKt;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.entity.vehicle.Boat;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -45,6 +45,8 @@ public abstract class BoatClientMixin extends Entity {
                 && !isInWater()
                 && !isUnderWater()
         ) return;
+        if (getPassengers().stream()
+            .noneMatch(entity -> entity instanceof Player)) return;
         addDeltaMovement(new Vec3(0.0, config.getStepHeight() * config.getKeybind().getKeybindJumpHeightMultiplier(), 0.0));
     }
     *//*?}*/

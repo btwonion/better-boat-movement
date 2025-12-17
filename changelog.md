@@ -1,1 +1,1 @@
-- fix crash on <1.21.3
+- fix bug when every boat was boosted by the keybind, no matter if the button was pressed or not [**#24**](https://github.com/btwonion/better-boat-movement/issues/24)

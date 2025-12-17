@@ -1,5 +1,6 @@
 package dev.nyon.bbm.asm;
 
+import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
 /*? if >=1.21.3 {*/
@@ -38,6 +39,8 @@ public class AbstractBoatClientMixin {
                 && !instance.isInWater()
                 && !instance.isUnderWater()
         ) return;
+        if (instance.getPassengers().stream()
+            .noneMatch(entity -> entity instanceof Player)) return;
         instance.addDeltaMovement(new Vec3(0.0, config.getStepHeight() * config.getKeybind().getKeybindJumpHeightMultiplier(), 0.0));
     }
     /*?}*/
