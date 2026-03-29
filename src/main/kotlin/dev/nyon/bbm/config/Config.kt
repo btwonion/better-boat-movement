@@ -1,16 +1,20 @@
 package dev.nyon.bbm.config
 
-import dev.nyon.bbm.extensions.*
+import dev.nyon.bbm.extensions.identifier
+import dev.nyon.bbm.extensions.isClient
+import dev.nyon.bbm.extensions.readIdentifierSet
+import dev.nyon.bbm.extensions.writeIdentifierSet
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.network.codec.StreamCodec
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload
+import net.minecraft.world.entity.vehicle.boat.AbstractBoat.Status
 import java.util.*
 
 @Serializable
 data class Config(
-    var stepHeight: Float = 0.35f,
+    var stepHeight: Float = 0.3f,
     var playerEjectTicks: Float = 20f * 10f,
     var boosting: Boosting = Boosting(),
     var keybind: Keybind = Keybind()
@@ -33,13 +37,13 @@ data class Config(
     @Serializable
     data class Keybind(
         var allowJumpKeybind: Boolean = false,
-        var keybindJumpHeightMultiplier: Double = 1.5,
+        var keybindJumpHeightMultiplier: Double = 1.2,
         var onlyKeybindJumpOnGroundOrWater: Boolean = true
     )
 
     companion object {
         @Transient
-        val packetType: CustomPacketPayload.Type<Config> = CustomPacketPayload.Type(resourceLocation("bbm:sync")!!)
+        val packetType: CustomPacketPayload.Type<Config> = CustomPacketPayload.Type(identifier("bbm:sync")!!)
 
         @Transient
         @Suppress("unused")

@@ -1,6 +1,6 @@
 import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.*
+import org.gradle.kotlin.dsl.support.uppercaseFirstChar
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
@@ -10,7 +10,14 @@ import java.time.Instant
 plugins {
     id("dev.kikugie.stonecutter")
 }
-stonecutter active "1.21.11-fabric" /* [SC] DO NOT EDIT */
+stonecutter active "26.1-fabric" /* [SC] DO NOT EDIT */
+
+buildscript {
+    repositories { mavenCentral() }
+    dependencies {
+        classpath("org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0")
+    }
+}
 
 private data class Field(val name: String, val value: String, val inline: Boolean)
 
@@ -28,9 +35,7 @@ val slug = property("mod.slug").toString()
 val repo = property("mod.repo").toString()
 val avatar = property("mod.icon-url").toString()
 val color = property("mod.color").toString().toInt()
-val supportedLoaders = property("mod.supported-loaders").toString().split(',').map {
-    it.replaceFirstChar { char -> if (char.isLowerCase()) char.titlecase() else char.toString() }
-}
+val supportedLoaders = property("mod.supported-loaders").toString().split(',').map(String::uppercaseFirstChar)
 tasks.register("postUpdate") {
     group = "mod"
 

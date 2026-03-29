@@ -8,6 +8,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.vehicle.boat.AbstractBoat;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -41,7 +42,7 @@ public class CompatMixinHelper {
     public static AABB expandBox(AABB original, Entity entity) {
         if (!(entity instanceof BbmBoat bbmBoat)) return original;
         if (!bbmBoat.getExpandBb()) return original;
-        if (!(entity instanceof /*$ boat {*/net.minecraft.world.entity.vehicle.boat.AbstractBoat/*$}*/ boat)) return original;
+        if (!(entity instanceof AbstractBoat boat)) return original;
         Config config = ConfigKt.getActiveConfig();
         if (config == null) return original;
 

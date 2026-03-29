@@ -1,1 +1,5 @@
-- fix bug when every boat was boosted by the keybind, no matter if the button was pressed or not [**#24**](https://github.com/btwonion/better-boat-movement/issues/24)
+- update to 26.1
+    - drop support for versions < 26.1
+- change default config settings:
+    - `stepHeight`: 0.35 -> 0.30
+    - `keybindJumpHeightMultiplier`: 1.5 -> 1.2

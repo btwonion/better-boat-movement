@@ -11,10 +11,8 @@ public class LithiumMixinPlugin implements IMixinConfigPlugin {
     private boolean isModLoaded(String modName) {
         //? if fabric
         return net.fabricmc.loader.api.FabricLoader.getInstance().isModLoaded(modName);
-        //? if neoforge && >1.21.7
-        /*return net.neoforged.fml.loading.FMLLoader.getCurrent().getLoadingModList().getModFileById(modName) != null;*/
-        //? if neoforge && <=1.21.7
-        /*return net.neoforged.fml.loading.FMLLoader.getLoadingModList().getModFileById(modName) != null;*/
+        //? if neoforge
+        //return net.neoforged.fml.loading.FMLLoader.getCurrent().getLoadingModList().getModFileById(modName) != null;
     }
 
     @Override

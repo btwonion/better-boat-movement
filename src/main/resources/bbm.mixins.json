@@ -5,12 +5,10 @@
     "compatibilityLevel": "JAVA_17",
     "mixins": [
         "AbstractBoatMixin",
-        "BoatMixin",
         "EntityMixin"
     ],
     "client": [
         "AbstractBoatClientMixin",
-        "BoatClientMixin",
         "MinecraftMixin"
     ],
     "injectors": {

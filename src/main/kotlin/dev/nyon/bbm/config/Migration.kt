@@ -1,8 +1,8 @@
 package dev.nyon.bbm.config
 
-import dev.nyon.bbm.extensions.Status
-import dev.nyon.bbm.extensions.resourceLocation
+import dev.nyon.bbm.extensions.identifier
 import kotlinx.serialization.json.*
+import net.minecraft.world.entity.vehicle.boat.AbstractBoat.Status
 
 internal fun migrateConfig(tree: JsonElement, version: Int?): Config? {
     val jsonObject = tree.jsonObject
@@ -39,7 +39,7 @@ internal fun migrateConfig(tree: JsonElement, version: Int?): Config? {
                     allowedCollidingBlocks = mutableSetOf<Identifier>().also {
                         if (boostOnIce) it.add(
                             Identifier(
-                                resourceLocation("#ice") ?: return null, true
+                                identifier("#ice") ?: return null, true
                             )
                         )
                     },
@@ -67,7 +67,7 @@ internal fun migrateConfig(tree: JsonElement, version: Int?): Config? {
                     allowedCollidingBlocks = mutableSetOf<Identifier>().also {
                         if (boostOnIce) it.add(
                             Identifier(
-                                resourceLocation("#ice") ?: return null, true
+                                identifier("#ice") ?: return null, true
                             )
                         )
                     },
