@@ -2,25 +2,20 @@ package dev.nyon.bbm.asm;
 
 import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Pseudo;
-/*? if >=1.21.3 {*/
 import dev.nyon.bbm.KeyBindings;
 import dev.nyon.bbm.config.Config;
 import dev.nyon.bbm.config.ConfigKt;
 import dev.nyon.bbm.extensions.DistKt;
-import /*$ boat {*/net.minecraft.world.entity.vehicle.boat.AbstractBoat/*$}*/;
+import net.minecraft.world.entity.vehicle.boat.AbstractBoat;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-/*?}*/
 
-@Mixin(/*$ boat {*/net.minecraft.world.entity.vehicle.boat.AbstractBoat/*$}*/.class)
-@Pseudo
+@Mixin(AbstractBoat.class)
 public class AbstractBoatClientMixin {
 
-    /*? if >=1.21.3 {*/
     @Unique
     private AbstractBoat instance = (AbstractBoat) (Object) this;
 
@@ -43,5 +38,4 @@ public class AbstractBoatClientMixin {
             .noneMatch(entity -> entity instanceof Player)) return;
         instance.addDeltaMovement(new Vec3(0.0, config.getStepHeight() * config.getKeybind().getKeybindJumpHeightMultiplier(), 0.0));
     }
-    /*?}*/
 }

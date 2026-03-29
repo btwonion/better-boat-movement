@@ -1,15 +1,11 @@
 package dev.nyon.bbm.config
 
-import dev.nyon.bbm.extensions.ResourceLocation
-import dev.nyon.bbm.extensions.id
-import net.minecraft.core.HolderSet
+import net.minecraft.resources.Identifier as MinecraftIdentifier
 import net.minecraft.core.RegistryAccess
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.core.registries.Registries
-import net.minecraft.resources.ResourceKey
 import net.minecraft.tags.TagKey
 import net.minecraft.world.level.block.Block
-import kotlin.jvm.optionals.getOrDefault
 
 var allowedSupportingBlocks: Set<Block> = setOf()
 var allowedCollidingBlocks: Set<Block> = setOf()
@@ -17,26 +13,20 @@ var allowedCollidingBlocks: Set<Block> = setOf()
 private val registryAccess by lazy { RegistryAccess.ImmutableRegistryAccess(listOf(BuiltInRegistries.BLOCK)) }
 private val registry by lazy { registryAccess.lookupOrThrow(Registries.BLOCK) }
 internal fun loadBlocks(identifiers: MutableSet<Identifier>): Set<Block> {
-    val blockIdentifiers: MutableSet<ResourceLocation> = mutableSetOf()
-    identifiers.forEach { (original, isTag) ->
-        if (!isTag) blockIdentifiers.add(original)
-        else blockIdentifiers.addAll(original.getTagEntries())
+    val minecraftIdentifiers: MutableSet<MinecraftIdentifier> = mutableSetOf()
+    identifiers.forEach { (minecraftIdentifier, isTag) ->
+        if (!isTag) minecraftIdentifiers.add(minecraftIdentifier)
+        else minecraftIdentifiers.addAll(minecraftIdentifier.getTagEntries())
     }
-    return blockIdentifiers.mapTo(mutableSetOf()) {
-        val location = /*? if >1.21 {*/ it /*?} else {*/ /*ResourceKey.create(Registries.BLOCK, it) *//*?}*/
-        registry.get(location).get().value()
+    return minecraftIdentifiers.mapTo(mutableSetOf()) {
+        registry.get(it).get().value()
     }
 }
 
-private fun ResourceLocation.getTagEntries(): List<ResourceLocation> {
+private fun MinecraftIdentifier.getTagEntries(): List<MinecraftIdentifier> {
     val tagKey = TagKey.create(Registries.BLOCK, this)
-    //? if <=1.21 {
-    /*val entries = registry.get(tagKey)
-    val locations = entries.getOrDefault(HolderSet.empty()).map { it.unwrapKey().get().location() }
-    *///?} else >1.21 {
     val entries = registry.getTagOrEmpty(tagKey)
-    val locations = entries.map { it.unwrapKey().get().id() }
-    //?}
+    val locations = entries.map { it.unwrapKey().get().identifier() }
 
     return locations
 }

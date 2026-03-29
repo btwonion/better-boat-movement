@@ -1,173 +1,172 @@
 @file:Suppress("SpellCheckingInspection", "UnstableApiUsage", "RedundantNullableReturnType")
 
-import net.fabricmc.loom.util.ModPlatform
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     alias(libs.plugins.kotlin)
     alias(libs.plugins.kotlinx.serialization)
-    alias(libs.plugins.architectury.loom)
+
+    alias(libs.plugins.modstitch)
+
     alias(libs.plugins.mod.publish)
 
     `maven-publish`
 }
 
-val loader = loom.platform.get()
-val isFabric = loader == ModPlatform.FABRIC
+val isFabric = modstitch.isLoom
+val loader = if (isFabric) "fabric" else "neoforge"
 
 val beta: Int = property("mod.beta").toString().toInt()
 val majorVersion: String = property("mod.major-version").toString()
-val mcVersion = property("vers.mcVersion").toString() // Pattern is '1.0.0-beta1-1.20.6-pre.2+fabric'
-version = "$majorVersion${if (beta != 0) "-beta$beta" else ""}-$mcVersion+${loader.name.lowercase()}"
+val mcVersion = property("vers.mcVersion").toString()
+version = "$majorVersion${if (beta != 0) "-beta$beta" else ""}-$mcVersion+$loader" // Pattern is '1.0.0-beta1-1.20.6-pre.2+fabric'
 
-group = property("mod.group").toString()
-val githubRepo = property("mod.repo").toString()
+val flk: String = "${libs.versions.fabric.language.kotlin.orNull}${libs.versions.kotlin.orNull}"
+val fabricLoader = libs.versions.fabric.loader.get()
+modstitch {
+    minecraftVersion = mcVersion
+
+    metadata {
+        fun prop(property: String, block: (String) -> Unit) {
+            prop(property, ifNull = {""}) { block(it) }
+        }
+
+        prop("mod.id") { modId = it }
+        prop("mod.name") { modName = it }
+        prop("mod.description") { modDescription = it }
+        prop("mod.group") { modGroup = it }
+
+        modVersion = project.version.toString()
+        modLicense = "GNU General Public License v3.0"
+        modAuthor = "btwonion"
+
+        prop("mod.repo") { replacementProperties.put("repo", it) }
+        prop("mod.icon") { replacementProperties.put("icon", it) }
+        prop("vers.mcVersionRange") { replacementProperties.put("mc", it) }
+        replacementProperties.put("fabric_loader", fabricLoader)
+        replacementProperties.put("flk", flk)
+        prop("vers.deps.fapi") { replacementProperties.put("fapi", it) }
+        prop("vers.deps.yacl") { replacementProperties.put("yacl", it) }
+        prop("version.deps.modmenu") { replacementProperties.put("modmenu", it) }
+    }
+
+    loom {
+        fabricLoaderVersion = fabricLoader
+
+        configureLoom {
+            runConfigs.all {
+                ideConfigGenerated(false)
+            }
+        }
+    }
+
+    moddevgradle {
+        prop("vers.deps.fml") { neoForgeVersion = it }
+
+        configureNeoForge {
+            runs {
+                register("mainClient") {
+                    client()
+                    sourceSet = sourceSets.main.get()
+                    gameDirectory = layout.projectDirectory.dir("../../run")
+                    environment("WAYLAND_DISPLAY", "")
+                    environment("XDG_SESSION_TYPE", "x11")
+                }
+            }
+
+            mods {
+                register("main") {
+                    sourceSet(sourceSets.main.get())
+                }
+            }
+        }
+    }
+
+    mixin {
+        addMixinsToModManifest = true
+
+        configs.register("bbm")
+        configs.register("compat.lithium")
+    }
+}
 
 base {
     archivesName.set(rootProject.name)
 }
 
 stonecutter {
-    listOf("neoforge", "fabric").map { it to (loader.name.lowercase() == it) }
+    listOf("neoforge", "fabric").map { it to (loader == it) }
         .forEach { (name, isCurrent) -> constants[name] = isCurrent }
-
-    swaps["boat"] = when {
-        eval(current.version, ">=1.21.11") -> "net.minecraft.world.entity.vehicle.boat.AbstractBoat"
-        eval(current.version, ">=1.21.3") -> "net.minecraft.world.entity.vehicle.AbstractBoat"
-        else -> "net.minecraft.world.entity.vehicle.Boat"
-    }
-
-    swaps["boat_status"] = when {
-        eval(current.version, ">=1.21.11") -> "net.minecraft.world.entity.vehicle.boat.AbstractBoat.Status"
-        eval(current.version, ">=1.21.3") -> "net.minecraft.world.entity.vehicle.AbstractBoat.Status"
-        else -> "net.minecraft.world.entity.vehicle.Boat.Status"
-    }
-}
-
-loom {
-    if (stonecutter.current.isActive) {
-        runConfigs.all {
-            ideConfigGenerated(true)
-            runDir("../../run")
-        }
-    }
-
-    mixin { useLegacyMixinAp = false }
-    silentMojangMappingsLicense()
 }
 
 repositories {
     mavenCentral()
     maven("https://maven.terraformersmc.com")
-    maven("https://maven.quiltmc.org/repository/release/")
-    maven("https://thedarkcolour.github.io/KotlinForForge/")
     maven("https://repo.nyon.dev/releases")
     maven("https://maven.isxander.dev/releases")
     maven("https://maven.neoforged.net/releases/")
-    exclusiveContent {
-        forRepository {
-            maven {
-                name = "Modrinth"
-                url = uri("https://api.modrinth.com/maven")
-            }
-        }
-        filter {
-            includeGroup("maven.modrinth")
-        }
-    }
+    maven("https://api.modrinth.com/maven")
     maven("https://maven.bawnorton.com/releases")
 }
 
-val flk: String = "${libs.versions.fabric.language.kotlin.orNull}${libs.versions.kotlin.orNull}"
-val forgeLk: String by lazy { property("vers.deps.klf").toString() }
-val fapi: String by lazy { property("vers.deps.fapi").toString() }
-val yacl: String by lazy { property("vers.deps.yacl").toString() }
-val modmenu: String by lazy { property("vers.deps.modMenu").toString() }
+val fabricLanguageKotlin: String = "${libs.versions.fabric.language.kotlin.orNull}${libs.versions.kotlin.orNull}"
 dependencies {
-    minecraft("com.mojang:minecraft:$mcVersion")
-    mappings(loom.layered {
-        val quiltMappings: String = property("vers.deps.quiltmappings").toString()
-        if (quiltMappings.isNotEmpty()) mappings("org.quiltmc:quilt-mappings:$quiltMappings:intermediary-v2")
-        officialMojangMappings()
-    })
+    fun modDependency(
+        artifact: String,
+        compileOnly: Boolean = false,
+        api: Boolean = false
+    ) {
+        val configuration = if (api) {
+            if (compileOnly) "modstitchModCompileOnly" else "modstitchModApi"
+        } else {
+            if (compileOnly) "modstitchModCompileOnlyApi" else "modstitchModImplementation"
+        }
 
-    implementation(libs.vineflower)
-
-    if (isFabric) {
-        implementation(libs.fabric.loader)
-        modImplementation("net.fabricmc.fabric-api:fabric-api:$fapi")
-        modImplementation("net.fabricmc:fabric-language-kotlin:$flk")
-        modImplementation("com.terraformersmc:modmenu:$modmenu")
-
-        implementation(libs.mixin.squared.fabric)
-        include(libs.mixin.squared.fabric)
-        annotationProcessor(libs.mixin.squared.fabric)
-    } else {
-        "neoForge"("net.neoforged:neoforge:${property("vers.deps.fml")}")
-        modImplementation("dev.nyon:KotlinLangForge:2.10.6-k${libs.versions.kotlin.orNull}-$forgeLk+neoforge")
-
-        compileOnly(libs.mixin.squared.common)
-        annotationProcessor(libs.mixin.squared.common)
-        include(libs.mixin.squared.neoforge)
-        implementation(libs.mixin.squared.neoforge)
+        configuration(artifact)
     }
 
-    modImplementation("dev.isxander:yet-another-config-lib:$yacl")
-    modImplementation(libs.konfig)
-    include(libs.konfig)
-
-    modCompileOnly("maven.modrinth:lithium:MntErhV2")
-}
-
-val modId = property("mod.id").toString()
-val modName = property("mod.name").toString()
-val modDescription = property("mod.description").toString()
-val mcVersionRange = property("vers.mcVersionRange").toString()
-val icon = property("mod.icon").toString()
-val slug = property("mod.slug").toString()
-val mixinsFiles = property("mod.mixins").toString().split(',')
-tasks {
-    processResources {
-        val props: Map<String, String?> = mapOf(
-            "id" to modId,
-            "name" to modName,
-            "description" to modDescription,
-            "version" to project.version.toString(),
-            "github" to githubRepo,
-            "mc" to mcVersionRange,
-            "flk" to if (!isFabric) null else flk,
-            "fapi" to if (!isFabric) null else fapi,
-            "yacl" to if (!isFabric) null else yacl,
-            "modmenu" to if (!isFabric) null else modmenu,
-            "repo" to githubRepo,
-            "icon" to icon,
-            "mixins" to mixinsFiles.map {
-                if (isFabric) {
-                    return@map buildString {
-                        appendLine("\"$it\",")
-                    }
-                }
-                return@map buildString {
-                    appendLine()
-                    appendLine("[[mixins]]")
-                    appendLine("config = \"$it\"")
-                }
-            }.joinToString(separator = ""),
-            "slug" to slug
-        ).filterNot { it.value == null }
-
-        props.forEach(inputs::property)
-
-        if (isFabric) {
-            filesMatching("fabric.mod.json") { expand(props) }
-            exclude(listOf("META-INF/neoforge.mods.toml", "pack.mcmeta"))
-        } else {
-            filesMatching(listOf("META-INF/neoforge.mods.toml")) { expand(props) }
-            exclude("fabric.mod.json")
+    fun propModDependency(
+        id: String,
+        artifactGetter: (String) -> String,
+        compileOnly: Boolean = false,
+        api: Boolean = false
+    ) {
+        prop("vers.deps.$id") { modVersion ->
+            modDependency(
+                artifactGetter(modVersion),
+                compileOnly,
+                api
+            )
         }
     }
 
+    if (isFabric) {
+        propModDependency("fapi", { "net.fabricmc.fabric-api:fabric-api:$it" }, api = true)
+        modDependency("net.fabricmc:fabric-language-kotlin:$fabricLanguageKotlin")
+        propModDependency("modMenu", { "com.terraformersmc:modmenu:$it" })
+
+        implementation(libs.mixin.squared.fabric)
+        modstitchJiJ(libs.mixin.squared.fabric)
+        annotationProcessor(libs.mixin.squared.fabric)
+    } else {
+        propModDependency("klf", { "dev.nyon:KotlinLangForge:2.11.2-k${libs.versions.kotlin.orNull}-$it+neoforge" }, api = true)
+
+        compileOnly(libs.mixin.squared.common)
+        annotationProcessor(libs.mixin.squared.common)
+        modstitchJiJ(libs.mixin.squared.neoforge)
+        implementation(libs.mixin.squared.neoforge)
+    }
+
+    propModDependency("yacl", { "dev.isxander:yet-another-config-lib:$it" })
+
+    propModDependency("compat.lithium", { "maven.modrinth:lithium:$it" })
+
+    modstitchApi(libs.konfig)
+    modstitchJiJ(libs.konfig)
+}
+
+tasks {
     register("releaseMod") {
         group = "publishing"
 
@@ -175,14 +174,12 @@ tasks {
         dependsOn("publish")
     }
 
-    withType<JavaCompile> {
-        options.release = 21
-    }
-
     withType<KotlinCompile> {
         compilerOptions {
-            jvmTarget = JvmTarget.JVM_21
+            jvmTarget = modstitch.javaVersion.map { JvmTarget.fromTarget(it.toString()) }
         }
+
+        dependsOn("stonecutterGenerate")
     }
 }
 
@@ -197,14 +194,11 @@ val supportedMcVersions: List<String> =
 
 publishMods {
     displayName = "v${project.version}"
-    file = tasks.remapJar.get().archiveFile
+    file = modstitch.finalJarTask.flatMap { it.archiveFile }
     changelog = changelogText
     type = if (beta != 0) BETA else STABLE
-    when (loader) {
-        ModPlatform.FABRIC -> modLoaders.addAll("fabric", "quilt")
-        ModPlatform.NEOFORGE -> modLoaders.addAll("neoforge")
-        else -> {}
-    }
+    if (isFabric) modLoaders.addAll("fabric", "quilt")
+    else modLoaders.add("neoforge")
 
     modrinth {
         projectId = "wTfH1dkt"
@@ -239,7 +233,7 @@ publishMods {
     }
 
     github {
-        repository = githubRepo
+        repository = property("mod.repo").toString()
         accessToken = providers.environmentVariable("GITHUB_TOKEN")
         commitish = property("mod.main-branch").toString()
     }
@@ -259,7 +253,7 @@ publishing {
     publications {
         create<MavenPublication>("maven") {
             groupId = "dev.nyon"
-            artifactId = modName
+            artifactId = property("mod.name").toString()
             version = project.version.toString()
             from(components["java"])
         }
@@ -268,9 +262,12 @@ publishing {
 
 java {
     withSourcesJar()
+}
 
-    JavaVersion.VERSION_21.let {
-        sourceCompatibility = it
-        targetCompatibility = it
-    }
+fun <T> prop(property: String, required: Boolean = false, ifNull: () -> String? = { null }, block: (String) -> T?): T? {
+    return ((System.getenv(property) ?: findProperty(property)?.toString())
+        ?.takeUnless { it.isBlank() }
+        ?: ifNull())
+        .let { if (required && it == null) error("Property $property is required") else it }
+        ?.let(block)
 }

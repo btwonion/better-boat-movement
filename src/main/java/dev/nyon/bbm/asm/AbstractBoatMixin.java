@@ -1,6 +1,5 @@
 package dev.nyon.bbm.asm;
 
-//? if >=1.21.3 {
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import dev.nyon.bbm.config.ConfigCacheKt;
 import dev.nyon.bbm.config.Config;
@@ -8,7 +7,7 @@ import dev.nyon.bbm.config.ConfigKt;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
-import /*$ boat {*/net.minecraft.world.entity.vehicle.boat.AbstractBoat/*$}*/;
+import net.minecraft.world.entity.vehicle.boat.AbstractBoat;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -20,16 +19,13 @@ import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-//?}
 
 import dev.nyon.bbm.logic.BbmBoat;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.Unique;
 
 
-@Mixin(/*$ boat {*/net.minecraft.world.entity.vehicle.boat.AbstractBoat/*$}*/.class)
-@Pseudo
+@Mixin(AbstractBoat.class)
 public class AbstractBoatMixin implements BbmBoat {
 
     @Unique
@@ -63,7 +59,6 @@ public class AbstractBoatMixin implements BbmBoat {
     @Override
     public boolean getExpandBb() { return expandBb; }
 
-    /*? if >=1.21.3 {*/
     @Shadow
     private AbstractBoat.Status status;
     @Unique
@@ -105,7 +100,7 @@ public class AbstractBoatMixin implements BbmBoat {
         method = "floatBoat",
         at = @At(
             value = "INVOKE",
-            target = /*? if >=1.21.11 {*/"Lnet/minecraft/world/entity/vehicle/boat/AbstractBoat;getDeltaMovement()Lnet/minecraft/world/phys/Vec3;"/*?} else {*//*"Lnet/minecraft/world/entity/vehicle/AbstractBoat;getDeltaMovement()Lnet/minecraft/world/phys/Vec3;"*//*?}*/,
+            target = "Lnet/minecraft/world/entity/vehicle/boat/AbstractBoat;getDeltaMovement()Lnet/minecraft/world/phys/Vec3;",
             ordinal = 1
         )
     )
@@ -157,5 +152,4 @@ public class AbstractBoatMixin implements BbmBoat {
         return instance.getPassengers().stream()
             .noneMatch(entity -> entity instanceof Player);
     }
-    /*?}*/
 }

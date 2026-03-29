@@ -7,10 +7,10 @@ import dev.nyon.bbm.config.Identifier
 import dev.nyon.bbm.config.IdentifierSerializer
 import dev.nyon.bbm.config.config
 import dev.nyon.bbm.config.reloadCache
-import dev.nyon.bbm.extensions.Status
 import dev.nyon.konfig.config.saveConfig
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component
+import net.minecraft.world.entity.vehicle.boat.AbstractBoat.Status
 
 fun generateYaclScreen(parent: Screen?): Screen = YetAnotherConfigLib("bbm") {
     val general by categories.registering {

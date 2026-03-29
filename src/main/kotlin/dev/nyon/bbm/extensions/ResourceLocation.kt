@@ -1,5 +1,7 @@
 package dev.nyon.bbm.extensions
 
-fun resourceLocation(location: String): ResourceLocation? {
-    return ResourceLocation.tryParse(location)
+import net.minecraft.resources.Identifier
+
+fun identifier(location: String): Identifier? {
+    return Identifier.tryParse(location)
 }
