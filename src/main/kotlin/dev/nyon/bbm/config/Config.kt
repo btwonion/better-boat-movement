@@ -92,7 +92,7 @@ val platform = /*? if fabric {*/
 
 fun getActiveConfig(): Config? {
     if (platform.contains("server")) return config
-    if (isClient && net.minecraft.client.Minecraft.getInstance().isSingleplayer) return config
+    if (isClient && net.minecraft.client.Minecraft.getInstance().singleplayerServer != null) return config
     return serverConfig
 }
 
