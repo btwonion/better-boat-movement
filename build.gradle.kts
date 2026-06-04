@@ -150,7 +150,7 @@ dependencies {
         modstitchJiJ(libs.mixin.squared.fabric)
         annotationProcessor(libs.mixin.squared.fabric)
     } else {
-        propModDependency("klf", { "dev.nyon:KotlinLangForge:2.12.1-k${libs.versions.kotlin.orNull}-$it+neoforge" }, api = true)
+        propModDependency("klf", { "dev.nyon:KotlinLangForge:2.11.2-k${libs.versions.kotlin.orNull}-$it+neoforge" }, api = true)
 
         compileOnly(libs.mixin.squared.common)
         annotationProcessor(libs.mixin.squared.common)
