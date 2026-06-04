@@ -1,5 +1,2 @@
-- update to 26.1
-    - drop support for versions < 26.1
-- change default config settings:
-    - `stepHeight`: 0.35 -> 0.30
-    - `keybindJumpHeightMultiplier`: 1.5 -> 1.2
+- update to 26.2
+- increase default config option of `stepHeight` from 0.3 to 0.35

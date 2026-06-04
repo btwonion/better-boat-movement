@@ -15,7 +15,7 @@ import net.minecraft.world.entity.vehicle.boat.AbstractBoat.Status
 fun generateYaclScreen(parent: Screen?): Screen = YetAnotherConfigLib("bbm") {
     val general by categories.registering {
         val stepHeight by rootOptions.registering {
-            binding(1f, { config.stepHeight }, { config.stepHeight = it })
+            binding(0.35f, { config.stepHeight }, { config.stepHeight = it })
             controller = numberField(0f)
             descriptionBuilder {
                 addDefaultText(1)
@@ -23,7 +23,7 @@ fun generateYaclScreen(parent: Screen?): Screen = YetAnotherConfigLib("bbm") {
         }
 
         val playerEjectTicks by rootOptions.registering {
-            binding(0.2f, { config.playerEjectTicks }, { config.playerEjectTicks = it })
+            binding(20f * 10f, { config.playerEjectTicks }, { config.playerEjectTicks = it })
             controller = numberField(0f, 10000f)
             descriptionBuilder {
                 addDefaultText(1)

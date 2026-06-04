@@ -14,7 +14,7 @@ import java.util.*
 
 @Serializable
 data class Config(
-    var stepHeight: Float = 0.3f,
+    var stepHeight: Float = 0.35f,
     var playerEjectTicks: Float = 20f * 10f,
     var boosting: Boosting = Boosting(),
     var keybind: Keybind = Keybind()
