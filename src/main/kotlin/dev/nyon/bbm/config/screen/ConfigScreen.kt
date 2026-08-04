@@ -5,17 +5,22 @@ import dev.isxander.yacl3.api.OptionDescription
 import dev.isxander.yacl3.dsl.*
 import dev.nyon.bbm.config.Identifier
 import dev.nyon.bbm.config.IdentifierSerializer
-import dev.nyon.bbm.config.config
-import dev.nyon.bbm.config.reloadCache
-import dev.nyon.konfig.config.saveConfig
+import dev.nyon.bbm.config.ConfigRepository
+import dev.nyon.bbm.config.GameplayConfig
+import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component
 import net.minecraft.world.entity.vehicle.boat.AbstractBoat.Status
 
-fun generateYaclScreen(parent: Screen?): Screen = YetAnotherConfigLib("bbm") {
+fun generateYaclScreen(parent: Screen?): Screen {
+    val remote = ConfigRepository.remoteSnapshot
+    val readOnly = remote != null && Minecraft.getInstance().singleplayerServer == null
+    val config: GameplayConfig = if (readOnly) requireNotNull(remote).toMutableConfig() else ConfigRepository.localConfig
+    return YetAnotherConfigLib("bbm") {
     val general by categories.registering {
         val stepHeight by rootOptions.registering {
             binding(0.35f, { config.stepHeight }, { config.stepHeight = it })
+            available = !readOnly
             controller = numberField(0f)
             descriptionBuilder {
                 addDefaultText(1)
@@ -24,6 +29,7 @@ fun generateYaclScreen(parent: Screen?): Screen = YetAnotherConfigLib("bbm") {
 
         val playerEjectTicks by rootOptions.registering {
             binding(20f * 10f, { config.playerEjectTicks }, { config.playerEjectTicks = it })
+            available = !readOnly
             controller = numberField(0f, 10000f)
             descriptionBuilder {
                 addDefaultText(1)
@@ -53,6 +59,7 @@ fun generateYaclScreen(parent: Screen?): Screen = YetAnotherConfigLib("bbm") {
                 )
                 .maximumNumberOfEntries(Status.entries.size)
                 .initial(Status.ON_LAND)
+                .available(!readOnly)
                 .build()
         )
 
@@ -72,6 +79,7 @@ fun generateYaclScreen(parent: Screen?): Screen = YetAnotherConfigLib("bbm") {
                     }
                 )
                 .initial("")
+                .available(!readOnly)
                 .build()
         )
 
@@ -91,11 +99,13 @@ fun generateYaclScreen(parent: Screen?): Screen = YetAnotherConfigLib("bbm") {
                     }
                 )
                 .initial("")
+                .available(!readOnly)
                 .build()
         )
         
         val onlyForPlayers by rootOptions.registering {
             binding(true, { config.boosting.onlyForPlayers }, { config.boosting.onlyForPlayers = it })
+            available = !readOnly
             controller = tickBox()
             descriptionBuilder {
                 addDefaultText(1)
@@ -104,6 +114,16 @@ fun generateYaclScreen(parent: Screen?): Screen = YetAnotherConfigLib("bbm") {
 
         val extraCollisionDetectionRange by rootOptions.registering {
             binding(0.5, { config.boosting.extraCollisionDetectionRange }, { config.boosting.extraCollisionDetectionRange = it })
+            available = !readOnly
+            controller = numberField(0.0)
+            descriptionBuilder {
+                addDefaultText(1)
+            }
+        }
+
+        val heightTolerance by rootOptions.registering {
+            binding(0.25, { config.boosting.heightTolerance }, { config.boosting.heightTolerance = it })
+            available = !readOnly
             controller = numberField(0.0)
             descriptionBuilder {
                 addDefaultText(1)
@@ -114,6 +134,7 @@ fun generateYaclScreen(parent: Screen?): Screen = YetAnotherConfigLib("bbm") {
     val keybind by categories.registering {
         val allowJumpKeybind by rootOptions.registering {
             binding(false, { config.keybind.allowJumpKeybind }, { config.keybind.allowJumpKeybind = it })
+            available = !readOnly
             controller = tickBox()
             descriptionBuilder {
                 addDefaultText(1)
@@ -121,7 +142,8 @@ fun generateYaclScreen(parent: Screen?): Screen = YetAnotherConfigLib("bbm") {
         }
 
         val keybindJumpHeightMultiplier by rootOptions.registering {
-            binding(2.0, { config.keybind.keybindJumpHeightMultiplier }, { config.keybind.keybindJumpHeightMultiplier = it })
+            binding(1.2, { config.keybind.keybindJumpHeightMultiplier }, { config.keybind.keybindJumpHeightMultiplier = it })
+            available = !readOnly
             controller = numberField(0.0)
             descriptionBuilder {
                 addDefaultText(1)
@@ -130,6 +152,7 @@ fun generateYaclScreen(parent: Screen?): Screen = YetAnotherConfigLib("bbm") {
 
         val onlyKeybindJumpOnGroundOrWater by rootOptions.registering {
             binding(true, { config.keybind.onlyKeybindJumpOnGroundOrWater }, { config.keybind.onlyKeybindJumpOnGroundOrWater = it })
+            available = !readOnly
             controller = tickBox()
             descriptionBuilder {
                 addDefaultText(1)
@@ -138,7 +161,7 @@ fun generateYaclScreen(parent: Screen?): Screen = YetAnotherConfigLib("bbm") {
     }
 
     save {
-        reloadCache()
-        saveConfig(config)
+        if (!readOnly) ConfigRepository.save()
     }
-}.generateScreen(parent)
+    }.generateScreen(parent)
+}

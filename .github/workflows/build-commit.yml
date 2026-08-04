@@ -24,7 +24,12 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    name: Build with Gradle
+    name: ${{ matrix.project }} / Lithium ${{ matrix.lithium }}
+    strategy:
+      fail-fast: false
+      matrix:
+        project: [26.1-fabric, 26.1-neoforge]
+        lithium: [false, true]
 
     steps:
       - uses: actions/checkout@v6
@@ -37,10 +42,56 @@ jobs:
         run: chmod +x gradlew
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
-      - name: Build with Gradle
+      - name: Build and test
         uses: Wandalen/wretry.action@master
         with:
-          command: ./gradlew build --stacktrace
+          command: ./gradlew :${{ matrix.project }}:build -Pbbm.testLithium=${{ matrix.lithium }} --stacktrace
+      - name: Verify compatibility layer is absent
+        run: |
+          artifact=$(find versions/${{ matrix.project }}/build/libs -name 'better-boat-movement-*.jar' ! -name '*sources*' | head -n 1)
+          if jar tf "$artifact" | grep -E 'compat/lithium|MixinSquared|JumpCollisionPacket'; then
+            echo "Removed compatibility code was packaged unexpectedly"
+            exit 1
+          fi
+      - name: Dedicated-server startup smoke test
+        run: |
+          mkdir -p versions/${{ matrix.project }}/build/runServer
+          echo 'eula=true' > versions/${{ matrix.project }}/build/runServer/eula.txt
+          if [[ '${{ matrix.project }}' == *fabric ]]; then
+            task=runServer
+          else
+            task=runMainServer
+          fi
+          set +e
+          timeout 45s ./gradlew :${{ matrix.project }}:$task -Pbbm.testLithium=${{ matrix.lithium }} --stacktrace
+          status=$?
+          set -e
+          if [ "$status" -ne 0 ] && [ "$status" -ne 124 ]; then
+            exit "$status"
+          fi
+          if grep -E 'Mixin apply failed|MixinTransformerError|Mod loading errors|Class version .* higher|Failed to start the minecraft server' versions/${{ matrix.project }}/build/runServer/logs/latest.log; then
+            exit 1
+          fi
+          grep -q 'Done (' versions/${{ matrix.project }}/build/runServer/logs/latest.log
+      - name: Client startup smoke test
+        run: |
+          if [[ '${{ matrix.project }}' == *fabric ]]; then
+            task=runClient
+          else
+            task=runMainClient
+          fi
+          set +e
+          xvfb-run -a timeout 45s ./gradlew :${{ matrix.project }}:$task -Pbbm.testLithium=${{ matrix.lithium }} --stacktrace
+          status=$?
+          set -e
+          if [ "$status" -ne 0 ] && [ "$status" -ne 124 ]; then
+            exit "$status"
+          fi
+          if grep -E 'Mixin apply failed|MixinTransformerError|Mod loading errors|Failed to start Minecraft' versions/${{ matrix.project }}/build/runClient/logs/latest.log; then
+            exit 1
+          fi
+          grep -q 'Reloading ResourceManager' versions/${{ matrix.project }}/build/runClient/logs/latest.log
       - uses: actions/upload-artifact@v7
         with:
-          path: versions/**/build/libs/*.jar
+          name: ${{ matrix.project }}-lithium-${{ matrix.lithium }}
+          path: versions/${{ matrix.project }}/build/libs/*.jar

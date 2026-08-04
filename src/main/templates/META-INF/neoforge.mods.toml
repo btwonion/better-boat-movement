@@ -14,6 +14,9 @@ ${mod_description}
 '''
 logoFile = "${icon}"
 
+[[mixins]]
+config = "bbm.mixins.json"
+
 [[dependencies.${mod_id}]]
 modId = "minecraft"
 versionRange = "${mc}"

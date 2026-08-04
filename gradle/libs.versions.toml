@@ -4,14 +4,10 @@ mod-publish = "1.1.+"
 fabric-loader = "0.18.0"
 fabric-language-kotlin = "1.13.9+kotlin."
 konfig = "3.0.1"
-modstitch = "0.8.4"
-mixin-squared = "0.3.7-beta.1"
+modstitch = "0.8.5"
 
 [libraries]
 konfig = { module = "dev.nyon:konfig", version.ref = "konfig" }
-mixin-squared-common = { module = "com.github.bawnorton.mixinsquared:mixinsquared-common", version.ref = "mixin-squared" }
-mixin-squared-fabric = { module = "com.github.bawnorton.mixinsquared:mixinsquared-fabric", version.ref = "mixin-squared" }
-mixin-squared-neoforge = { module = "com.github.bawnorton.mixinsquared:mixinsquared-forge", version.ref = "mixin-squared" }
 
 [plugins]
 modstitch = { id = "dev.isxander.modstitch.base", version.ref = "modstitch" }

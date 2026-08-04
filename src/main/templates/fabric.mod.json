@@ -16,6 +16,9 @@
         "${mod_license}"
     ],
     "environment": "*",
+    "mixins": [
+        "bbm.mixins.json"
+    ],
     "depends": {
         "fabricloader": ">=${fabric_loader}",
         "fabric-language-kotlin": ">=${flk}",
@@ -30,13 +33,13 @@
         "main": [
             {
                 "adapter": "kotlin",
-                "value": "dev.nyon.bbm.BetterBoatMovementEntrypoint"
+                "value": "dev.nyon.bbm.platform.fabric.FabricEntrypoint"
             }
         ],
         "client": [
             {
                 "adapter": "kotlin",
-                "value": "dev.nyon.bbm.BetterBoatMovementEntrypoint"
+                "value": "dev.nyon.bbm.platform.fabric.FabricEntrypoint"
             }
         ],
         "modmenu": [

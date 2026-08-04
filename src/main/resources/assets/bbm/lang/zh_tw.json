@@ -5,6 +5,8 @@
     "yacl3.config.bbm.category.general.root.option.stepHeight.description": "觸發加速時您將被提升的方塊數量。",
     "yacl3.config.bbm.category.general.root.option.playerEjectTicks": "玩家彈射刻",
     "yacl3.config.bbm.category.general.root.option.playerEjectTicks.description": "玩家失去控制後，遊戲在將您踢出船隻前等待的刻數。",
+    "yacl3.config.bbm.category.boosting.root.option.heightTolerance": "高度容許值",
+    "yacl3.config.bbm.category.boosting.root.option.heightTolerance.description": "當障礙物比設定的上升高度最多高出此方塊數時，允許船隻自動跳躍。",
     "yacl3.config.bbm.category.boosting.root.option.onlyForPlayers": "僅限玩家",
     "yacl3.config.bbm.category.boosting.root.option.onlyForPlayers.description": "切換船隻是否僅在載有玩家時才加速。"
 }

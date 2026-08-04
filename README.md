@@ -12,6 +12,12 @@ Take control of your voyage with new boat-jumping mechanics and personalizable s
 - **Adjustable Behavior**: Fine-tune how boat jumping works to best fit your play style.
 - **Multiplayer Friendly**: Works perfectly on both servers and singleplayer.
 
+Automatic boosts are evaluated once per authoritative boat tick. A boat boosts when it has a normal horizontal collision, or when its forward swept volume reaches a block within `extraCollisionDetectionRange`. The probe follows horizontal motion (falling back to boat facing at very low speed), so blocks beside or behind the boat do not trigger it. A range of `0` uses only Minecraft's normal horizontal-collision trigger.
+
+Block filters accept block IDs such as `minecraft:stone` and tags such as `#minecraft:ice`. An empty list means unrestricted. Invalid or unknown entries are ignored with a warning rather than crashing startup.
+
+Manual jump is one boost per keypress. It applies only to the local player's controlled boat; the server validates the boat, controlling passenger, gameplay state, and server configuration before accepting the request. The client predicts an accepted jump for responsiveness, while the server remains authoritative.
+
 ---
 
 ## 🎬 Demo - See the boat jump
@@ -35,23 +41,33 @@ Configure your boat-jumping experience via `/config/better-boat-movement.json`:
             "boostStates": [
                 "UNDER_WATER",
                 "ON_LAND",
+                "IN_WATER",
                 "UNDER_FLOWING_WATER"
             ], // Sets the preferences under which states the boat should be boosted.
             "allowedSupportingBlocks": [], // Defines the blocks the boat has to lie on to be able to be boosted. If the list is empty, there is no restriction.
             "allowedCollidingBlocks": [], // Defines the blocks the boat has to collide with to be able to be boosted. If the list is empty, there is no restriction.
             "onlyForPlayers": true, // Toggles, whether a boat should only be boosted when carrying a player.
-            "extraCollisionDetectionRange": 0.5 // Changes the detection range of a collision. Increasing this will boost a boat x blocks before actually touching the block it approaches. You may encounter weird behavior when changing this value to big numbers.
+            "extraCollisionDetectionRange": 0.5, // Changes the detection range of a collision. Increasing this will boost a boat x blocks before actually touching the block it approaches. You may encounter weird behavior when changing this value to big numbers.
+            "heightTolerance": 0.25 // Allows automatic jumps when an obstacle is slightly higher than stepHeight.
         },
         "keybind": {
-            "allowJumpKeybind": true, // Toggles, whether a player should be able to jump with a boat via a keybind.
-            "keybindJumpHeightMultiplier": 1.5, // Specifies the multiplier that will be applied to the jump height when a player uses the keybind to jump.
-            "onlyKeybindJumpOnGroundOrWater": false // Decides whether you are allowed to jump midair by keybind or not. CAUTION: This option combined with a high keybind jump multiplier will result in extreme boosts as the boat will be boosted every tick you hold the keybind.
+            "allowJumpKeybind": false, // Toggles whether a player can jump with a boat via the keybind.
+            "keybindJumpHeightMultiplier": 1.2, // Specifies the multiplier applied to stepHeight for a manual jump.
+            "onlyKeybindJumpOnGroundOrWater": true // Restricts manual jumping to ground or water.
         }
     }
 }
 ```
 
-Changes require a server or game restart to take effect.
+Changes made in the local or singleplayer configuration screen apply when saved. A remote server's gameplay configuration is shown read-only and is authoritative. Dedicated-server file changes require a restart.
+
+## Detailed behavior
+
+For the precise automatic-boost, collision, manual-jump, and multiplayer authority rules, see the [gameplay behavior reference](docs/behavior.md).
+
+## Supported versions
+
+The main development matrix currently supports Minecraft 26.1 on Fabric/Quilt and NeoForge. Minecraft 1.21.1 is not maintained by this branch; a fix for an older line must be released from its corresponding maintenance branch.
 
 ---
 

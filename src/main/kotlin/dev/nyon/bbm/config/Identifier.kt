@@ -9,29 +9,24 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import net.minecraft.resources.Identifier as MinecraftIdentifier
 
+/** Preserves invalid user input so it can be warned about and skipped without aborting config loading. */
 @Serializable(with = IdentifierSerializer::class)
-data class Identifier(val original: MinecraftIdentifier, val isTag: Boolean) {
-    override fun toString(): String {
-        return "${if (isTag) "#" else ""}$original"
-    }
+data class Identifier(val value: String) {
+    val isTag: Boolean get() = value.startsWith('#')
+    val original: MinecraftIdentifier?
+        get() = MinecraftIdentifier.tryParse(if (isTag) value.drop(1) else value)
+
+    constructor(original: MinecraftIdentifier, isTag: Boolean) : this("${if (isTag) "#" else ""}$original")
+
+    override fun toString(): String = value
 }
 
 object IdentifierSerializer : KSerializer<Identifier> {
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("identifier", PrimitiveKind.STRING)
 
-    override fun deserialize(decoder: Decoder): Identifier {
-        return decodeFromString(decoder.decodeString())
-    }
+    override fun deserialize(decoder: Decoder): Identifier = decodeFromString(decoder.decodeString())
 
-    fun decodeFromString(string: String): Identifier {
-        val isTag = string.startsWith('#')
-        val namespacedKey = MinecraftIdentifier.parse(string.run { return@run if (isTag) drop(1) else this@run })
-        return Identifier(namespacedKey, isTag)
-    }
+    fun decodeFromString(string: String): Identifier = Identifier(string.trim())
 
-    override fun serialize(
-        encoder: Encoder, value: Identifier
-    ) {
-        encoder.encodeString(value.toString())
-    }
+    override fun serialize(encoder: Encoder, value: Identifier) = encoder.encodeString(value.toString())
 }

@@ -16,6 +16,8 @@
     "yacl3.config.bbm.category.boosting.root.option.onlyForPlayers.description": "Toggles, whether a boat should only be boosted when carrying a player.",
     "yacl3.config.bbm.category.boosting.root.option.extraCollisionDetectionRange": "Extra collision detection range",
     "yacl3.config.bbm.category.boosting.root.option.extraCollisionDetectionRange.description": "Changes the detection range of a collision. Increasing this will boost a boat x blocks before actually touching the block it approaches.\n*You may encounter weird behavior when changing this value to big numbers.*",
+    "yacl3.config.bbm.category.boosting.root.option.heightTolerance": "Height tolerance",
+    "yacl3.config.bbm.category.boosting.root.option.heightTolerance.description": "Allows automatic jumps when the obstacle is up to this many blocks higher than the configured step height.",
     "yacl3.config.bbm.category.keybind": "Keybind",
     "yacl3.config.bbm.category.keybind.root.option.allowJumpKeybind": "Allow Jump Keybind",
     "yacl3.config.bbm.category.keybind.root.option.allowJumpKeybind.description": "Toggles, whether a player should be able to jump with a boat via a keybind.",
