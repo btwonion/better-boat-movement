@@ -43,9 +43,7 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
       - name: Build and test
-        uses: Wandalen/wretry.action@master
-        with:
-          command: ./gradlew :${{ matrix.project }}:build -Pbbm.testLithium=${{ matrix.lithium }} --stacktrace
+        run: ./gradlew :${{ matrix.project }}:build -Pbbm.testLithium=${{ matrix.lithium }} --stacktrace
       - name: Verify compatibility layer is absent
         run: |
           artifact=$(find versions/${{ matrix.project }}/build/libs -name 'better-boat-movement-*.jar' ! -name '*sources*' | head -n 1)
