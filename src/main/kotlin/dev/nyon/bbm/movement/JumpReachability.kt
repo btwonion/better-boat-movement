@@ -1,6 +1,13 @@
 package dev.nyon.bbm.movement
 
 object JumpReachability {
+    fun canReach(
+        boatBottomY: Double,
+        obstacleTopY: Double,
+        maximumRise: Double,
+        heightTolerance: Double
+    ): Boolean = obstacleTopY - boatBottomY <= maximumRise + heightTolerance
+
     fun canReachAfterUpdate(
         boatBottomY: Double,
         obstacleTopY: Double,

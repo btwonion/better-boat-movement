@@ -86,14 +86,6 @@ modstitch {
 
 }
 
-if (!isFabric) {
-    afterEvaluate {
-        val neoForge = extensions.getByType(NeoForgeExtension::class.java)
-        neoForge.unitTest.testedMod.set(neoForge.mods.getByName("main"))
-        neoForge.unitTest.enable()
-    }
-}
-
 base {
     archivesName.set(rootProject.name)
 }
@@ -155,8 +147,6 @@ dependencies {
 
     modstitchApi(libs.konfig)
     modstitchJiJ(libs.konfig)
-
-    testImplementation(kotlin("test-junit5"))
 }
 
 tasks {
@@ -174,11 +164,6 @@ tasks {
 
         dependsOn("stonecutterGenerate")
     }
-
-    withType<Test> {
-        useJUnitPlatform()
-    }
-
 }
 
 val changelogText = buildString {

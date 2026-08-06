@@ -17,12 +17,12 @@ import net.neoforged.api.distmarker.Dist
 import net.neoforged.fml.ModLoadingContext
 import net.neoforged.fml.common.Mod
 import net.neoforged.fml.loading.FMLLoader
+import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent.LoggingOut
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory
 import net.neoforged.neoforge.client.network.event.RegisterClientPayloadHandlersEvent
 import net.neoforged.neoforge.common.NeoForge
 import net.neoforged.neoforge.event.TagsUpdatedEvent
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent
-import net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent
 
 @Mod("bbm")
@@ -60,7 +60,7 @@ object NeoForgeEntrypoint {
         MOD_BUS.addListener<RegisterClientPayloadHandlersEvent> { event ->
             event.register(ConfigSnapshotPayload.TYPE) { payload, _ -> ConfigSync.receive(payload) }
         }
-        NeoForge.EVENT_BUS.addListener<PlayerLoggedOutEvent> { ConfigSync.disconnect() }
+        NeoForge.EVENT_BUS.addListener<LoggingOut> { ConfigSync.disconnect() }
     }
 }
 *//*?}*/

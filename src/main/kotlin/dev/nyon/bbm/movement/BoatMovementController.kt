@@ -22,6 +22,30 @@ object BoatMovementController {
             obstacle != null && obstacle.state.block in filters.colliding
         val supportAllowed = status != AbstractBoat.Status.ON_LAND ||
             SupportingBlockProbe.hasAllowedSupport(boat, filters.supporting)
+        val obstacleReachable = if (obstacle == null) {
+            true
+        } else {
+            val waterSurfaceY = if (status == AbstractBoat.Status.UNDER_WATER ||
+                status == AbstractBoat.Status.UNDER_FLOWING_WATER
+            ) {
+                WaterSurfaceProbe.findAbove(boat, waterLevel)
+            } else {
+                waterLevel
+            }
+            JumpReachability.canReach(
+                boat.boundingBox.minY,
+                obstacle.topY,
+                BoatVerticalPhysics.maximumRise(
+                    status,
+                    config.stepHeight.toDouble(),
+                    boat.gravity,
+                    waterSurfaceY,
+                    boat.y,
+                    boat.bbHeight.toDouble()
+                ),
+                config.heightTolerance
+            )
+        }
         val decision = BoostPolicy.decide(
             BoatContext(
                 trigger = BoostTrigger.AUTOMATIC,
@@ -31,20 +55,7 @@ object BoatMovementController {
                 playerRequired = config.onlyForPlayers,
                 supportingBlockAllowed = supportAllowed,
                 collidingBlockAllowed = collidingAllowed,
-                obstacleReachable = obstacle == null || JumpReachability.canReachAfterUpdate(
-                    boat.boundingBox.minY,
-                    obstacle.topY,
-                    BoatVerticalPhysics.updatedVelocity(
-                        status,
-                        config.stepHeight.toDouble(),
-                        boat.gravity,
-                        waterLevel,
-                        boat.y,
-                        boat.bbHeight.toDouble()
-                    ),
-                    config.heightTolerance,
-                    boat.gravity
-                ),
+                obstacleReachable = obstacleReachable,
                 groundedOrInWater = false,
                 manualGroundOrWaterRequired = false,
                 boostHeight = config.stepHeight.toDouble()
