@@ -58,12 +58,6 @@ modstitch {
             runConfigs.all {
                 ideConfigGenerated(false)
             }
-            runConfigs.named("client") {
-                runDir("build/runClient")
-            }
-            runConfigs.named("server") {
-                runDir("build/runServer")
-            }
         }
     }
 
@@ -75,14 +69,9 @@ modstitch {
                 register("mainClient") {
                     client()
                     sourceSet = sourceSets.main.get()
-                    gameDirectory = layout.buildDirectory.dir("runClient").get()
+                    gameDirectory = layout.projectDirectory.dir("run")
                     environment("WAYLAND_DISPLAY", "")
                     environment("XDG_SESSION_TYPE", "x11")
-                }
-                register("mainServer") {
-                    server()
-                    sourceSet = sourceSets.main.get()
-                    gameDirectory = layout.buildDirectory.dir("runServer").get()
                 }
             }
 
@@ -155,21 +144,8 @@ dependencies {
 
     propModDependency("yacl", { "dev.isxander:yet-another-config-lib:$it" })
 
-    // CI can add Lithium to the development runtime without making BBM compile against it.
-    if (providers.gradleProperty("bbm.testLithium").orNull == "true") {
-        propModDependency("compat.lithium", { "maven.modrinth:lithium:$it" })
-    }
-
     modstitchApi(libs.konfig)
     modstitchJiJ(libs.konfig)
-
-    testImplementation(kotlin("test-junit5"))
-}
-
-// ModDevGradle does not automatically expose the Minecraft/loader classpath to JVM unit tests.
-sourceSets.test {
-    compileClasspath += sourceSets.main.get().compileClasspath
-    runtimeClasspath += sourceSets.main.get().runtimeClasspath
 }
 
 tasks {
@@ -188,10 +164,6 @@ tasks {
         dependsOn("stonecutterGenerate")
     }
 
-    test {
-        useJUnitPlatform()
-        workingDir(layout.buildDirectory)
-    }
 }
 
 val changelogText = buildString {

@@ -21,7 +21,7 @@ This document is the behavioral contract for movement and networking changes.
 - Entries may be block IDs or `#`-prefixed block tags.
 - Supporting filters apply only in `ON_LAND` and require an allowed block collision shape immediately beneath the hull.
 - Colliding filters apply to the actual `BlockState` whose collision shape was hit by the forward sweep.
-- Invalid IDs, unknown blocks, and empty/unknown tags contribute no blocks and produce a warning rather than aborting startup.
+- Invalid IDs or unknown blocks are not handled and may abort configuration or cache loading. Empty or unknown tags contribute no blocks.
 - Tag-derived caches are immutable and invalidated by loader tag-reload events.
 
 ## Manual jump
@@ -35,9 +35,9 @@ This document is the behavioral contract for movement and networking changes.
 
 ## Configuration authority
 
-- Dedicated and integrated logical servers use their validated persistent configuration.
+- Dedicated and integrated logical servers use their persistent configuration as written.
 - A multiplayer client uses the immutable configuration snapshot received from the server for prediction.
-- `heightTolerance` is validated as a finite value from `0.0` through `16.0` and is synchronized as part of the server's gameplay snapshot.
+- `heightTolerance` is synchronized as part of the server's gameplay snapshot without additional validation.
 - Remote snapshots are cleared on disconnect. A remote server's settings are read-only in the client config screen.
 - Persistence version and network protocol version are independent.
 

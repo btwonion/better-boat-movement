@@ -1,5 +1,6 @@
 {
     "yacl3.config.bbm.title": "Better Boat Movement 更佳船隻移動",
+    "yacl3.config.bbm.serverManaged": "連線至伺服器時，這些設定由伺服器管理，無法變更。",
     "yacl3.config.bbm.category.general": "一般",
     "yacl3.config.bbm.category.general.root.option.stepHeight": "上升高度",
     "yacl3.config.bbm.category.general.root.option.stepHeight.description": "觸發加速時您將被提升的方塊數量。",

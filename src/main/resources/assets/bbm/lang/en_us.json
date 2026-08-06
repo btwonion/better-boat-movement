@@ -1,5 +1,6 @@
 {
     "yacl3.config.bbm.title": "Better Boat Movement",
+    "yacl3.config.bbm.serverManaged": "These settings are managed by the server and cannot be changed while connected.",
     "yacl3.config.bbm.category.general": "General",
     "yacl3.config.bbm.category.general.root.option.stepHeight": "Step height",
     "yacl3.config.bbm.category.general.root.option.stepHeight.description": "The number of blocks you are going to be boosted when triggering a boost.",

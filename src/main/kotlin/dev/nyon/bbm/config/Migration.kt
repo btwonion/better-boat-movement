@@ -62,7 +62,7 @@ private fun migrateLegacyBoosting(json: JsonObject, hasKeybind: Boolean): Gamepl
                 if (boostOnWater) states.add(Status.IN_WATER)
             },
             allowedCollidingBlocks = if (boostOnIce) {
-                mutableSetOf(Identifier("#minecraft:ice"))
+                mutableSetOf(IdentifierSerializer.decodeFromString("#minecraft:ice"))
             } else mutableSetOf(),
             onlyForPlayers = json.boolean("onlyForPlayers") ?: return null,
             extraCollisionDetectionRange = json.double("extraCollisionDetectionRange") ?: return null

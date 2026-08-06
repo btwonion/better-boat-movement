@@ -12,12 +12,6 @@ Take control of your voyage with new boat-jumping mechanics and personalizable s
 - **Adjustable Behavior**: Fine-tune how boat jumping works to best fit your play style.
 - **Multiplayer Friendly**: Works perfectly on both servers and singleplayer.
 
-Automatic boosts are evaluated once per authoritative boat tick. A boat boosts when it has a normal horizontal collision, or when its forward swept volume reaches a block within `extraCollisionDetectionRange`. The probe follows horizontal motion (falling back to boat facing at very low speed), so blocks beside or behind the boat do not trigger it. A range of `0` uses only Minecraft's normal horizontal-collision trigger.
-
-Block filters accept block IDs such as `minecraft:stone` and tags such as `#minecraft:ice`. An empty list means unrestricted. Invalid or unknown entries are ignored with a warning rather than crashing startup.
-
-Manual jump is one boost per keypress. It applies only to the local player's controlled boat; the server validates the boat, controlling passenger, gameplay state, and server configuration before accepting the request. The client predicts an accepted jump for responsiveness, while the server remains authoritative.
-
 ---
 
 ## 🎬 Demo - See the boat jump

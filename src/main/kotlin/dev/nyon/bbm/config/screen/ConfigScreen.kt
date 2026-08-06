@@ -18,6 +18,13 @@ fun generateYaclScreen(parent: Screen?): Screen {
     val config: GameplayConfig = if (readOnly) requireNotNull(remote).toMutableConfig() else ConfigRepository.localConfig
     return YetAnotherConfigLib("bbm") {
     val general by categories.registering {
+        if (readOnly) {
+            rootOptions.registerLabel(
+                "serverManaged",
+                Component.translatable("yacl3.config.bbm.serverManaged")
+            )
+        }
+
         val stepHeight by rootOptions.registering {
             binding(0.35f, { config.stepHeight }, { config.stepHeight = it })
             available = !readOnly
@@ -73,9 +80,8 @@ fun generateYaclScreen(parent: Screen?): Screen {
                     emptyList(),
                     { config.boosting.allowedSupportingBlocks.map(Identifier::toString) },
                     { list->
-                        config.boosting.allowedSupportingBlocks = list.mapNotNull { entry ->
-                            runCatching { IdentifierSerializer.decodeFromString(entry) }.getOrNull()
-                        }.toMutableSet()
+                        config.boosting.allowedSupportingBlocks =
+                            list.map(IdentifierSerializer::decodeFromString).toMutableSet()
                     }
                 )
                 .initial("")
@@ -93,9 +99,8 @@ fun generateYaclScreen(parent: Screen?): Screen {
                     emptyList(),
                     { config.boosting.allowedCollidingBlocks.map(Identifier::toString) },
                     { list->
-                        config.boosting.allowedCollidingBlocks = list.mapNotNull { entry ->
-                            runCatching { IdentifierSerializer.decodeFromString(entry) }.getOrNull()
-                        }.toMutableSet()
+                        config.boosting.allowedCollidingBlocks =
+                            list.map(IdentifierSerializer::decodeFromString).toMutableSet()
                     }
                 )
                 .initial("")

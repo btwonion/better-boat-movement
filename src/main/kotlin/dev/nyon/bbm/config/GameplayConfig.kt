@@ -3,7 +3,7 @@ package dev.nyon.bbm.config
 import kotlinx.serialization.Serializable
 import net.minecraft.world.entity.vehicle.boat.AbstractBoat.Status
 
-/** Mutable on-disk representation. Runtime code consumes [GameplayConfigSnapshot] instead. */
+/** Mutable on-disk representation. Runtime code consumes an immutable [GameplayConfigSnapshot]. */
 @Serializable
 data class GameplayConfig(
     var stepHeight: Float = 0.35f,
@@ -34,7 +34,7 @@ data class GameplayConfig(
     )
 }
 
-/** Immutable, validated gameplay state shared by movement and networking. */
+/** Immutable gameplay state shared by movement and networking. */
 data class GameplayConfigSnapshot(
     val stepHeight: Float,
     val playerEjectTicks: Float,
@@ -66,3 +66,17 @@ data class GameplayConfigSnapshot(
         )
     )
 }
+
+fun GameplayConfig.toSnapshot() = GameplayConfigSnapshot(
+    stepHeight = stepHeight,
+    playerEjectTicks = playerEjectTicks,
+    boostStates = boosting.boostStates.toSet(),
+    allowedSupportingBlocks = boosting.allowedSupportingBlocks.toSet(),
+    allowedCollidingBlocks = boosting.allowedCollidingBlocks.toSet(),
+    onlyForPlayers = boosting.onlyForPlayers,
+    extraCollisionDetectionRange = boosting.extraCollisionDetectionRange,
+    heightTolerance = boosting.heightTolerance,
+    allowJumpKeybind = keybind.allowJumpKeybind,
+    keybindJumpHeightMultiplier = keybind.keybindJumpHeightMultiplier,
+    onlyKeybindJumpOnGroundOrWater = keybind.onlyKeybindJumpOnGroundOrWater
+)

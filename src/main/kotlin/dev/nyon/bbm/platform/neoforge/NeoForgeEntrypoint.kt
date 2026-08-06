@@ -11,7 +11,6 @@ import dev.nyon.bbm.network.ConfigSnapshotPayload
 import dev.nyon.bbm.network.ConfigSync
 import dev.nyon.bbm.network.ManualJumpRequestHandler
 import dev.nyon.bbm.network.ManualJumpRequestPayload
-import dev.nyon.bbm.network.Protocol
 import dev.nyon.klf.MOD_BUS
 import net.minecraft.server.level.ServerPlayer
 import net.neoforged.api.distmarker.Dist
@@ -38,7 +37,7 @@ object NeoForgeEntrypoint {
 
     private fun registerCommon() {
         MOD_BUS.addListener<RegisterPayloadHandlersEvent> { event ->
-            val registrar = event.registrar(Protocol.NETWORK_VERSION)
+            val registrar = event.registrar("1")
             registrar.playToClient(ConfigSnapshotPayload.TYPE, ConfigSnapshotPayload.CODEC)
             registrar.playToServer(ManualJumpRequestPayload.TYPE, ManualJumpRequestPayload.CODEC) { payload, context ->
                 ManualJumpRequestHandler.handle(context.player() as ServerPlayer, payload)
