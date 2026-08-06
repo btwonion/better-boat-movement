@@ -1,5 +1,6 @@
 @file:Suppress("SpellCheckingInspection", "UnstableApiUsage", "RedundantNullableReturnType")
 
+import net.neoforged.moddevgradle.dsl.NeoForgeExtension
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -69,7 +70,7 @@ modstitch {
                 register("mainClient") {
                     client()
                     sourceSet = sourceSets.main.get()
-                    gameDirectory = layout.projectDirectory.dir("../../run")
+                    gameDirectory = layout.projectDirectory.dir("run")
                     environment("WAYLAND_DISPLAY", "")
                     environment("XDG_SESSION_TYPE", "x11")
                 }
@@ -83,12 +84,6 @@ modstitch {
         }
     }
 
-    mixin {
-        addMixinsToModManifest = true
-
-        configs.register("bbm")
-        configs.register("compat.lithium")
-    }
 }
 
 base {
@@ -107,7 +102,6 @@ repositories {
     maven("https://maven.isxander.dev/releases")
     maven("https://maven.neoforged.net/releases/")
     maven("https://api.modrinth.com/maven")
-    maven("https://maven.bawnorton.com/releases")
 }
 
 val fabricLanguageKotlin: String = "${libs.versions.fabric.language.kotlin.orNull}${libs.versions.kotlin.orNull}"
@@ -145,22 +139,11 @@ dependencies {
         propModDependency("fapi", { "net.fabricmc.fabric-api:fabric-api:$it" }, api = true)
         modDependency("net.fabricmc:fabric-language-kotlin:$fabricLanguageKotlin")
         propModDependency("modMenu", { "com.terraformersmc:modmenu:$it" })
-
-        implementation(libs.mixin.squared.fabric)
-        modstitchJiJ(libs.mixin.squared.fabric)
-        annotationProcessor(libs.mixin.squared.fabric)
     } else {
         propModDependency("klf", { "dev.nyon:KotlinLangForge:2.11.2-k${libs.versions.kotlin.orNull}-$it+neoforge" }, api = true)
-
-        compileOnly(libs.mixin.squared.common)
-        annotationProcessor(libs.mixin.squared.common)
-        modstitchJiJ(libs.mixin.squared.neoforge)
-        implementation(libs.mixin.squared.neoforge)
     }
 
     propModDependency("yacl", { "dev.isxander:yet-another-config-lib:$it" })
-
-    propModDependency("compat.lithium", { "maven.modrinth:lithium:$it" })
 
     modstitchApi(libs.konfig)
     modstitchJiJ(libs.konfig)

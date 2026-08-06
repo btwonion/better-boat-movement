@@ -1,10 +1,16 @@
 {
     "yacl3.config.bbm.title": "Better Boat Movement 更佳船隻移動",
-    "yacl3.config.bbm.category.general": "一般",
-    "yacl3.config.bbm.category.general.root.option.stepHeight": "上升高度",
-    "yacl3.config.bbm.category.general.root.option.stepHeight.description": "觸發加速時您將被提升的方塊數量。",
-    "yacl3.config.bbm.category.general.root.option.playerEjectTicks": "玩家彈射刻",
-    "yacl3.config.bbm.category.general.root.option.playerEjectTicks.description": "玩家失去控制後，遊戲在將您踢出船隻前等待的刻數。",
+    "yacl3.config.bbm.serverManaged": "連線至伺服器時，這些設定由伺服器管理，無法變更。",
+    "yacl3.config.bbm.category.boosting": "加速",
+    "yacl3.config.bbm.category.boosting.root.option.stepHeight": "上升高度",
+    "yacl3.config.bbm.category.boosting.root.option.stepHeight.description": "觸發加速時您將被提升的方塊數量。",
+    "yacl3.config.bbm.category.boosting.root.option.playerEjectTicks": "玩家彈射刻",
+    "yacl3.config.bbm.category.boosting.root.option.playerEjectTicks.description": "玩家失去控制後，遊戲在將您踢出船隻前等待的刻數。",
+    "yacl3.config.bbm.category.boosting.root.option.extraCollisionDetectionRange": "額外碰撞偵測範圍",
+    "yacl3.config.bbm.category.boosting.root.option.extraCollisionDetectionRange.description": "變更碰撞的偵測範圍。提高此值會讓船隻在實際碰到前方方塊之前提前加速。",
+    "yacl3.config.bbm.category.boosting.root.option.extraCollisionDetectionRange.warning": "將此值設定得太大可能會導致異常行為。",
+    "yacl3.config.bbm.category.boosting.root.option.heightTolerance": "高度容許值",
+    "yacl3.config.bbm.category.boosting.root.option.heightTolerance.description": "當障礙物比設定的加速速度所預測的上升距離最多高出此方塊數時，允許船隻自動跳躍。",
     "yacl3.config.bbm.category.boosting.root.option.onlyForPlayers": "僅限玩家",
     "yacl3.config.bbm.category.boosting.root.option.onlyForPlayers.description": "切換船隻是否僅在載有玩家時才加速。"
 }
