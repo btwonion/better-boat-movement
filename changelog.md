@@ -1,2 +1,8 @@
 - update to 26.2
 - increase default config option of `stepHeight` from 0.3 to 0.35
+- prevent automatic boosts when the boat cannot clear the obstacle, with a new `heightTolerance` option for fine-tuning
+- improve obstacle and block-filter detection by using the actual collision shape and nearest block in the boat's path
+- synchronize gameplay settings from the server in multiplayer and show server-managed settings as read-only
+- apply configuration-screen changes immediately in singleplayer
+- make manual jumps safer and more predictable by jumping once per keypress and validating requests on the server
+- disable manual jumps by default, lower their default multiplier to 1.2, and restrict them to ground or water by default
