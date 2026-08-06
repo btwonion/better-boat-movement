@@ -29,7 +29,8 @@ object BoatMovementController {
                     boat.boundingBox.minY,
                     obstacle.topY,
                     config.stepHeight.toDouble(),
-                    config.heightTolerance
+                    config.heightTolerance,
+                    boat.gravity
                 ),
                 groundedOrInWater = false,
                 manualGroundOrWaterRequired = false,

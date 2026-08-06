@@ -7,6 +7,7 @@ import dev.nyon.bbm.config.Identifier
 import dev.nyon.bbm.config.IdentifierSerializer
 import dev.nyon.bbm.config.ConfigRepository
 import dev.nyon.bbm.config.GameplayConfig
+import net.minecraft.ChatFormatting
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component
@@ -17,7 +18,7 @@ fun generateYaclScreen(parent: Screen?): Screen {
     val readOnly = remote != null && Minecraft.getInstance().singleplayerServer == null
     val config: GameplayConfig = if (readOnly) requireNotNull(remote).toMutableConfig() else ConfigRepository.localConfig
     return YetAnotherConfigLib("bbm") {
-    val general by categories.registering {
+    val boosting by categories.registering {
         if (readOnly) {
             rootOptions.registerLabel(
                 "serverManaged",
@@ -43,9 +44,6 @@ fun generateYaclScreen(parent: Screen?): Screen {
             }
         }
 
-    }
-
-    val boosting by categories.registering {
         val boostStates = rootOptions.register(
             "boostStates",
             ListOption.createBuilder<Status>()
@@ -122,7 +120,11 @@ fun generateYaclScreen(parent: Screen?): Screen {
             available = !readOnly
             controller = numberField(0.0)
             descriptionBuilder {
-                addDefaultText(1)
+                text(
+                    Component.translatable("yacl3.config.bbm.category.boosting.root.option.extraCollisionDetectionRange.description"),
+                    Component.translatable("yacl3.config.bbm.category.boosting.root.option.extraCollisionDetectionRange.warning")
+                        .withStyle(ChatFormatting.BOLD)
+                )
             }
         }
 
