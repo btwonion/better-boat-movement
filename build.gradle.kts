@@ -1,6 +1,6 @@
 @file:Suppress("SpellCheckingInspection", "UnstableApiUsage", "RedundantNullableReturnType")
 
-import net.neoforged.moddevgradle.dsl.NeoForgeExtension
+import me.modmuss50.mpp.platforms.modrinth.ModrinthEnvironment
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -151,6 +151,7 @@ dependencies {
 
 tasks {
     register("releaseMod") {
+        description = "Release mod to GitHub, Modrinth, CurseForge and Maven"
         group = "publishing"
 
         dependsOn("publishMods")
@@ -180,13 +181,13 @@ publishMods {
     file = modstitch.finalJarTask.flatMap { it.archiveFile }
     changelog = changelogText
     type = if (beta != 0) BETA else STABLE
-    if (isFabric) modLoaders.addAll("fabric", "quilt")
-    else modLoaders.add("neoforge")
+    if (isFabric) modLoaders.addAll("fabric", "quilt") else modLoaders.add("neoforge")
 
     modrinth {
         projectId = "wTfH1dkt"
         accessToken = providers.environmentVariable("MODRINTH_API_KEY")
         minecraftVersions.addAll(supportedMcVersions)
+        environment = ModrinthEnvironment.CLIENT_AND_SERVER
 
         if (isFabric) {
             requires { slug = "fabric-api" }
@@ -203,6 +204,8 @@ publishMods {
         projectId = "1244671"
         accessToken = providers.environmentVariable("CURSEFORGE_API_KEY")
         minecraftVersions.addAll(supportedMcVersions.mapNotNull { if (it.contains('-')) null else it })
+        client = true
+        server = true
 
         if (isFabric) {
             requires { slug = "fabric-api" }
