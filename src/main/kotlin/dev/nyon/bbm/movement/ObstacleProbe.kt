@@ -3,7 +3,6 @@ package dev.nyon.bbm.movement
 import dev.nyon.bbm.config.GameplayConfigSnapshot
 import net.minecraft.core.BlockPos
 import net.minecraft.world.entity.vehicle.boat.AbstractBoat
-import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.phys.AABB
 import net.minecraft.world.phys.shapes.CollisionContext
@@ -18,8 +17,7 @@ data class ObstacleHit(
 object ObstacleProbe {
     fun findAhead(
         boat: AbstractBoat,
-        config: GameplayConfigSnapshot,
-        allowedBlocks: Set<Block>
+        config: GameplayConfigSnapshot
     ): ObstacleHit? {
         val box = boat.boundingBox.toCoreBox()
         val movement = boat.deltaMovement
@@ -48,7 +46,7 @@ object ObstacleProbe {
         for (x in minX..maxX) for (y in minY..maxY) for (z in minZ..maxZ) {
             mutable.set(x, y, z)
             val state = boat.level().getBlockState(mutable)
-            if (state.isAir || allowedBlocks.isNotEmpty() && state.block !in allowedBlocks) continue
+            if (state.isAir) continue
             val shape = state.getCollisionShape(boat.level(), mutable, collisionContext)
             if (shape.isEmpty) continue
 

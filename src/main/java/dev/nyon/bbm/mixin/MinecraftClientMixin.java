@@ -17,6 +17,6 @@ public class MinecraftClientMixin {
 
     @Inject(method = "stop", at = @At("TAIL"))
     private void bbm$saveConfig(CallbackInfo ci) {
-        ConfigRepository.INSTANCE.save();
+        ConfigRepository.INSTANCE.save(false);
     }
 }

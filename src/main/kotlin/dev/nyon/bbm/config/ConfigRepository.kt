@@ -18,8 +18,11 @@ object ConfigRepository {
         refreshLocal()
     }
 
-    fun refreshLocal() {
-        localSnapshot.set(localConfig.toSnapshot())
+    fun refreshLocal(syncRemote: Boolean = false): GameplayConfigSnapshot {
+        val snapshot = localConfig.toSnapshot()
+        localSnapshot.set(snapshot)
+        if (syncRemote) remoteSnapshotReference.set(snapshot)
+        return snapshot
     }
 
     fun snapshotFor(clientSide: Boolean): GameplayConfigSnapshot? =
@@ -34,9 +37,9 @@ object ConfigRepository {
         remoteSnapshotReference.set(null)
     }
 
-    fun save() {
-        refreshLocal()
+    fun save(syncRemote: Boolean = false) {
+        val snapshot = refreshLocal(syncRemote)
         saveConfig(localConfig)
-        reloadCache(localSnapshot.get() ?: return)
+        reloadCache(snapshot)
     }
 }

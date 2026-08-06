@@ -7,13 +7,19 @@ import net.minecraft.world.entity.vehicle.boat.AbstractBoat
 import net.minecraft.world.phys.Vec3
 
 object BoatMovementController {
-    fun automaticVelocity(boat: AbstractBoat, status: AbstractBoat.Status, original: Vec3): Vec3 {
+    fun automaticVelocity(
+        boat: AbstractBoat,
+        status: AbstractBoat.Status,
+        original: Vec3,
+        waterLevel: Double
+    ): Vec3 {
         val config = ConfigRepository.snapshotFor(boat.level().isClientSide) ?: return original
         val filters = filtersFor(config)
-        val obstacle = ObstacleProbe.findAhead(boat, config, filters.colliding)
+        val obstacle = ObstacleProbe.findAhead(boat, config)
         val triggerPresent = boat.horizontalCollision ||
             config.extraCollisionDetectionRange > 0.0 && obstacle != null
-        val collidingAllowed = filters.colliding.isEmpty() || obstacle != null
+        val collidingAllowed = filters.colliding.isEmpty() ||
+            obstacle != null && obstacle.state.block in filters.colliding
         val supportAllowed = status != AbstractBoat.Status.ON_LAND ||
             SupportingBlockProbe.hasAllowedSupport(boat, filters.supporting)
         val decision = BoostPolicy.decide(
@@ -25,10 +31,17 @@ object BoatMovementController {
                 playerRequired = config.onlyForPlayers,
                 supportingBlockAllowed = supportAllowed,
                 collidingBlockAllowed = collidingAllowed,
-                obstacleReachable = obstacle == null || JumpReachability.canReach(
+                obstacleReachable = obstacle == null || JumpReachability.canReachAfterUpdate(
                     boat.boundingBox.minY,
                     obstacle.topY,
-                    config.stepHeight.toDouble(),
+                    BoatVerticalPhysics.updatedVelocity(
+                        status,
+                        config.stepHeight.toDouble(),
+                        boat.gravity,
+                        waterLevel,
+                        boat.y,
+                        boat.bbHeight.toDouble()
+                    ),
                     config.heightTolerance,
                     boat.gravity
                 ),

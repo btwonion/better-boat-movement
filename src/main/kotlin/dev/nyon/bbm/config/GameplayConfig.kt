@@ -3,11 +3,33 @@ package dev.nyon.bbm.config
 import kotlinx.serialization.Serializable
 import net.minecraft.world.entity.vehicle.boat.AbstractBoat.Status
 
+object GameplayConfigLimits {
+    const val DEFAULT_STEP_HEIGHT = 0.35f
+    const val MIN_STEP_HEIGHT = 0f
+    const val MAX_STEP_HEIGHT = 4f
+
+    const val DEFAULT_PLAYER_EJECT_TICKS = 200f
+    const val MIN_PLAYER_EJECT_TICKS = 0f
+    const val MAX_PLAYER_EJECT_TICKS = 10_000f
+
+    const val DEFAULT_EXTRA_COLLISION_DETECTION_RANGE = 0.5
+    const val MIN_EXTRA_COLLISION_DETECTION_RANGE = 0.0
+    const val MAX_EXTRA_COLLISION_DETECTION_RANGE = 16.0
+
+    const val DEFAULT_HEIGHT_TOLERANCE = 0.25
+    const val MIN_HEIGHT_TOLERANCE = 0.0
+    const val MAX_HEIGHT_TOLERANCE = 4.0
+
+    const val DEFAULT_KEYBIND_JUMP_HEIGHT_MULTIPLIER = 1.2
+    const val MIN_KEYBIND_JUMP_HEIGHT_MULTIPLIER = 0.0
+    const val MAX_KEYBIND_JUMP_HEIGHT_MULTIPLIER = 8.0
+}
+
 /** Mutable on-disk representation. Runtime code consumes an immutable [GameplayConfigSnapshot]. */
 @Serializable
 data class GameplayConfig(
-    var stepHeight: Float = 0.35f,
-    var playerEjectTicks: Float = 20f * 10f,
+    var stepHeight: Float = GameplayConfigLimits.DEFAULT_STEP_HEIGHT,
+    var playerEjectTicks: Float = GameplayConfigLimits.DEFAULT_PLAYER_EJECT_TICKS,
     var boosting: Boosting = Boosting(),
     var keybind: Keybind = Keybind()
 ) {
@@ -22,14 +44,14 @@ data class GameplayConfig(
         var allowedSupportingBlocks: MutableSet<Identifier> = mutableSetOf(),
         var allowedCollidingBlocks: MutableSet<Identifier> = mutableSetOf(),
         var onlyForPlayers: Boolean = true,
-        var extraCollisionDetectionRange: Double = 0.5,
-        var heightTolerance: Double = 0.25
+        var extraCollisionDetectionRange: Double = GameplayConfigLimits.DEFAULT_EXTRA_COLLISION_DETECTION_RANGE,
+        var heightTolerance: Double = GameplayConfigLimits.DEFAULT_HEIGHT_TOLERANCE
     )
 
     @Serializable
     data class Keybind(
         var allowJumpKeybind: Boolean = false,
-        var keybindJumpHeightMultiplier: Double = 1.2,
+        var keybindJumpHeightMultiplier: Double = GameplayConfigLimits.DEFAULT_KEYBIND_JUMP_HEIGHT_MULTIPLIER,
         var onlyKeybindJumpOnGroundOrWater: Boolean = true
     )
 }
@@ -68,15 +90,41 @@ data class GameplayConfigSnapshot(
 }
 
 fun GameplayConfig.toSnapshot() = GameplayConfigSnapshot(
-    stepHeight = stepHeight,
-    playerEjectTicks = playerEjectTicks,
+    stepHeight = stepHeight.validated(
+        GameplayConfigLimits.DEFAULT_STEP_HEIGHT,
+        GameplayConfigLimits.MIN_STEP_HEIGHT,
+        GameplayConfigLimits.MAX_STEP_HEIGHT
+    ),
+    playerEjectTicks = playerEjectTicks.validated(
+        GameplayConfigLimits.DEFAULT_PLAYER_EJECT_TICKS,
+        GameplayConfigLimits.MIN_PLAYER_EJECT_TICKS,
+        GameplayConfigLimits.MAX_PLAYER_EJECT_TICKS
+    ),
     boostStates = boosting.boostStates.toSet(),
     allowedSupportingBlocks = boosting.allowedSupportingBlocks.toSet(),
     allowedCollidingBlocks = boosting.allowedCollidingBlocks.toSet(),
     onlyForPlayers = boosting.onlyForPlayers,
-    extraCollisionDetectionRange = boosting.extraCollisionDetectionRange,
-    heightTolerance = boosting.heightTolerance,
+    extraCollisionDetectionRange = boosting.extraCollisionDetectionRange.validated(
+        GameplayConfigLimits.DEFAULT_EXTRA_COLLISION_DETECTION_RANGE,
+        GameplayConfigLimits.MIN_EXTRA_COLLISION_DETECTION_RANGE,
+        GameplayConfigLimits.MAX_EXTRA_COLLISION_DETECTION_RANGE
+    ),
+    heightTolerance = boosting.heightTolerance.validated(
+        GameplayConfigLimits.DEFAULT_HEIGHT_TOLERANCE,
+        GameplayConfigLimits.MIN_HEIGHT_TOLERANCE,
+        GameplayConfigLimits.MAX_HEIGHT_TOLERANCE
+    ),
     allowJumpKeybind = keybind.allowJumpKeybind,
-    keybindJumpHeightMultiplier = keybind.keybindJumpHeightMultiplier,
+    keybindJumpHeightMultiplier = keybind.keybindJumpHeightMultiplier.validated(
+        GameplayConfigLimits.DEFAULT_KEYBIND_JUMP_HEIGHT_MULTIPLIER,
+        GameplayConfigLimits.MIN_KEYBIND_JUMP_HEIGHT_MULTIPLIER,
+        GameplayConfigLimits.MAX_KEYBIND_JUMP_HEIGHT_MULTIPLIER
+    ),
     onlyKeybindJumpOnGroundOrWater = keybind.onlyKeybindJumpOnGroundOrWater
 )
+
+private fun Float.validated(default: Float, minimum: Float, maximum: Float): Float =
+    if (isFinite()) coerceIn(minimum, maximum) else default
+
+private fun Double.validated(default: Double, minimum: Double, maximum: Double): Double =
+    if (isFinite()) coerceIn(minimum, maximum) else default

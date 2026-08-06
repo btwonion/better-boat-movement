@@ -7,6 +7,7 @@ import dev.nyon.bbm.config.Identifier
 import dev.nyon.bbm.config.IdentifierSerializer
 import dev.nyon.bbm.config.ConfigRepository
 import dev.nyon.bbm.config.GameplayConfig
+import dev.nyon.bbm.config.GameplayConfigLimits
 import net.minecraft.ChatFormatting
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.screens.Screen
@@ -15,7 +16,8 @@ import net.minecraft.world.entity.vehicle.boat.AbstractBoat.Status
 
 fun generateYaclScreen(parent: Screen?): Screen {
     val remote = ConfigRepository.remoteSnapshot
-    val readOnly = remote != null && Minecraft.getInstance().singleplayerServer == null
+    val singleplayer = Minecraft.getInstance().singleplayerServer != null
+    val readOnly = remote != null && !singleplayer
     val config: GameplayConfig = if (readOnly) requireNotNull(remote).toMutableConfig() else ConfigRepository.localConfig
     return YetAnotherConfigLib("bbm") {
     val boosting by categories.registering {
@@ -27,18 +29,29 @@ fun generateYaclScreen(parent: Screen?): Screen {
         }
 
         val stepHeight by rootOptions.registering {
-            binding(0.35f, { config.stepHeight }, { config.stepHeight = it })
+            binding(
+                GameplayConfigLimits.DEFAULT_STEP_HEIGHT,
+                { config.stepHeight },
+                { config.stepHeight = it }
+            )
             available = !readOnly
-            controller = numberField(0f)
+            controller = numberField(GameplayConfigLimits.MIN_STEP_HEIGHT, GameplayConfigLimits.MAX_STEP_HEIGHT)
             descriptionBuilder {
                 addDefaultText(1)
             }
         }
 
         val playerEjectTicks by rootOptions.registering {
-            binding(20f * 10f, { config.playerEjectTicks }, { config.playerEjectTicks = it })
+            binding(
+                GameplayConfigLimits.DEFAULT_PLAYER_EJECT_TICKS,
+                { config.playerEjectTicks },
+                { config.playerEjectTicks = it }
+            )
             available = !readOnly
-            controller = numberField(0f, 10000f)
+            controller = numberField(
+                GameplayConfigLimits.MIN_PLAYER_EJECT_TICKS,
+                GameplayConfigLimits.MAX_PLAYER_EJECT_TICKS
+            )
             descriptionBuilder {
                 addDefaultText(1)
             }
@@ -78,8 +91,7 @@ fun generateYaclScreen(parent: Screen?): Screen {
                     emptyList(),
                     { config.boosting.allowedSupportingBlocks.map(Identifier::toString) },
                     { list->
-                        config.boosting.allowedSupportingBlocks =
-                            list.map(IdentifierSerializer::decodeFromString).toMutableSet()
+                        config.boosting.allowedSupportingBlocks = decodeIdentifiers(list)
                     }
                 )
                 .initial("")
@@ -97,8 +109,7 @@ fun generateYaclScreen(parent: Screen?): Screen {
                     emptyList(),
                     { config.boosting.allowedCollidingBlocks.map(Identifier::toString) },
                     { list->
-                        config.boosting.allowedCollidingBlocks =
-                            list.map(IdentifierSerializer::decodeFromString).toMutableSet()
+                        config.boosting.allowedCollidingBlocks = decodeIdentifiers(list)
                     }
                 )
                 .initial("")
@@ -116,9 +127,16 @@ fun generateYaclScreen(parent: Screen?): Screen {
         }
 
         val extraCollisionDetectionRange by rootOptions.registering {
-            binding(0.5, { config.boosting.extraCollisionDetectionRange }, { config.boosting.extraCollisionDetectionRange = it })
+            binding(
+                GameplayConfigLimits.DEFAULT_EXTRA_COLLISION_DETECTION_RANGE,
+                { config.boosting.extraCollisionDetectionRange },
+                { config.boosting.extraCollisionDetectionRange = it }
+            )
             available = !readOnly
-            controller = numberField(0.0)
+            controller = numberField(
+                GameplayConfigLimits.MIN_EXTRA_COLLISION_DETECTION_RANGE,
+                GameplayConfigLimits.MAX_EXTRA_COLLISION_DETECTION_RANGE
+            )
             descriptionBuilder {
                 text(
                     Component.translatable("yacl3.config.bbm.category.boosting.root.option.extraCollisionDetectionRange.description"),
@@ -129,9 +147,16 @@ fun generateYaclScreen(parent: Screen?): Screen {
         }
 
         val heightTolerance by rootOptions.registering {
-            binding(0.25, { config.boosting.heightTolerance }, { config.boosting.heightTolerance = it })
+            binding(
+                GameplayConfigLimits.DEFAULT_HEIGHT_TOLERANCE,
+                { config.boosting.heightTolerance },
+                { config.boosting.heightTolerance = it }
+            )
             available = !readOnly
-            controller = numberField(0.0)
+            controller = numberField(
+                GameplayConfigLimits.MIN_HEIGHT_TOLERANCE,
+                GameplayConfigLimits.MAX_HEIGHT_TOLERANCE
+            )
             descriptionBuilder {
                 addDefaultText(1)
             }
@@ -149,9 +174,16 @@ fun generateYaclScreen(parent: Screen?): Screen {
         }
 
         val keybindJumpHeightMultiplier by rootOptions.registering {
-            binding(1.2, { config.keybind.keybindJumpHeightMultiplier }, { config.keybind.keybindJumpHeightMultiplier = it })
+            binding(
+                GameplayConfigLimits.DEFAULT_KEYBIND_JUMP_HEIGHT_MULTIPLIER,
+                { config.keybind.keybindJumpHeightMultiplier },
+                { config.keybind.keybindJumpHeightMultiplier = it }
+            )
             available = !readOnly
-            controller = numberField(0.0)
+            controller = numberField(
+                GameplayConfigLimits.MIN_KEYBIND_JUMP_HEIGHT_MULTIPLIER,
+                GameplayConfigLimits.MAX_KEYBIND_JUMP_HEIGHT_MULTIPLIER
+            )
             descriptionBuilder {
                 addDefaultText(1)
             }
@@ -168,7 +200,11 @@ fun generateYaclScreen(parent: Screen?): Screen {
     }
 
     save {
-        if (!readOnly) ConfigRepository.save()
+        if (!readOnly) ConfigRepository.save(syncRemote = singleplayer)
     }
     }.generateScreen(parent)
 }
+
+internal fun decodeIdentifiers(entries: List<String>): MutableSet<Identifier> = entries.mapNotNull { entry ->
+    runCatching { IdentifierSerializer.decodeFromString(entry) }.getOrNull()
+}.toMutableSet()

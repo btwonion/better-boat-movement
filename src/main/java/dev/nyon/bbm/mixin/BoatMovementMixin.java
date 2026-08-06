@@ -14,6 +14,9 @@ public class BoatMovementMixin {
     @Shadow
     private AbstractBoat.Status status;
 
+    @Shadow
+    private double waterLevel;
+
     @Unique
     private final AbstractBoat bbm$boat = (AbstractBoat) (Object) this;
 
@@ -26,6 +29,6 @@ public class BoatMovementMixin {
         )
     )
     private Vec3 bbm$applyAutomaticBoost(Vec3 original) {
-        return BoatMovementController.INSTANCE.automaticVelocity(bbm$boat, status, original);
+        return BoatMovementController.INSTANCE.automaticVelocity(bbm$boat, status, original, waterLevel);
     }
 }

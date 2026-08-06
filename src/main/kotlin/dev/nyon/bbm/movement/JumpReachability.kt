@@ -1,26 +1,27 @@
 package dev.nyon.bbm.movement
 
 object JumpReachability {
-    fun canReach(
+    fun canReachAfterUpdate(
         boatBottomY: Double,
         obstacleTopY: Double,
-        jumpVelocity: Double,
+        updatedVerticalVelocity: Double,
         heightTolerance: Double,
         gravity: Double = DEFAULT_BOAT_GRAVITY
-    ): Boolean = obstacleTopY - boatBottomY <= maximumRise(jumpVelocity, gravity) + heightTolerance
+    ): Boolean = obstacleTopY - boatBottomY <=
+        maximumRiseAfterUpdate(updatedVerticalVelocity, gravity) + heightTolerance
 
     /**
-     * Predicts the upward distance covered by Minecraft's discrete boat motion. The automatic
-     * boost is a velocity, and gravity is applied before each movement tick.
+     * Predicts the upward distance starting with the velocity that vanilla has already updated
+     * for the current tick. Later ticks use the boat's normal gravity-only airborne motion.
      */
-    internal fun maximumRise(jumpVelocity: Double, gravity: Double): Double {
-        if (jumpVelocity <= 0.0 || !jumpVelocity.isFinite()) return 0.0
+    internal fun maximumRiseAfterUpdate(updatedVerticalVelocity: Double, gravity: Double): Double {
+        if (updatedVerticalVelocity <= 0.0 || !updatedVerticalVelocity.isFinite()) return 0.0
         if (gravity <= 0.0 || !gravity.isFinite()) return Double.POSITIVE_INFINITY
 
-        val upwardTicks = kotlin.math.ceil(jumpVelocity / gravity).toLong() - 1L
-        if (upwardTicks <= 0L) return 0.0
-        return upwardTicks * jumpVelocity - gravity * upwardTicks * (upwardTicks + 1L) / 2.0
+        val upwardTicks = kotlin.math.ceil(updatedVerticalVelocity / gravity).toLong()
+        return upwardTicks * updatedVerticalVelocity -
+            gravity * upwardTicks * (upwardTicks - 1L) / 2.0
     }
 
-    private const val DEFAULT_BOAT_GRAVITY = 0.04
+    internal const val DEFAULT_BOAT_GRAVITY = 0.04
 }
