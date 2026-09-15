@@ -5,8 +5,10 @@ This document is the behavioral contract for movement and networking changes.
 ## Automatic boost
 
 - The controller evaluates an authoritative boat once from `AbstractBoat.floatBoat` on each logical-side tick.
+- On Paper, Folia, and Purpur, the equivalent controller runs from the server's vehicle-movement event and applies velocity through the Bukkit boat API.
 - A trigger is either Minecraft's normal `horizontalCollision`, or a block collision returned by the forward obstacle probe when `extraCollisionDetectionRange` is greater than zero.
 - At range zero, only `horizontalCollision` can trigger. The probe may still identify the contacted block for filtering, but cannot create an early trigger.
+- Bukkit does not expose Minecraft's `horizontalCollision` field, so the Paper-family target implements the range-zero trigger as a 0.001-block collision-shape contact probe. It does not use the boat's remaining velocity to create an early trigger.
 - The probe sweeps the current boat box through horizontal velocity plus the configured forward range. Horizontal velocity determines direction; boat facing is used only at near-zero velocity.
 - The probe uses each block's collision shape. Blocks merely beside, behind, above, or below the swept boat volume do not trigger.
 - The probe follows the contacted collision shape upward through its contiguous stack. It measures obstacle height from the bottom of the hull to the top of that stack.
@@ -32,6 +34,7 @@ This document is the behavioral contract for movement and networking changes.
 - If `onlyKeybindJumpOnGroundOrWater` is enabled, both prediction and authority reject a boat that is in air.
 - The client sends only the target boat UUID. The server requires that the sender is riding and controlling that exact boat, applies its own configuration, and rate-limits duplicate requests.
 - Client prediction is cosmetic responsiveness; server state is authoritative.
+- Paper, Folia, and Purpur accept the same `bbm:manual_jump` plugin-message payload, validate the controlling player and boat UUID, and apply the same cooldown and server-side policy. Vanilla clients simply do not expose the optional keybind.
 
 ## Configuration authority
 
@@ -41,8 +44,9 @@ This document is the behavioral contract for movement and networking changes.
 - Saving from the singleplayer configuration screen refreshes both the integrated server snapshot and the client prediction snapshot immediately.
 - Remote snapshots are cleared on disconnect. A remote server's settings are read-only in the client config screen.
 - Persistence version and network protocol version are independent.
+- Paper, Folia, and Purpur send the same `bbm:config_snapshot` payload as the modded servers, so an installed client mod uses the plugin's validated immutable snapshot.
 
 ## Supported platforms
 
-- Minecraft 26.1–26.2: Fabric, Quilt, and NeoForge.
+- Minecraft 26.1–26.2: Fabric, Quilt, NeoForge, Paper, Folia, and Purpur.
 - Minecraft 26.3: Fabric and Quilt.
