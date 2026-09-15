@@ -8,7 +8,7 @@ on:
       - ".gitignore"
       - "changelog.md"
       - ".editorconfig"
-      - "src/*/resources/lang/*"
+      - "mod/src/*/resources/lang/*"
       - "media/"
   pull_request:
     paths-ignore:
@@ -17,7 +17,7 @@ on:
       - ".gitignore"
       - "changelog.md"
       - ".editorconfig"
-      - "src/*/resources/lang/*"
+      - "mod/src/*/resources/lang/*"
       - "media/"
   workflow_dispatch:
 
@@ -42,5 +42,5 @@ jobs:
       - uses: actions/upload-artifact@v7
         with:
           path: |
-            versions/**/build/libs/*.jar
+            mod/versions/**/build/libs/*.jar
             paper/build/libs/*.jar

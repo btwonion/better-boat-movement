@@ -46,6 +46,27 @@ This document is the behavioral contract for movement and networking changes.
 - Persistence version and network protocol version are independent.
 - Paper, Folia, and Purpur send the same `bbm:config_snapshot` payload as the modded servers, so an installed client mod uses the plugin's validated immutable snapshot.
 
+## Paper-family client modes
+
+The Paper, Folia, or Purpur plugin is the only server-side installation required. A server may accept vanilla clients and clients with the Fabric or NeoForge mod at the same time; both use the same authoritative plugin configuration and server movement result.
+
+### Vanilla client
+
+- Automatic boosts are detected and applied by the server plugin. The resulting boat velocity reaches the client through normal entity synchronization.
+- `playerEjectTicks`, boost states, block filters, reachability, and every other gameplay restriction are evaluated by the plugin. A vanilla client cannot supply or override configuration.
+- The client does not predict Better Boat Movement's boost before the server update arrives. On a higher-latency connection, the start of a boost can therefore feel less immediate than it does with the client mod.
+- Manual jumping is unavailable because the vanilla client has neither the keybind nor a source for the validated manual-jump payload.
+- There is no Better Boat Movement configuration screen. Server operators configure `plugins/better-boat-movement/better-boat-movement.json` and restart the server to apply file changes.
+
+### Client mod installed
+
+- On join, the plugin sends its validated immutable settings through `bbm:config_snapshot`. The client installs that snapshot as its remote configuration; its own local gameplay settings do not override the server.
+- The client-side boat mixin uses the synchronized snapshot to predict automatic boosts. The plugin independently evaluates and applies the authoritative result, so prediction improves responsiveness without transferring authority to the client.
+- If `allowJumpKeybind` is enabled by the server, the client exposes and predicts the manual jump. It sends only the controlled boat UUID through `bbm:manual_jump`.
+- The plugin accepts a manual jump only when the sender is the controlling passenger of that exact boat, the server setting permits it, the ground-or-water rule passes, and the request cooldown has elapsed. A rejected prediction is corrected by ordinary server synchronization.
+- The configuration screen shows the synchronized Paper-family settings as read-only. File changes remain a server-operator action and require a restart.
+- The remote snapshot is discarded when the client disconnects, preventing one server's settings from leaking into another connection or singleplayer.
+
 ## Supported platforms
 
 - Minecraft 26.1–26.2: Fabric, Quilt, NeoForge, Paper, Folia, and Purpur.

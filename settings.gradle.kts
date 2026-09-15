@@ -23,7 +23,7 @@ stonecutter {
         version("26.3-fabric", "26.3")
         vcsVersion = "26.1-fabric"
     }
-    create(rootProject)
+    create("mod")
 }
 
 include(":paper")

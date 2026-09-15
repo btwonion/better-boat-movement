@@ -2,11 +2,12 @@
 
 ## Project overview
 
-Better Boat Movement is a Kotlin/Java Minecraft mod built for Fabric and NeoForge from one Stonecutter-managed source tree. Keep loader-neutral gameplay code under `src/main`, and isolate loader registration in `src/main/kotlin/dev/nyon/bbm/platform`.
+Better Boat Movement is a Kotlin/Java Minecraft project built for Fabric and NeoForge from one Stonecutter-managed source tree, plus a standalone Paper-family plugin. Keep loader-neutral mod gameplay code under `mod/src/main`, isolate loader registration in `mod/src/main/kotlin/dev/nyon/bbm/platform`, and keep Paper-specific behavior under `paper/src/main`.
 
 ## Build and test
 
 - Run `./gradlew build` when changing mixins, metadata, dependencies, or generated loader sources.
+- Run `./gradlew :paper:build` when changing the Paper-family plugin.
 - Do not commit generated files from `build/` or loader run directories.
 
 ## Implementation conventions
