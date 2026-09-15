@@ -42,6 +42,7 @@ This document is the behavioral contract for movement and networking changes.
 - Remote snapshots are cleared on disconnect. A remote server's settings are read-only in the client config screen.
 - Persistence version and network protocol version are independent.
 
-## Supported lines
+## Supported platforms
 
-This branch builds Minecraft 26.1 for Fabric/Quilt and NeoForge. It does not publish a 1.21.1 artifact. Older maintained lines must receive the obstacle-probe change through their own maintenance branch.
+- Minecraft 26.1–26.2: Fabric, Quilt, and NeoForge.
+- Minecraft 26.3: Fabric and Quilt.

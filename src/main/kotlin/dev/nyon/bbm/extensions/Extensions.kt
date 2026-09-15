@@ -8,7 +8,7 @@ private val KEY_BINDING_CATEGORY: KeyMapping.Category = KeyMapping.Category(iden
 fun keyMapping(location: String, key: Int): KeyMapping {
     return KeyMapping(
         location,
-        InputConstants.Type.KEYSYM,
+        /*? if >=26.3 {*/ /*InputConstants.Type.KEYBOARD*//*?} else {*/ InputConstants.Type.KEYSYM/*?}*/,
         key, /*? if >1.21.8 {*/
         KEY_BINDING_CATEGORY/*?} else {*/  /*"key.category.bbm.main"*//*?}*/
     )

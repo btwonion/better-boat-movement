@@ -1,11 +1,11 @@
 package dev.nyon.bbm
 
 import dev.nyon.bbm.extensions.keyMapping
-import org.lwjgl.glfw.GLFW
+import com.mojang.blaze3d.platform.InputConstants
 
 object KeyBindings {
     val jumpKeyBind by lazy {
-        keyMapping("key.bbm.jump", GLFW.GLFW_KEY_H)
+        keyMapping("key.bbm.jump", InputConstants.KEY_H)
     }
 
     fun register() {
