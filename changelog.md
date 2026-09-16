@@ -1,3 +1,3 @@
 - update to 26.3
-- add NeoForge support for 26.3
 - add compatibility for Paper, Folia and Purpur
+  - works for vanilla and modded client (modded is strongly recommended)
