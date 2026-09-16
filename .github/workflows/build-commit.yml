@@ -41,6 +41,8 @@ jobs:
             loader: neoforge
           - version: "26.3"
             loader: fabric
+          - version: "26.3"
+            loader: neoforge
 
     steps:
       - uses: actions/checkout@v7
