@@ -1,259 +1,124 @@
-@file:Suppress("SpellCheckingInspection", "UnstableApiUsage", "RedundantNullableReturnType")
-
-import me.modmuss50.mpp.platforms.modrinth.ModrinthEnvironment
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.json.*
+import org.gradle.kotlin.dsl.support.uppercaseFirstChar
+import java.net.URI
+import java.net.http.HttpClient
+import java.net.http.HttpRequest
+import java.net.http.HttpResponse
+import java.time.Instant
 
 plugins {
-    alias(libs.plugins.kotlin)
-    alias(libs.plugins.kotlinx.serialization)
-
-    alias(libs.plugins.modstitch)
-
-    alias(libs.plugins.mod.publish)
-
-    `maven-publish`
+    base
 }
 
-val isFabric = modstitch.isLoom
-val loader = if (isFabric) "fabric" else "neoforge"
-
-val beta: Int = property("mod.beta").toString().toInt()
-val majorVersion: String = property("mod.major-version").toString()
-val mcVersion = property("vers.mcVersion").toString()
-version = "$majorVersion${if (beta != 0) "-beta$beta" else ""}-$mcVersion+$loader" // Pattern is '1.0.0-beta1-1.20.6-pre.2+fabric'
-
-val flk: String = "${libs.versions.fabric.language.kotlin.orNull}${libs.versions.kotlin.orNull}"
-val fabricLoader = libs.versions.fabric.loader.get()
-modstitch {
-    minecraftVersion = mcVersion
-
-    metadata {
-        fun prop(property: String, block: (String) -> Unit) {
-            prop(property, ifNull = {""}) { block(it) }
-        }
-
-        prop("mod.id") { modId = it }
-        prop("mod.name") { modName = it }
-        prop("mod.description") { modDescription = it }
-        prop("mod.group") { modGroup = it }
-
-        modVersion = project.version.toString()
-        modLicense = "GNU General Public License v3.0"
-        modAuthor = "btwonion"
-
-        prop("mod.repo") { replacementProperties.put("repo", it) }
-        prop("mod.icon") { replacementProperties.put("icon", it) }
-        prop("vers.mcVersionRange") { replacementProperties.put("mc", it) }
-        replacementProperties.put("fabric_loader", fabricLoader)
-        replacementProperties.put("flk", flk)
-        prop("vers.deps.fapi") { replacementProperties.put("fapi", it) }
-        prop("vers.deps.yacl") { replacementProperties.put("yacl", it) }
-        prop("version.deps.modmenu") { replacementProperties.put("modmenu", it) }
+buildscript {
+    repositories { mavenCentral() }
+    dependencies {
+        classpath("org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0")
     }
-
-    loom {
-        fabricLoaderVersion = fabricLoader
-
-        configureLoom {
-            runConfigs.all {
-                ideConfigGenerated(false)
-            }
-        }
-    }
-
-    moddevgradle {
-        prop("vers.deps.fml") { neoForgeVersion = it }
-
-        configureNeoForge {
-            runs {
-                register("mainClient") {
-                    client()
-                    sourceSet = sourceSets.main.get()
-                    gameDirectory = layout.projectDirectory.dir("run")
-                    environment("WAYLAND_DISPLAY", "")
-                    environment("XDG_SESSION_TYPE", "x11")
-                }
-            }
-
-            mods {
-                register("main") {
-                    sourceSet(sourceSets.main.get())
-                }
-            }
-        }
-    }
-
 }
 
-base {
-    archivesName.set(rootProject.name)
-}
+private data class Field(val name: String, val value: String, val inline: Boolean)
 
-stonecutter {
-    listOf("neoforge", "fabric").map { it to (loader == it) }
-        .forEach { (name, isCurrent) -> constants[name] = isCurrent }
-}
+private data class Embed(
+    val title: String, val description: String, val timestamp: String, val color: Int, val fields: List<Field>
+)
 
-repositories {
-    mavenCentral()
-    maven("https://maven.terraformersmc.com")
-    maven("https://repo.nyon.dev/releases")
-    maven("https://maven.isxander.dev/releases")
-    maven("https://maven.neoforged.net/releases/")
-    maven("https://api.modrinth.com/maven")
-}
+private data class DiscordWebhook(
+    val username: String, val avatarUrl: String, val embeds: List<Embed>
+)
 
-val fabricLanguageKotlin: String = "${libs.versions.fabric.language.kotlin.orNull}${libs.versions.kotlin.orNull}"
-dependencies {
-    fun modDependency(
-        artifact: String,
-        compileOnly: Boolean = false,
-        api: Boolean = false
-    ) {
-        val configuration = if (api) {
-            if (compileOnly) "modstitchModCompileOnly" else "modstitchModApi"
-        } else {
-            if (compileOnly) "modstitchModCompileOnlyApi" else "modstitchModImplementation"
-        }
-
-        configuration(artifact)
-    }
-
-    fun propModDependency(
-        id: String,
-        artifactGetter: (String) -> String,
-        compileOnly: Boolean = false,
-        api: Boolean = false
-    ) {
-        prop("vers.deps.$id") { modVersion ->
-            modDependency(
-                artifactGetter(modVersion),
-                compileOnly,
-                api
-            )
-        }
-    }
-
-    if (isFabric) {
-        propModDependency("fapi", { "net.fabricmc.fabric-api:fabric-api:$it" }, api = true)
-        modDependency("net.fabricmc:fabric-language-kotlin:$fabricLanguageKotlin")
-        propModDependency("modMenu", { "com.terraformersmc:modmenu:$it" })
-    } else {
-        propModDependency("klf", { "dev.nyon:KotlinLangForge:2.11.2-k${libs.versions.kotlin.orNull}-$it+neoforge" }, api = true)
-    }
-
-    propModDependency("yacl", { "dev.isxander:yet-another-config-lib:$it" })
-
-    modstitchApi(libs.konfig)
-    modstitchJiJ(libs.konfig)
-}
+val modTargets = project(":mod").subprojects
+val releaseTargets = modTargets + project(":paper")
+val majorVersion = property("mod.major-version").toString()
+val betaVersion = property("mod.beta").toString().toInt()
+val slug = property("mod.slug").toString()
+val repo = property("mod.repo").toString()
+val avatar = property("mod.icon-url").toString()
+val color = property("mod.color").toString().toInt()
+val supportedLoaders = property("mod.supported-loaders").toString().split(',').map(String::uppercaseFirstChar)
+val supportedMinecraftVersions = releaseTargets.flatMap { target ->
+    target.property("vers.supportedMcVersions").toString()
+        .split(',').map(String::trim).filter(String::isNotEmpty)
+}.distinct()
 
 tasks {
-    register("releaseMod") {
-        description = "Release mod to GitHub, Modrinth, CurseForge and Maven"
+    named("build") {
+        description = "Build every mod and plugin target"
+        dependsOn(modTargets.map { "${it.path}:build" })
+        dependsOn(":paper:build")
+    }
+
+    register("releaseAllPlatforms") {
+        group = "publishing"
+        description = "Release every mod and plugin target"
+        dependsOn(modTargets.map { "${it.path}:releaseMod" })
+        dependsOn(":paper:releasePlugin")
+    }
+
+    register("postUpdate") {
         group = "publishing"
 
-        dependsOn("publishMods")
-        dependsOn("publish")
-    }
+        val featureVersion = "$majorVersion${if (betaVersion != 0) "-beta$betaVersion" else ""}"
 
-    withType<KotlinCompile> {
-        compilerOptions {
-            jvmTarget = modstitch.javaVersion.map { JvmTarget.fromTarget(it.toString()) }
-        }
+        val url = providers.environmentVariable("DISCORD_WEBHOOK").orNull ?: return@register
+        val roleId = providers.environmentVariable("DISCORD_ROLE_ID").orNull ?: return@register
+        val changelogText = rootProject.file("changelog.md").readText()
 
-        dependsOn("stonecutterGenerate")
-    }
-}
+        val webhook = DiscordWebhook(
+            username = "${rootProject.name} Release Notifier", avatarUrl = avatar, embeds = listOf(
+                Embed(
+                    title = "v$featureVersion of ${rootProject.name} released!",
+                    description = "# Changelog\n$changelogText",
+                    timestamp = Instant.now().toString(),
+                    color = color,
+                    fields = listOf(
+                        Field(
+                            "Supported versions", supportedMinecraftVersions.joinToString(), false
+                        ),
+                        Field(
+                            "Supported loaders", supportedLoaders.joinToString(), false
+                        ),
+                        Field("Modrinth", "https://modrinth.com/mod/$slug", true),
+                        Field("CurseForge", "https://www.curseforge.com/minecraft/mc-mods/better-boat-movement", true),
+                        Field("GitHub", "https://github.com/$repo", true)
+                    )
+                )
+            )
+        )
 
-val changelogText = buildString {
-    append("# v${project.version}\n")
-    if (beta != 0) appendLine("### As this is still a beta version, this version can contain bugs. Feel free to report ANY misbehaviours and errors!")
-    rootDir.resolve("changelog.md").readText().also(::append)
-}
-
-val supportedMcVersions: List<String> =
-    property("vers.supportedMcVersions")!!.toString().split(',').map(String::trim).filter(String::isNotEmpty)
-
-publishMods {
-    displayName = "v${project.version}"
-    file = modstitch.finalJarTask.flatMap { it.archiveFile }
-    changelog = changelogText
-    type = if (beta != 0) BETA else STABLE
-    if (isFabric) modLoaders.addAll("fabric", "quilt") else modLoaders.add("neoforge")
-
-    modrinth {
-        projectId = "wTfH1dkt"
-        accessToken = providers.environmentVariable("MODRINTH_API_KEY")
-        minecraftVersions.addAll(supportedMcVersions)
-        environment = ModrinthEnvironment.CLIENT_AND_SERVER
-
-        if (isFabric) {
-            requires { slug = "fabric-api" }
-            requires { slug = "fabric-language-kotlin" }
-            optional { slug = "modmenu" }
-        } else {
-            requires { slug = "kotlin-lang-forge" }
-        }
-
-        requires { slug = "yacl" }
-    }
-
-    curseforge {
-        projectId = "1244671"
-        accessToken = providers.environmentVariable("CURSEFORGE_API_KEY")
-        minecraftVersions.addAll(supportedMcVersions.mapNotNull { if (it.contains('-')) null else it })
-        client = true
-        server = true
-
-        if (isFabric) {
-            requires { slug = "fabric-api" }
-            requires { slug = "fabric-language-kotlin" }
-            optional { slug = "modmenu" }
-        } else {
-            requires { slug = "kotlinlangforge" }
-        }
-
-        requires { slug = "yacl" }
-    }
-
-    github {
-        repository = property("mod.repo").toString()
-        accessToken = providers.environmentVariable("GITHUB_TOKEN")
-        commitish = property("mod.main-branch").toString()
-    }
-}
-
-publishing {
-    repositories {
-        maven {
-            name = "nyon"
-            url = uri("https://repo.nyon.dev/releases")
-            credentials {
-                username = providers.environmentVariable("NYON_USERNAME").orNull
-                password = providers.environmentVariable("NYON_PASSWORD").orNull
+        @OptIn(ExperimentalSerializationApi::class)
+        val embedsJson = buildJsonArray {
+            webhook.embeds.map { embed ->
+                add(buildJsonObject {
+                    put("title", embed.title)
+                    put("description", embed.description)
+                    put("timestamp", embed.timestamp)
+                    put("color", embed.color)
+                    putJsonArray("fields") {
+                        addAll(embed.fields.map { field ->
+                            buildJsonObject {
+                                put("name", field.name)
+                                put("value", field.value)
+                                put("inline", field.inline)
+                            }
+                        })
+                    }
+                })
             }
         }
-    }
-    publications {
-        create<MavenPublication>("maven") {
-            groupId = "dev.nyon"
-            artifactId = property("mod.name").toString()
-            version = project.version.toString()
-            from(components["java"])
+
+        val json = buildJsonObject {
+            put("username", webhook.username)
+            put("avatar_url", webhook.avatarUrl)
+            put("content", "<@&$roleId>")
+            put("embeds", embedsJson)
         }
+
+        val jsonString = Json.encodeToString(json)
+        HttpClient.newHttpClient().send(
+            HttpRequest.newBuilder(URI.create(url)).header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(jsonString)).build(), HttpResponse.BodyHandlers.ofString()
+        )
     }
-}
-
-java {
-    withSourcesJar()
-}
-
-fun <T> prop(property: String, required: Boolean = false, ifNull: () -> String? = { null }, block: (String) -> T?): T? {
-    return ((System.getenv(property) ?: findProperty(property)?.toString())
-        ?.takeUnless { it.isBlank() }
-        ?: ifNull())
-        .let { if (required && it == null) error("Property $property is required") else it }
-        ?.let(block)
 }

@@ -6,13 +6,13 @@ import net.minecraft.world.entity.vehicle.boat.AbstractBoat
 import java.util.WeakHashMap
 
 object ManualJumpRequestHandler {
-    private const val COOLDOWN_TICKS = 2L
-    private val lastJumpTick = WeakHashMap<ServerPlayer, Long>()
+    private const val COOLDOWN_TICKS = 2
+    private val lastJumpTick = WeakHashMap<ServerPlayer, Int>()
 
     fun handle(player: ServerPlayer, payload: ManualJumpRequestPayload) {
         val boat = player.vehicle as? AbstractBoat ?: return
         if (boat.uuid != payload.boatId || boat.controllingPassenger !== player) return
-        val now = player.level().gameTime
+        val now = player.level().server.tickCount
         val previous = lastJumpTick[player]
         if (previous != null && now - previous < COOLDOWN_TICKS) return
         if (BoatMovementController.tryManualJump(boat)) lastJumpTick[player] = now

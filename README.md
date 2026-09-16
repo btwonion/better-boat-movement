@@ -10,7 +10,7 @@ Take control of your voyage with new boat-jumping mechanics and personalizable s
 - **Obstacle-Aware Jumping**: Boats automatically jump reachable obstacles using their actual collision shapes instead of trying to boost over walls that are too tall.
 - **Optional Manual Jumping**: Enable the jump keybind to jump once per keypress; it defaults to <kbd>H</kbd> and can be reassigned.
 - **Adjustable Behavior**: Fine-tune how boat jumping works to best fit your play style.
-- **Multiplayer Friendly**: Servers validate movement and synchronize their gameplay settings to connected players.
+- **Multiplayer Friendly**: Fabric, NeoForge, Paper, Folia, and Purpur servers validate movement and synchronize their gameplay settings to connected modded players. Paper-family automatic jumping also works for vanilla clients.
 
 ---
 
@@ -23,7 +23,24 @@ Take control of your voyage with new boat-jumping mechanics and personalizable s
 
 ## ⚙️ Configuration
 
-Configure your boat-jumping experience via `/config/better-boat-movement.json`:
+Fabric and NeoForge use `config/better-boat-movement.json`. Paper, Folia, and Purpur use `plugins/better-boat-movement/better-boat-movement.json`.
+
+### Installation
+
+| Platform | Install location | Required dependencies |
+| --- | --- | --- |
+| Fabric / Quilt | `mods` | Fabric API, Fabric Language Kotlin, and YACL |
+| NeoForge | `mods` | KotlinLangForge and YACL |
+| Paper / Folia / Purpur | `plugins` | None |
+
+Players can join a Paper, Folia, or Purpur server without installing the mod and still receive automatic boat boosts. **However, installing the matching client mod is strongly recommended:** its smoother client-side prediction makes boat movement feel much more immediate and satisfying. It also enables the manual jump keybind and the synchronized read-only server settings screen.
+
+On Paper-family servers, the two client options differ as follows:
+
+- **Vanilla client:** Automatic boosts and configured ejection timing work entirely through the server plugin. There is no manual jump keybind or settings screen.
+- **Client mod installed (strongly recommended):** Adds smoother client-side boost prediction, making jumps feel more responsive and satisfying, plus the optional manual jump keybind and a read-only view of the server's synchronized settings. The server remains authoritative.
+
+Configure your boat-jumping experience with the same JSON options on every platform:
 
 ```json5
 {

@@ -7,7 +7,8 @@ jobs:
   release:
     runs-on: ubuntu-latest
     name: Release
-    permissions: write-all
+    permissions:
+      contents: write
 
     steps:
       - uses: actions/checkout@v7
@@ -19,11 +20,11 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
-      - name: Build with Gradle
+        uses: gradle/actions/setup-gradle@v6
+      - name: Build and test with Gradle
         run: ./gradlew build --stacktrace
       - name: Release with Gradle
-        run: ./gradlew releaseMod --stacktrace
+        run: ./gradlew releaseAllPlatforms --stacktrace
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MODRINTH_API_KEY: ${{ secrets.MODRINTH_API_KEY }}

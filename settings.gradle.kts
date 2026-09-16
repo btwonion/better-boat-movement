@@ -6,6 +6,7 @@ pluginManagement {
         maven("https://maven.fabricmc.net/")
         maven("https://maven.neoforged.net/releases/")
         maven("https://maven.kikugie.dev/releases")
+        maven("https://repo.papermc.io/repository/maven-public/")
     }
 }
 
@@ -22,5 +23,7 @@ stonecutter {
         version("26.3-fabric", "26.3")
         vcsVersion = "26.1-fabric"
     }
-    create(rootProject)
+    create("mod")
 }
+
+include(":paper")
