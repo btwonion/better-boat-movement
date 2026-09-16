@@ -7,6 +7,7 @@ import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.Tag
 import org.bukkit.block.Block
+import org.bukkit.block.data.Levelled
 import org.bukkit.block.data.Waterlogged
 import org.bukkit.entity.Boat
 import org.bukkit.entity.Player
@@ -92,9 +93,18 @@ object PaperMovementController {
         if (!boat.isInWater && !boat.isUnderWater) return boat.boundingBox.minY
         val location = boat.location
         var y = floor(boat.boundingBox.minY).toInt()
-        val maxY = boat.world.maxHeight - 1
-        while (y < maxY && boat.world.getBlockAt(location.blockX, y, location.blockZ).containsWater()) y++
-        return y.toDouble()
+        val maxY = boat.world.maxHeight
+        while (y < maxY) {
+            val block = boat.world.getBlockAt(location.blockX, y, location.blockZ)
+            if (!block.containsWater()) return y.toDouble()
+
+            val coveredByWater = y + 1 < maxY &&
+                boat.world.getBlockAt(location.blockX, y + 1, location.blockZ).containsWater()
+            val height = fluidSurfaceHeight((block.blockData as? Levelled)?.level, coveredByWater)
+            if (height < FULL_FLUID_HEIGHT) return y + height
+            y++
+        }
+        return maxY.toDouble()
     }
 
     private fun Block.containsWater(): Boolean = when (type) {
@@ -168,5 +178,19 @@ object PaperMovementController {
     private const val BUOYANCY_DIVISOR = 0.65
     private const val BUOYANCY_DAMPING = 0.75
     private const val SUBMERGED_EPSILON = 0.001
+    private const val FULL_FLUID_HEIGHT = 1.0
     private const val MAX_ASCENT_TICKS = 10_000
 }
+
+internal fun fluidSurfaceHeight(level: Int?, coveredByWater: Boolean): Double {
+    if (coveredByWater) return 1.0
+    val amount = when {
+        level == null || level == 0 || level >= FALLING_FLUID_LEVEL -> MAX_FLUID_AMOUNT
+        else -> MAX_FLUID_AMOUNT - level
+    }
+    return (amount / FLUID_HEIGHT_DIVISOR).toDouble()
+}
+
+private const val MAX_FLUID_AMOUNT = 8
+private const val FALLING_FLUID_LEVEL = 8
+private const val FLUID_HEIGHT_DIVISOR = 9.0f
