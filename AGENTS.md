@@ -1,23 +1,14 @@
 # Repository guidance
 
-## Project overview
+## Project scope
 
-Better Boat Movement is a Kotlin/Java Minecraft project built for Fabric and NeoForge from one Stonecutter-managed source tree, plus a standalone Paper-family plugin. Keep loader-neutral mod gameplay code under `mod/src/main`, isolate loader registration in `mod/src/main/kotlin/dev/nyon/bbm/platform`, and keep Paper-specific behavior under `paper/src/main`.
+Better Boat Movement contains a shared Fabric and NeoForge mod plus a standalone Paper-family plugin.
 
-## Build and test
+- For work under `mod/`, follow `mod/AGENTS.md`.
+- For work under `paper/`, follow `paper/AGENTS.md`.
+- For changes spanning both modules, follow both module guidance files and keep shared behavior and protocols compatible.
 
-- Run `./gradlew build` when changing mixins, metadata, dependencies, or generated loader sources.
-- Run `./gradlew :paper:build` when changing the Paper-family plugin.
-- Do not commit generated files from `build/` or loader run directories.
-
-## Implementation conventions
-
-- Keep movement decisions deterministic and side-neutral. Minecraft object inspection belongs in probes/controllers; policy classes should remain easy to unit test.
-- Treat the logical server as authoritative. Client-side movement prediction must use the synchronized immutable `GameplayConfigSnapshot`.
-- Before completing any change, check that every shared network packet matches between the Paper plugin and the mod, including channel identifiers, field order, wire types, encoding/decoding, and validation behavior. Update and test both sides together whenever the protocol changes.
-- When adding a gameplay config field, update the mutable config, validated snapshot, `toMutableConfig`, config screen, translations, network snapshot codec, tests, README example, and `docs/behavior.md` where applicable.
-- Use collision shapes rather than assuming every block occupies a full cube.
-- Keep Fabric- and NeoForge-specific code behaviorally equivalent.
+Do not commit generated files from `build/` or runtime directories.
 
 ## Documentation
 
