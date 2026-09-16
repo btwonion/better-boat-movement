@@ -7,6 +7,7 @@ import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.Tag
 import org.bukkit.block.Block
+import org.bukkit.block.data.Waterlogged
 import org.bukkit.entity.Boat
 import org.bukkit.entity.Player
 import org.bukkit.util.BoundingBox
@@ -92,8 +93,19 @@ object PaperMovementController {
         val location = boat.location
         var y = floor(boat.boundingBox.minY).toInt()
         val maxY = boat.world.maxHeight - 1
-        while (y < maxY && boat.world.getBlockAt(location.blockX, y, location.blockZ).type == Material.WATER) y++
+        while (y < maxY && boat.world.getBlockAt(location.blockX, y, location.blockZ).containsWater()) y++
         return y.toDouble()
+    }
+
+    private fun Block.containsWater(): Boolean = when (type) {
+        Material.WATER,
+        Material.BUBBLE_COLUMN,
+        Material.KELP,
+        Material.KELP_PLANT,
+        Material.SEAGRASS,
+        Material.TALL_SEAGRASS -> true
+
+        else -> (blockData as? Waterlogged)?.isWaterlogged == true
     }
 
     private fun maximumRise(

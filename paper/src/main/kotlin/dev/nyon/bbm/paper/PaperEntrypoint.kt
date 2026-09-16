@@ -10,11 +10,13 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
+import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.player.PlayerRegisterChannelEvent
 import org.bukkit.plugin.java.JavaPlugin
 
 class PaperEntrypoint : JavaPlugin(), Listener {
     private val payloads = PaperPayloads()
+    private val boatListener = PaperBoatListener(this)
 
     override fun onLoad() {
         val path = Bukkit.getPluginsFolder().toPath()
@@ -27,12 +29,14 @@ class PaperEntrypoint : JavaPlugin(), Listener {
 
     override fun onEnable() {
         server.pluginManager.registerEvents(this, this)
-        server.pluginManager.registerEvents(PaperBoatListener(), this)
+        server.pluginManager.registerEvents(boatListener, this)
         server.messenger.registerOutgoingPluginChannel(this, CONFIG_CHANNEL)
         server.messenger.registerIncomingPluginChannel(this, MANUAL_JUMP_CHANNEL, payloads)
     }
 
     override fun onDisable() {
+        boatListener.shutdown()
+        payloads.clear()
         server.messenger.unregisterOutgoingPluginChannel(this)
         server.messenger.unregisterIncomingPluginChannel(this)
     }
@@ -47,6 +51,11 @@ class PaperEntrypoint : JavaPlugin(), Listener {
         if (event.channel == CONFIG_CHANNEL || event.channel == MANUAL_JUMP_CHANNEL) {
             sendConfig(event.player)
         }
+    }
+
+    @EventHandler
+    fun onPlayerQuit(event: PlayerQuitEvent) {
+        payloads.forget(event.player.uniqueId)
     }
 
     private fun sendConfig(player: Player) {

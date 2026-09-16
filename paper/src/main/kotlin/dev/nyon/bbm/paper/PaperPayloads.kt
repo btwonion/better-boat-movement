@@ -3,6 +3,7 @@ package dev.nyon.bbm.paper
 import dev.nyon.bbm.paper.config.PaperConfigRepository
 import dev.nyon.bbm.paper.config.PaperGameplayConfigSnapshot
 import dev.nyon.bbm.paper.movement.PaperMovementController
+import org.bukkit.Bukkit
 import org.bukkit.entity.Boat
 import org.bukkit.entity.Player
 import org.bukkit.plugin.messaging.PluginMessageListener
@@ -18,7 +19,7 @@ const val CONFIG_CHANNEL = "bbm:config_snapshot"
 const val MANUAL_JUMP_CHANNEL = "bbm:manual_jump"
 
 class PaperPayloads : PluginMessageListener {
-    private val lastManualJumpTick = ConcurrentHashMap<UUID, Long>()
+    private val lastManualJumpTick = ConcurrentHashMap<UUID, Int>()
 
     override fun onPluginMessageReceived(channel: String, player: Player, message: ByteArray) {
         if (channel != MANUAL_JUMP_CHANNEL || message.size != UUID_BYTES) return
@@ -28,12 +29,20 @@ class PaperPayloads : PluginMessageListener {
         val boat = player.vehicle as? Boat ?: return
         if (boat.uniqueId != requestedBoatId || boat.passengers.firstOrNull() !== player) return
 
-        val now = player.world.fullTime
+        val now = Bukkit.getCurrentTick()
         val previous = lastManualJumpTick[player.uniqueId]
         if (previous != null && now - previous < MANUAL_JUMP_COOLDOWN_TICKS) return
         if (PaperMovementController.tryManualJump(player, boat)) {
             lastManualJumpTick[player.uniqueId] = now
         }
+    }
+
+    fun forget(playerId: UUID) {
+        lastManualJumpTick.remove(playerId)
+    }
+
+    fun clear() {
+        lastManualJumpTick.clear()
     }
 
     fun encodeConfig(): ByteArray = encodeConfig(PaperConfigRepository.snapshot)
@@ -78,6 +87,6 @@ class PaperPayloads : PluginMessageListener {
 
     private companion object {
         const val UUID_BYTES = 16
-        const val MANUAL_JUMP_COOLDOWN_TICKS = 2L
+        const val MANUAL_JUMP_COOLDOWN_TICKS = 2
     }
 }

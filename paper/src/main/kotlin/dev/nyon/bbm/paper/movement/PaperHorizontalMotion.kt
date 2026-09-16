@@ -40,5 +40,10 @@ class PaperHorizontalMotionTracker {
         movements.remove(id)
     }
 
+    @Synchronized
+    fun clear() {
+        movements.clear()
+    }
+
     private data class TimedMotion(val tick: Long, val movement: PaperHorizontalMotion)
 }
