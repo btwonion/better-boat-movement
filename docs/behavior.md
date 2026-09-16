@@ -70,4 +70,4 @@ The Paper, Folia, or Purpur plugin is the only server-side installation required
 ## Supported platforms
 
 - Minecraft 26.1–26.2: Fabric, Quilt, NeoForge, Paper, Folia, and Purpur.
-- Minecraft 26.3: Fabric and Quilt.
+- Minecraft 26.3: Fabric, Quilt, Paper, Folia, and Purpur.

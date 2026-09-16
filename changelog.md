@@ -1,3 +1,2 @@
 - update to 26.3
-- Paper is now also supported
-- fix vanilla clients failing to carry straight-on automatic boat jumps onto blocks on Paper-family servers
+- add compatibility for Paper, Folia and Purpur
