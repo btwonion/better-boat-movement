@@ -2,6 +2,8 @@ name: build-commit
 
 on:
   push:
+    branches:
+      - master
     paths-ignore:
       - "README.md"
       - "LICENSE"
@@ -20,6 +22,10 @@ on:
       - "mod/src/**/resources/assets/*/lang/**"
       - "media/**"
   workflow_dispatch:
+
+concurrency:
+  group: build-commit-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build-mod:
