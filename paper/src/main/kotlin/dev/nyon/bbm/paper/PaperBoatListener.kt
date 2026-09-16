@@ -1,6 +1,8 @@
 package dev.nyon.bbm.paper
 
 import dev.nyon.bbm.paper.config.PaperConfigRepository
+import dev.nyon.bbm.paper.movement.PaperHorizontalMotion
+import dev.nyon.bbm.paper.movement.PaperHorizontalMotionTracker
 import dev.nyon.bbm.paper.movement.PaperMovementController
 import org.bukkit.entity.Boat
 import org.bukkit.entity.Player
@@ -15,12 +17,18 @@ import java.util.concurrent.ConcurrentHashMap
 
 class PaperBoatListener : Listener {
     private val submergedTicks = ConcurrentHashMap<UUID, SubmergedState>()
+    private val horizontalMotion = PaperHorizontalMotionTracker()
 
     @EventHandler(priority = EventPriority.NORMAL)
     fun onVehicleMove(event: VehicleMoveEvent) {
         val boat = event.vehicle as? Boat ?: return
         updateSubmergedTicks(boat)
-        PaperMovementController.applyAutomaticBoost(boat)
+        val movement = horizontalMotion.record(
+            boat.uniqueId,
+            boat.world.fullTime,
+            PaperHorizontalMotion(event.to.x - event.from.x, event.to.z - event.from.z)
+        )
+        PaperMovementController.applyAutomaticBoost(boat, movement)
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
@@ -34,8 +42,14 @@ class PaperBoatListener : Listener {
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    fun onVehicleExited(event: VehicleExitEvent) {
+        horizontalMotion.remove(event.vehicle.uniqueId)
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun onVehicleDestroy(event: VehicleDestroyEvent) {
         submergedTicks.remove(event.vehicle.uniqueId)
+        horizontalMotion.remove(event.vehicle.uniqueId)
     }
 
     private fun updateSubmergedTicks(boat: Boat) {

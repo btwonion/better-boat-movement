@@ -14,6 +14,7 @@ Better Boat Movement is a Kotlin/Java Minecraft project built for Fabric and Neo
 
 - Keep movement decisions deterministic and side-neutral. Minecraft object inspection belongs in probes/controllers; policy classes should remain easy to unit test.
 - Treat the logical server as authoritative. Client-side movement prediction must use the synchronized immutable `GameplayConfigSnapshot`.
+- Before completing any change, check that every shared network packet matches between the Paper plugin and the mod, including channel identifiers, field order, wire types, encoding/decoding, and validation behavior. Update and test both sides together whenever the protocol changes.
 - When adding a gameplay config field, update the mutable config, validated snapshot, `toMutableConfig`, config screen, translations, network snapshot codec, tests, README example, and `docs/behavior.md` where applicable.
 - Use collision shapes rather than assuming every block occupies a full cube.
 - Keep Fabric- and NeoForge-specific code behaviorally equivalent.

@@ -33,12 +33,12 @@ Fabric and NeoForge use `config/better-boat-movement.json`. Paper, Folia, and Pu
 | NeoForge | `mods` | KotlinLangForge and YACL |
 | Paper / Folia / Purpur | `plugins` | None |
 
-Players can join a Paper, Folia, or Purpur server without installing the mod and still receive automatic boat boosts. Installing the matching client mod additionally enables the manual jump keybind and the synchronized read-only server settings screen.
+Players can join a Paper, Folia, or Purpur server without installing the mod and still receive automatic boat boosts. **However, installing the matching client mod is strongly recommended:** its smoother client-side prediction makes boat movement feel much more immediate and satisfying. It also enables the manual jump keybind and the synchronized read-only server settings screen.
 
 On Paper-family servers, the two client options differ as follows:
 
 - **Vanilla client:** Automatic boosts and configured ejection timing work entirely through the server plugin. There is no manual jump keybind or settings screen.
-- **Client mod installed:** Adds smoother client-side boost prediction, the optional manual jump keybind, and a read-only view of the server's synchronized settings. The server remains authoritative.
+- **Client mod installed (strongly recommended):** Adds smoother client-side boost prediction, making jumps feel more responsive and satisfying, plus the optional manual jump keybind and a read-only view of the server's synchronized settings. The server remains authoritative.
 
 Configure your boat-jumping experience with the same JSON options on every platform:
 

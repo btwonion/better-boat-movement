@@ -14,10 +14,10 @@ import org.bukkit.util.Vector
 import kotlin.math.floor
 
 object PaperMovementController {
-    fun applyAutomaticBoost(boat: Boat) {
+    fun applyAutomaticBoost(boat: Boat, recentMotion: PaperHorizontalMotion) {
         val config = PaperConfigRepository.snapshot
         val status = boat.status.toPaperStatus() ?: return
-        val obstacle = PaperObstacleProbe.findAhead(boat, config) ?: return
+        val obstacle = PaperObstacleProbe.findAhead(boat, config, recentMotion) ?: return
         if (config.extraCollisionDetectionRange == 0.0 &&
             obstacle.distance > PaperObstacleProbe.CONTACT_PROBE_RANGE
         ) return
@@ -39,7 +39,8 @@ object PaperMovementController {
         if (obstacle.topY - box.minY > maximumRise + config.heightTolerance) return
 
         val velocity = boat.velocity
-        boat.velocity = Vector(velocity.x, config.stepHeight.toDouble(), velocity.z)
+        val horizontal = PaperHorizontalMotion(velocity.x, velocity.z).preferStronger(recentMotion)
+        boat.velocity = Vector(horizontal.x, config.stepHeight.toDouble(), horizontal.z)
     }
 
     fun tryManualJump(player: Player, boat: Boat): Boolean {

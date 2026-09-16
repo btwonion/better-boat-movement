@@ -12,16 +12,21 @@ data class PaperObstacleHit(
 )
 
 object PaperObstacleProbe {
-    fun findAhead(boat: Boat, config: PaperGameplayConfigSnapshot): PaperObstacleHit? {
+    fun findAhead(
+        boat: Boat,
+        config: PaperGameplayConfigSnapshot,
+        recentMotion: PaperHorizontalMotion
+    ): PaperObstacleHit? {
         val velocity = boat.velocity
         val facing = boat.location.direction
+        val motion = PaperHorizontalMotion(velocity.x, velocity.z).preferStronger(recentMotion)
         val probeRange = if (config.extraCollisionDetectionRange == 0.0) {
             CONTACT_PROBE_RANGE
         } else config.extraCollisionDetectionRange
         val sweep = PaperForwardSweep.create(
             boat.boundingBox.toCoreBox(),
-            velocity.x,
-            velocity.z,
+            motion.x,
+            motion.z,
             facing.x,
             facing.z,
             probeRange

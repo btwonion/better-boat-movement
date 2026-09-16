@@ -17,9 +17,9 @@ plugins {
 
 val beta = property("mod.beta").toString().toInt()
 val featureVersion = "${property("mod.major-version")}${if (beta != 0) "-beta$beta" else ""}"
-val minecraftVersion = property("paper.minecraft-version").toString()
-val minecraftVersionName = property("paper.version-name").toString()
-version = "$featureVersion-$minecraftVersionName+paper"
+val minecraftVersion = property("vers.mcVersion").toString()
+val paperVersion = property("vers.deps.paper").toString()
+version = "$featureVersion-$minecraftVersion+paper"
 group = property("mod.group").toString()
 
 base {
@@ -35,7 +35,7 @@ repositories {
 paperweight.reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.MOJANG_PRODUCTION
 
 dependencies {
-    paperweight.paperDevBundle(minecraftVersion)
+    paperweight.paperDevBundle(paperVersion)
 
     implementation(libs.konfig)
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.10.0")
@@ -78,7 +78,7 @@ val changelogText = buildString {
     rootProject.file("changelog.md").readText().also(::append)
 }
 
-val supportedMinecraftVersions = property("paper.supported-minecraft-versions").toString()
+val supportedMinecraftVersions = property("vers.supportedMcVersions").toString()
     .split(',').map(String::trim).filter(String::isNotEmpty)
 
 publishMods {
